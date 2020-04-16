@@ -6,9 +6,6 @@
           <LeftSidebar />
         </div>
         <div id="mid" class="col-sm-8 col-lg-7 col-xl-6">
-          <button @click="clickMe">click me</button>
-          <button @click="addPage">add page</button>
-          <button @click="removePage">remove page</button>
           <MemeItems />
         </div>
         <div id="right" class="col-sm-4 col-lg-3 col-xl-3">
@@ -25,7 +22,6 @@
 <script>
 import LeftSidebar from '~/components/LeftSidebar'
 import MemeItems from '~/components/MemeItems'
-import { mapActions } from 'vuex'
 
 export default {
   components: {
@@ -40,29 +36,6 @@ export default {
         {hid: "description", name: "keywords", content: "Meme,Memes,Funny,Posts"}
       ]
     }
-  },
-  methods: {
-    clickMe() {
-      this.$toasted.show('Error: Network Error', {
-        position: 'bottom-center',
-        duration: 2000,
-        keepOnHover: true,
-        action : {
-          text : 'X',
-          class: 'red',
-          onClick : (e, toastObject) => {
-            toastObject.goAway(0)
-          }
-        }
-      })
-    },
-    addPage() {
-      this.SET_AUTH_USER_MODERATING({page: {name: "new_page", dname: "New Page", private: false}, add: true})
-    },
-    removePage() {
-      this.SET_AUTH_USER_MODERATING({page: {name: "new_page", dname: "New Page", private: false}, add: false})
-    },
-    ...mapActions("auth", ["SET_AUTH_USER_MODERATING"])
   }
 }
 </script>

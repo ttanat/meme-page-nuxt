@@ -21,7 +21,6 @@
 
 <script>
 import jwt from 'jsonwebtoken'
-import { mapMutations } from 'vuex'
 import Cookies from 'js-cookie'
 
 export default {
@@ -36,7 +35,6 @@ export default {
     }
   },
   methods: {
-    // ...mapMutations(["setToken", "setAuth", "userLogin", "resetUser"]),
     submit() {
       if (!this.login.username || !this.login.password ||
           this.login.username.length > 32 ||
@@ -49,40 +47,16 @@ export default {
           data: this.login
         })
           .then(r => {
+            $("#loginModal").modal("hide")
+            document.body.classList.remove("modal-open")
             try {
-              $("#loginModal").modal("hide")
-              document.body.classList.remove("modal-open")
               document.querySelector(".modal-backdrop.show").remove()
             } catch {}
-            this.$auth.setUser(r.data.user)
-            Cookies.set("user", r.data.user)
             this.$auth.setRefreshToken("local", r.data.refresh)
             // this.$router.push("/feed")
           })
           .catch(res => alert(res.response.status === 401 ? "Username or password incorrect" : "Unexpected error occurred. Please try again"))
           .finally(() => this.loading = false)
-
-        // const data = new FormData()
-        // data.set("username", this.username)
-        // data.set("password", this.password)
-
-        // axios.post("http://127.0.0.1:8000/api/token/", data)
-        //   .then(res => {
-        //     this.loading = false
-        //     // Save token in state
-        //     const token = res.data
-        //     this.setToken(token)
-        //     this.setAuth(true)
-        //     // Get and save username and image URL from token data
-        //     const user_obj = jwt.decode(token.access)
-        //     this.userLogin({username: user_obj.username, image: user_obj.image})
-        //     $("#loginModal").modal("hide") // jquery
-        //   })
-        //   .catch(err => {
-        //     this.loading = false
-        //     this.resetUser()
-        //     alert(err)
-        //   })
       }
     }
   }

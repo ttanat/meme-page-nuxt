@@ -7,11 +7,13 @@
       :muted="muted"
       @new-meme-event="observeNewMeme"
       @toggle-sound-event="toggleSound"
+      @set-points-event="setPoints"
     />
-    <div v-show="loading" class="loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+    <div v-show="loading" class="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     <div v-if="noMemes" style="margin-top: 30px;text-align: center;">
-      <template v-if="true">No results matching query.<br><br>Return <a href="/">home</a></template>
-      <template v-if="true">No new posts.<br><br>Subscribe to more pages or follow other users for more posts!</template>
+      <template v-if="$route.path === '/search'">No results matching query.<br><br>Return <a href="/">home</a></template>
+      <template v-else-if="$route.path === '/feed'">No new posts.<br><br>Subscribe to more pages or follow other users for more posts!</template>
+      <template v-else>No memes here :(<br><br>Return <a href="/">home</a></template>
     </div>
   </div>
 </template>
@@ -61,10 +63,14 @@ export default {
       this.lazyMemeObserver.observe(meme)
       if (isVideo) this.autoplayObserver.observe(meme)
     },
+    setPoints(meme, new_points) {
+      const i = this.$children.findIndex(c => c === meme)
+      if (i > -1) this.$children[i].points = new_points
+    },
     loadMore() {
-      // if (this.next === null || (window.location.pathname.startsWith("/page/") && (!SHOW || !PAGE_NUM_POSTS))
-      //     || (!["/", "/all", "/feed", "/search"].includes(window.location.pathname) && !window.location.pathname.match(/^\/page\/[a-zA-Z0-9_]+$/)
-      //     && !window.location.pathname.match(/^\/browse\/[a-zA-Z0-9_]+$|^\/browse\/tv-shows$/))) return false;
+      // if (this.next === null || (this.$route.path.startsWith("/page/") && (!SHOW || !PAGE_NUM_POSTS))
+      //     || (!["/", "/all", "/feed", "/search"].includes(this.$route.path) && !this.$route.path.match(/^\/page\/[a-zA-Z0-9_]+$/)
+      //     && !this.$route.path.match(/^\/browse\/[a-zA-Z0-9_]+$|^\/browse\/tv-shows$/))) return false;
       this.loading = true
 
       this.$axios.get(this.getURL())
@@ -82,11 +88,7 @@ export default {
             if (response["auth"] && this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids)
             this.next = response["next"]
           } else {
-            if (this.next === "" && !this.$children.length) {
-              const returnHome = 'Return <a href="/">home</a>'
-              const inside = window.location.pathname === "/search" ? `No results matching query.<br><br>${returnHome}` : window.location.pathname === "/feed" ? 'No new posts.<br><br>Subscribe to more pages or follow other users for more posts!' : `No memes here :(<br><br>${returnHome}`
-              this.$el.innerHTML = `<div style="margin-top: 30px;text-align: center;">${inside}</div>`
-            }
+            if (this.next === "" && !this.$children.length) this.noMemes = true
             if (this.scrollRoot) this.scrollObserver.unobserve(this.scrollRoot)
             this.scrollObserver = this.scrollRoot = this.next = null
           }
@@ -95,15 +97,15 @@ export default {
         .finally(() => this.loading = false)
     },
     getURL() {
-        return this.next || (window.location.pathname === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(new URL(window.location.href).searchParams.get("q").slice(0, 64))}`
-              : window.location.pathname.startsWith("/page/") && AUTH && PRIVATE && SHOW ? `/api/memes/pv/?n=${encodeURIComponent(PAGE_NAME)}`
-              : `/api/memes/?p=${encodeURIComponent(window.location.pathname.slice(1))}`)
+        return this.next || (this.$route.path === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(new URL(window.location.href).searchParams.get("q").slice(0, 64))}`
+              : this.$route.path.startsWith("/page/") && AUTH && PRIVATE && SHOW ? `/api/memes/pv/?n=${encodeURIComponent(PAGE_NAME)}`
+              : `/api/memes/?p=${encodeURIComponent(this.$route.path.slice(1))}`)
     },
     loadLikes(uuids) {
       if (this.$auth.loggedIn && uuids.length) {
         this.$axios.get(`/api/likes/m/?${uuids.slice(0, 20).map(uuid => `u=${uuid}`).join("&")}`)
           .then(res => {
-            for (vote of res.data) {
+            for (let vote of res.data) {
               const i = this.$children.findIndex(c => c.meme.uuid === vote["uuid"])
               this.$children[i].isLiked = vote["point"] === 1
               this.$children[i].isDisliked = vote["point"] === -1

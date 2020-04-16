@@ -70,11 +70,9 @@ export default {
           login: { url: '/api/token/', method: 'post', propertyName: 'access' },
           logout: { propertyName: false },
           // logout: { url: '/api/auth/logout/', method: 'post' },
-          // user: { url: '/zzz', method: 'get', propertyName: 'user' }
+          user: { url: '/api/auth/user', method: 'get', propertyName: false }
         },
-        // tokenRequired: true,
-        tokenType: 'Bearer',
-        autoFetchUser: false
+        tokenType: 'Bearer'
       }
     }
   },
