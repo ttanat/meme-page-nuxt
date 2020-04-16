@@ -1,0 +1,161 @@
+.reply-field-dp {
+  margin-right: 10px;
+  margin-top: 12px;
+  color: royalblue;
+}
+.rf-img {
+  font-size: 16px;
+  margin-top: 12px;
+  margin-left: 6px;
+  color: inherit !important;
+}
+.reply-field {
+  border: none;
+  font-size: 14px;
+  margin-top: 4px;
+  background-color: #121212;
+  color: lightgrey;
+  border-bottom: solid 1.5px royalblue;
+  line-height: 2.25;
+  width: calc(100% - 35px - 22px - 54px);
+}
+.r-post-btn {
+  height: 28px;
+  width: 44px;
+  margin: 10px 0 0 10px;
+}
+.reply-reply-field {
+  margin-top: 3.5px;
+  padding: 0;
+}
+#overlay {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.9);
+  z-index: 2;
+}
+#overlay img {
+  height: 85%;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+  cursor: zoom-out;
+}
+.content-section {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.tag {
+  padding: 3px;
+  font-size: 12px;
+}
+.comment {
+  padding: 5px;
+  padding-bottom: 0px;
+  margin-top: 7px;
+  font-size: 15px;
+}
+.comment-content {
+  white-space: pre-line;
+  font-size: 14px;
+  font-weight: 300;
+}
+.comment-image {
+  height: 15rem;
+  border-radius: .5rem;
+}
+.reply-image {
+  height: 12rem;
+  border-radius: .5rem;
+}
+.comment-points {
+  padding: 0;
+  margin-left: 5px;
+  margin-right: 10px;
+  cursor: text;
+}
+.comment-left-column {
+  font-size: 40px;
+  margin-right: 10px;
+  width: 40px;
+}
+.comment-right-column, .reply-right-column {
+  width: calc(100% - 50px);
+}
+.reply-left-column {
+  font-size: 25px;
+  margin-right: 10px;
+}
+.comment-buttons {
+  margin-top: 2px;
+  padding-left: 0;
+  opacity: 0.9;
+}
+.c-thumbs {
+  padding: 0;
+}
+.comment-buttons button, .comment-points:hover, .reply-button:hover {
+  font-size: 13px;
+  color: #707070;
+}
+.reply-button {
+  margin-left: 10px;
+}
+.comment-username, .comment-username:hover {
+  color: #707070;
+  font-size: 13px;
+  /*font-weight: 700;*/
+}
+.comment-date {
+  color: grey;
+  font-size: 13px;
+  opacity: 0.5;
+}
+.comment-pen {
+  color: grey;
+  font-size: 13px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+.edit-comment-field {
+  background-color: #303030;
+  color: inherit;
+  border: none;
+  border-radius: 2px;
+  width: 100%;
+}
+.comment-small {
+  color: royalblue;
+  cursor: pointer;
+}
+.comment-down-btn {
+  /*vertical-align: bottom;*/
+  color: grey;
+  cursor: pointer;
+  font-size: 14px;
+}
+.comment-down-btn:hover {
+  color: lightgrey;
+}
+.c-dropdown-menu, .item-dropdown-menu {
+  font-size: 14px;
+  min-width: 0;
+}
+.c-dropdown-menu i {
+  font-size: 12px;
+}
+.comment-deleted {
+  font-weight: 400;
+  font-style: italic;
+  color: grey;
+  font-size: 13px;
+}
