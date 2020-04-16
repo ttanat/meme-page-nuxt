@@ -37,8 +37,7 @@ export default {
   */
   plugins: [
     '~/plugins/fontawesome.js',
-    '~/plugins/toasted.js',
-    '~/plugins/nuxt-client-init.client.js'
+    '~/plugins/toasted.js'
   ],
   /*
   ** Nuxt.js dev-modules

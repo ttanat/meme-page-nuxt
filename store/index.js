@@ -19,10 +19,3 @@ export const mutations = {
     state.memes.push(payload)
   }
 }
-
-export const actions = {
-  nuxtClientInit({ commit }) {
-    const user = Cookies.get("user")
-    if (user) commit('auth/SET_AUTH_USER', user)
-  }
-}
