@@ -73,7 +73,11 @@ export default {
         },
         tokenType: 'Bearer'
       }
-    }
+    },
+    redirect: {
+      login: '/'
+    },
+    cookie: false
   },
   /*
   ** Build configuration

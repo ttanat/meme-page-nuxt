@@ -26,7 +26,7 @@
             <img src="~/assets/app_store.png" style="width: 64%;overflow: hidden;border: solid 1px grey;border-radius: 10px;">
           </div>
 
-          <div style="text-align: center;top: 4em;position: sticky;position: -webkit-sticky;">
+          <div class="right-fixed">
             <img class="ad" src="~/assets/ad.png" alt="Advertisement">
             <img class="ad" src="~/assets/ad_two.png" alt="Advertisement">
           </div>
@@ -66,19 +66,10 @@ export default {
     const { data } = await axios.get(`http://127.0.0.1:8000/api/memes/?u=${params.uuid}`)
     return { meme: data.results[0] }
   },
-  // created() {
-  //   const m = this.$store.state.memes.find(m => m.uuid === this.$route.params.uuid)
-  //   if (m) {
-  //     this.meme = m
-  //   } else {
-  //     axios.get(`http://127.0.0.1:8000/api/memes/?u=${this.$route.params.uuid}`)
-  //       .then(r => r.data.results[0])
-  //       .then(data => {
-  //         this.meme = data
-  //         this.addMeme(data)
-  //       })
-  //   }
-  // },
+  async created() {
+    const { data } = await this.$axios.get(`/api/tags/?u=${this.$route.params.uuid}`)
+    this.tags.push(...data)
+  },
   head() {
     return {
       title: `${this.meme.caption ? `${this.meme.caption} - ` : ''}Meme Page`,
@@ -102,5 +93,11 @@ export default {
   background-color: #171717;
   border: 1px solid #444444;
   border-radius: 5px;
+}
+.right-fixed {
+  text-align: center;
+  top: 4rem;
+  position: sticky;
+  position: -webkit-sticky;
 }
 </style>

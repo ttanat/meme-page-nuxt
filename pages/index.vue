@@ -9,7 +9,7 @@
           <MemeItems />
         </div>
         <div id="right" class="col-sm-4 col-lg-3 col-xl-3">
-          <div style="position: sticky;position: -webkit-sticky;top: 4rem;">
+          <div class="right-fixed">
             <img class="ad" src="~/assets/got_ad.png" alt="Advertisement">
             <img class="ad" src="~/assets/ad.png" alt="Advertisement">
           </div>
@@ -45,5 +45,10 @@ export default {
   #mid {
     padding: 0 !important;
   }
+}
+.right-fixed {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 4rem;
 }
 </style>

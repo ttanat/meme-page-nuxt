@@ -73,12 +73,12 @@ export default {
       //     && !this.$route.path.match(/^\/browse\/[a-zA-Z0-9_]+$|^\/browse\/tv-shows$/))) return false;
       this.loading = true
 
-      this.$axios.get(this.getURL())
+      this.$axios.get(this.next || this.getNewURL(), {progress: false})
         .then(res => res.data)
         .then(response => {
-          const results = response["results"]
-          const l_uuids = []
+          const results = response.results
           if (results.length) {
+            const l_uuids = []
             for (let r of results) {
               if (this.memes.findIndex(meme => meme.uuid === r.uuid) === -1) {
                 this.memes.push(r)
@@ -96,10 +96,10 @@ export default {
         .catch(console.log)
         .finally(() => this.loading = false)
     },
-    getURL() {
-        return this.next || (this.$route.path === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(new URL(window.location.href).searchParams.get("q").slice(0, 64))}`
+    getNewURL() {
+        return this.$route.path === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(new URL(window.location.href).searchParams.get("q").slice(0, 64))}`
               : this.$route.path.startsWith("/page/") && AUTH && PRIVATE && SHOW ? `/api/memes/pv/?n=${encodeURIComponent(PAGE_NAME)}`
-              : `/api/memes/?p=${encodeURIComponent(this.$route.path.slice(1))}`)
+              : `/api/memes/?p=${encodeURIComponent(this.$route.path.slice(1))}`
     },
     loadLikes(uuids) {
       if (this.$auth.loggedIn && uuids.length) {

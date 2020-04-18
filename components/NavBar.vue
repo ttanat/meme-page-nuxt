@@ -24,7 +24,7 @@
           <NotificationsDropdown />
           <div class="dropdown">
             <a type="button" class="nav-item nav-link text-light mr-2" data-toggle="dropdown">
-                <img v-if="$auth.user.image" class="rounded-circle" :src="'http://127.0.0.1:8000'+$auth.user.image" height="21" width="21">
+                <img v-if="$auth.user.image" class="rounded-circle" :src="$auth.user.image" height="21" width="21">
                 <font-awesome-icon v-else :icon="['fas', 'user-circle']" />&nbsp;{{ $auth.user.username }}&nbsp;<font-awesome-icon :icon="['fas', 'caret-down']" />
             </a>
             <div class="dropdown-menu dropdown-menu-right" style="width: 190px;background-color: #252525;color: lightgrey;">
@@ -33,7 +33,7 @@
               <a class="dropdown-item user-dropdown" href="javascript:night()"><font-awesome-icon id="moon-icon" :icon="['far', 'moon']" /> Night</a>
               <nuxt-link class="dropdown-item user-dropdown" to="/settings"><font-awesome-icon :icon="['fas', 'cog']" /> Settings</nuxt-link>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item user-dropdown" @click="logout" href="#"><font-awesome-icon :icon="['fas', 'sign-out-alt']" /> Logout</a>
+              <a class="dropdown-item user-dropdown" @click="$auth.logout()" href="#"><font-awesome-icon :icon="['fas', 'sign-out-alt']" /> Logout</a>
             </div>
           </div>
         </template>
@@ -57,12 +57,6 @@ export default {
   components: {
     SearchBar,
     NotificationsDropdown
-  },
-  methods: {
-    logout() {
-      this.$store.commit("auth/LOGOUT_USER")
-      this.$auth.logout()
-    }
   }
 }
 </script>

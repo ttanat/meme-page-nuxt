@@ -52,12 +52,12 @@ export default {
       if (this.next === null) return false
       this.loading = true
 
-      axios.get('http://127.0.0.1:8000' + (this.next || `/api/comments/?u=${this.$route.params.uuid}`))
+      this.$axios.get(this.next || `/api/comments/?u=${this.$route.params.uuid}`)
         .then(res => res.data)
         .then(response => {
           const l_uuids = []
           let offset = 0
-          for (let r of response["results"]) {
+          for (let r of response.results) {
             if (this.comments.findIndex(c => c.uuid === r.uuid) === -1) {
               this.comments.push(r)
               l_uuids.push(r.uuid)

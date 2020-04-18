@@ -21,7 +21,11 @@
     </template>
     <hr>
     <h6>Categories</h6>
-    <nuxt-link v-for="c in categories" :key="c[2]" :to="`/browse/${getSlug(c[2])}`" :class="{'sl-active': getActiveLink(`/browse/${c[2]}`)}">
+    <nuxt-link
+      v-for="c in categories"
+      :key="c[2]"
+      :to="`/browse/${getSlug(c[2])}`"
+      :class="{'sl-active': getActiveLink(`/browse/${getSlug(c[2])}`)}">
       <font-awesome-icon :icon="[`fa${c[0]}`, c[1]]" fixed-width />&ensp;{{ c[2] }}
     </nuxt-link>
   </div>
@@ -72,31 +76,12 @@ export default {
 </script>
 
 <style scoped>
-  h6 {
-    color: grey;
-    font-size: 1.05rem;
-  }
-  a {
-    line-height: 2;
-    color: lightgrey;
-    padding-left: 5px;
-    padding-right: 5px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-bottom: 5px;
-    display: block;
-    border-radius: 5px;
-    font-size: 0.95rem;
-  }
-  a:hover {
-    color: green;
-  }
-  hr {
-    background-color: #505050;
-  }
-  .sl-active {
-    background-color: #333;
-    color: green;
-  }
+@import '~/assets/sidebar.css';
+h6 {
+  color: grey;
+  font-size: 1.05rem;
+}
+hr {
+  background-color: #505050;
+}
 </style>

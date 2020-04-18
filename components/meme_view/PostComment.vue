@@ -41,7 +41,7 @@ export default {
   methods: {
     post() {
       const data = new FormData()
-      data.set("u", UUID)
+      data.set("u", this.$route.params.uuid)
       if (this.fileValid()) data.set("i", this.$refs.inputFile.files[0])
       if (this.commentContent.length > 150) return false
       const val = this.commentContent.slice(0, 150).trim()

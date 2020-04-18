@@ -4,7 +4,7 @@
 
       <div class="reply-left-column">
         <a :href="'/user/'+reply.username">
-          <img v-if="reply.dp_url" class="rounded-circle" :src="'http://127.0.0.1:8000'+reply.dp_url" height="25" width="25">
+          <img v-if="reply.dp_url" class="rounded-circle" :src="reply.dp_url" height="25" width="25">
           <font-awesome-icon v-else :icon="['fas', 'user-circle']" />
         </a>
       </div>
@@ -39,7 +39,7 @@
         <input v-if="!isDeleted" v-show="editing && isAuthenticated && isOwnReply" ref="editReplyInput" @keyup.enter="editReply(reply.uuid)" class="edit-comment-field" :value="reply.content">
         <a v-if="reply.image" :href="'/img?c='+reply.uuid" target="_blank">
           <picture ref="replyImg">
-            <source :data-src="'http://127.0.0.1:8000'+reply.image">
+            <source :data-src="reply.image">
             <img class="mt-1 reply-image" data-src="/media/users/john/profile/ivz59jjdeht31.jpg">
           </picture>
         </a>
@@ -71,10 +71,12 @@
 
 <script>
 import voteMixin from '~/mixins/voteMixin'
+import formatDate from '~/assets/formatDate'
+import checkAuthMixin from '~/mixins/checkAuthMixin'
 
 export default {
   name: 'ReplyItem',
-  mixins: [voteMixin],
+  mixins: [voteMixin, checkAuthMixin],
   props: {
     reply: {
       type: Object,
@@ -98,13 +100,13 @@ export default {
   },
   computed: {
     isAuthenticated() {
-      return AUTH
+      return this.$auth.loggedIn
     },
     isOwnReply() {
-      return this.reply.username === USERNAME
+      return this.reply.username === this.$auth.user.username
     },
     hasDP() {
-      return DP_URL
+      return this.isAuthenticated && this.$auth.user ? this.$auth.user.image : false
     },
     timesince() {
       return formatDate(this.reply.post_date)
@@ -156,7 +158,7 @@ export default {
     },
     vote(v) {this.sendVote(this.reply, v, "c", this.hidePoints)},
     typeReply() {
-      if (checkAuth()) {
+      if (this.checkAuth()) {
         this.typingReply = !this.typingReply
         if (this.typingReply) {
           if (!this.replyInputValue) this.replyInputValue = `@${this.reply.username} `
@@ -165,7 +167,7 @@ export default {
       }
     },
     submitReply() {
-      if (!this.replyInputValue || !AUTH) return false
+      if (!this.replyInputValue || !this.isAuthenticated) return false
       const r_input = this.$refs.replyInput
       const data = new FormData()
       const val = this.replyInputValue.slice(0, 150).trim()

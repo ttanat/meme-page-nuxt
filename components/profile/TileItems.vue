@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-100">
     <TileItem v-for="tile in tiles" :key="tile.uuid" :tile="tile" />
     <div v-if="no_content && !tiles.length" class="profile-empty" onclick="$('#uploadModal').modal('show')">
       <template v-if="$route.path === '/profile/likes'">No likes yet :(</template>
@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       tiles: [],
-      next: this.$route.path === "/profile" ? "/api/pmemes" : this.$route.path === "/profile/likes" ? "/api/plikes" : `/api/umemes/?u=${USER_PAGE}`,
+      next: this.$route.path === "/profile" ? "/api/profile/memes" : this.$route.path === "/profile/likes" ? "/api/profile/likes" : `/api/user_page/memes/?u=${this.$route.params.username}`,
       no_content: false
     }
   },
@@ -37,7 +37,7 @@ export default {
             if (res.data.results.length) {
               this.tiles.push(...res.data.results)
               this.next = res.data.next
-            } else {
+            } else if (!this.tiles.length) {
               this.no_content = true
             }
           })

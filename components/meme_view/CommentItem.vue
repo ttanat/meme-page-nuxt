@@ -5,7 +5,7 @@
 
         <div class="comment-left-column">
           <a :href="'/user/'+comment.username">
-            <img v-if="comment.dp_url" class="rounded-circle" :src="'http://127.0.0.1:8000'+comment.dp_url" height="40" width="40">
+            <img v-if="comment.dp_url" class="rounded-circle" :src="comment.dp_url" height="40" width="40">
             <font-awesome-icon v-else :icon="['fas', 'user-circle']" />
           </a>
         </div>
@@ -36,7 +36,7 @@
           <span v-show="!editing" :class="{'d-block': !editing, 'comment-deleted': isDeleted}" class="comment-content mr-2">{{ isDeleted ? "Comment has been REDACTED" : comment.content }}</span>
           <input v-if="!isDeleted" v-show="editing && isAuthenticated && isOwnComment" ref="editCommentInput" @keyup.enter="editComment(comment.uuid)" class="edit-comment-field" :value="comment.content">
           <a v-if="comment.image" :href="'/img?c='+comment.uuid" target="_blank">
-            <img ref="commentImg" class="mt-1 comment-image fade-in" :data-srcset="'http://127.0.0.1:8000'+comment.image" data-src="/media/users/john/profile/ivz59jjdeht31.jpg">
+            <img ref="commentImg" class="mt-1 comment-image fade-in" :data-srcset="comment.image" data-src="/media/users/john/profile/ivz59jjdeht31.jpg">
           </a>
 
           <div v-if="!isDeleted" class="container-fluid">
@@ -81,7 +81,7 @@ import ReplyItem from './ReplyItem'
 import voteMixin from '~/mixins/voteMixin'
 import lazyLoad from '~/assets/lazyLoad'
 import formatDate from '~/assets/formatDate'
-import axios from 'axios'
+import checkAuthMixin from '~/mixins/checkAuthMixin'
 
 export default {
   name: 'CommentItem',
@@ -94,7 +94,7 @@ export default {
       required: true
     }
   },
-  mixins: [voteMixin],
+  mixins: [voteMixin, checkAuthMixin],
   data() {
     return {
       replies: [],
@@ -125,7 +125,7 @@ export default {
       return this.isAuthenticated && this.comment.username === this.$auth.user.username
     },
     hasDP() {
-      return this.isAuthenticated && this.$auth.user.image
+      return this.isAuthenticated && this.$auth.user ? this.$auth.user.image : false
     },
     timesince() {
       return formatDate(this.comment.post_date)
@@ -152,7 +152,7 @@ export default {
       $("#deleteModal").modal('show')
     },
     deleteComment() {
-      axios.delete(`/comment/delete?u=${this.comment.uuid}`, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
+      this.$axios.delete(`/comment/delete?u=${this.comment.uuid}`, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
         .then(res => {
           if (res.status === 204) this.$emit("comment-deleted-event", this.comment.uuid)
         })
@@ -165,13 +165,13 @@ export default {
       const data = new FormData()
       data.set("c", val)
       data.set("u", uuid)
-      axios.post("/comment/edit", data, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
+      this.$axios.post("/comment/edit", data, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
         .then(res => this.$emit("comment-edited-event", uuid, val))
         .catch(err => /**/console.log(err))
     },
     vote(v) {this.sendVote(this.comment, v, "c", this.hidePoints)},
     typeReply() {
-      if (checkAuth()) {
+      if (this.checkAuth()) {
         this.typingReply = !this.typingReply
         if (this.typingReply) this.$nextTick(() => this.$refs.replyInput.focus())
       }
@@ -183,7 +183,7 @@ export default {
     loadReplies() {
       if (!this.repliesAPILink) return false
       this.loadSpinnerShowing = true
-      axios.get(this.repliesAPILink)
+      this.$axios.get(this.repliesAPILink)
         .then(res => res.data)
         .then(response => {
           const l_uuids = []
@@ -202,7 +202,7 @@ export default {
     },
     loadReplyLikes(uuids) {
       if (this.isAuthenticated && uuids.length) {
-        axios.get(`/api/likes/c/?${uuids.slice(0, 20).map(uuid => `u=${uuid}`).join("&")}`)
+        this.$axios.get(`/api/likes/c/?${uuids.slice(0, 20).map(uuid => `u=${uuid}`).join("&")}`)
           .then(res => {
             for (vote of res.data) {
               const i = this.$children.findIndex(c => c.reply.uuid === vote["uuid"])
@@ -225,7 +225,7 @@ export default {
         this.replyInputValue = ""
         this.replyInputPlaceholder = "Sending..."
 
-        axios.post("/reply", data, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
+        this.$axios.post("/reply", data, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
           .then(res => res.data)
           .then(response => {
             this.typingReply = false

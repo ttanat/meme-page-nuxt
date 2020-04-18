@@ -1,7 +1,7 @@
 <template>
   <div class="item">
     <div class="item-header">
-      <a :href="'/user/' + meme.username" class="header-username"><img v-if="meme.dp_url" class="rounded-circle" :src="'http://127.0.0.1:8000'+meme.dp_url" height="18" width="18"><font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 15px;" />&nbsp;{{ meme.username }}</a><template v-if="meme.pname"><span class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<a :href="'/page/'+meme.pname" class="header-page">{{ meme.pdname || meme.pname }}</a></span></template>
+      <a :href="'/user/' + meme.username" class="header-username"><img v-if="meme.dp_url" class="rounded-circle" :src="meme.dp_url" height="18" width="18"><font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 15px;" />&nbsp;{{ meme.username }}</a><template v-if="meme.pname"><span class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<a :href="'/page/'+meme.pname" class="header-page">{{ meme.pdname || meme.pname }}</a></span></template>
       <br>
       <h6 class="mt-2" style="font-weight: 450;">{{ meme.caption }}</h6>
     </div>
@@ -10,7 +10,7 @@
       <template v-if="isVideo">
         <nuxt-link @click.prevent="vidClick" :to="'/m/'+meme.uuid" target="_blank" class="item-body-link" draggable="false">
           <video ref="memeEl" draggable="false" class="content autoplay" controlsList="nodownload" muted loop playsinline @loadeddata="rmCBodyHeight" style="max-height: 70vh;">
-            <source :data-src="'http://127.0.0.1:8000'+meme.url">
+            <source :data-src="meme.url">
           </video>
         </nuxt-link>
         <div v-if="paused" @click="togglePlayback" class="rounded-circle play-circle" :style="{paddingLeft: isGif ? '' : '.35rem'}">
@@ -19,7 +19,7 @@
         <font-awesome-icon v-if="!isGif" @click="$emit('toggle-sound-event')" :icon="['fas', muted ? 'volume-mute' : 'volume-up']" class="sound-toggle" />
       </template>
       <nuxt-link v-else :to="'/m/'+meme.uuid" target="_blank" class="item-body-link" draggable="false">
-        <img ref="memeEl" @load="rmCBodyHeight" draggable="false" :data-srcset="'http://127.0.0.1:8000'+meme.url" data-src="/media/users/john/profile/ivz59jjdeht31.jpg" class="content fade-in" loading="lazy">
+        <img ref="memeEl" @load="rmCBodyHeight" draggable="false" :data-srcset="meme.url" data-src="/media/users/john/profile/ivz59jjdeht31.jpg" class="content fade-in" loading="lazy">
       </nuxt-link>
     </div>
 
