@@ -1,5 +1,5 @@
 <template>
-  <div class="w-100">
+  <div class="mb-4" id="tiles">
     <TileItem v-for="tile in tiles" :key="tile.uuid" :tile="tile" />
     <div v-if="no_content && !tiles.length" class="profile-empty" onclick="$('#uploadModal').modal('show')">
       <template v-if="$route.path === '/profile/likes'">No likes yet :(</template>
@@ -48,6 +48,24 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+#tiles {
+  display: flex;
+  flex-wrap: wrap;
+  /* justify-content: center; */
+}
+@media (max-width: 575.98px) {
+  #tiles {
+    margin-left: 5px;
+  }
+}
+.profile-empty {
+  text-align: center;
+  padding: 100px;
+  background-color: #090909;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  width: 100%;
+}
 </style>

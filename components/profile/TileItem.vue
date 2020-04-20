@@ -1,11 +1,11 @@
 <template>
   <div class="tile" @contextmenu.prevent>
-    <a :href="'/m/'+tile.uuid" target="_blank" draggable="false">
-      <font-awesome-icon v-if="!isImg && !isGif" :icon="['fas', 'play']" class="play-icon" />
+    <nuxt-link :to="'/m/'+tile.uuid" target="_blank" draggable="false">
+      <span v-if="!isImg && !isGif" class="play-icon"><font-awesome-icon :icon="['fas', 'play']" /></span>
       <h5 v-else-if="isGif" class="play-icon">GIF</h5>
       <video v-if="!isImg" ref="vid" :src="tile.url" preload="metadata" loop class="content" draggable="false"></video>
       <img v-else :src="tile.url" class="content" draggable="false">
-    </a>
+    </nuxt-link>
   </div>
 </template>
 
@@ -31,7 +31,6 @@ export default {
 
 <style scoped>
 .tile {
-  /* margin: 1%; */
   height: 0;
   position: relative;
   width: 30%;
@@ -55,5 +54,15 @@ export default {
   position: absolute;
   height: 100%;
   width: 100%;
+}
+@media (max-width: 575.98px) {
+  .tile {
+    margin: 2px;
+  }
+}
+@media (min-width: 575.98px) {
+  .tile {
+    margin: 1%;
+  }
 }
 </style>

@@ -202,18 +202,8 @@ a {
 
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
-  #tiles {
-      margin-left: 5px;
-  }
-  .tile {
-      margin: 2px;
-  }
   .list-img, #item-page-dropdown, #right {
       display: none;
-  }
-  #d-alert {
-      width: 100%;
-      left: 0%;
   }
   #notif-dropdown > .dropdown-menu {
       width: 300px;
@@ -225,53 +215,31 @@ a {
       max-width: 100%;
   }
 }
-@media (min-width: 575.98px) {
-  .tile {
-      margin: 1%;
-  }
-  #d-alert {
-      width: 75%;
-      left: 12.5%;
-  }
-}
 
 /* Small devices (landscape phones, less than 768px) */
-@media (max-width: 767.98px) {
-  #d-alert {
-      width: 75%;
-      left: 12.5%;
-  }
-}
 @media (min-width: 767.98px) {
-  #profile-col, #page-left {
-      position: sticky;
-      position: -webkit-sticky;
-      top: 4rem;
-      height: 100%;
-  }
-  #profile-col {
-      overflow-y: auto;
+  #page-left {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 4rem;
+    height: 100%;
   }
   #page-left {
-      min-height: calc(100vh - 5rem);
-  }
-  #d-alert {
-      width: 50%;
-      left: 25%;
+    min-height: calc(100vh - 5rem);
   }
 }
 
 /* Medium devices (tablets, less than 992px) */
 @media (max-width: 991.98px) {
   #left, #sort-dropdown, #sort-dropdown-menu {
-      display: none;
+    display: none;
   }
   .ad {
-      width: 230px;
-      height: 200px;
+    width: 230px;
+    height: 200px;
   }
   #page-left {
-      min-height: unset;
+    min-height: unset;
   }
 }
 
@@ -279,7 +247,7 @@ a {
 @media (max-width: 1199.98px) {}
 @media (min-width: 1199.98px) {
   nav {
-      height: 45px;
+    height: 45px;
   }
 }
 
@@ -304,70 +272,9 @@ i.media-img {
 }
 /* End search view */
 
-#d-alert, #success-alert {
-  position: fixed;
-  bottom: 0;
-  z-index: 9;
-  font-size: 14px;
-  height: 40px;
-  padding: .5rem 1rem;
-}
-
-#success-alert {
-  top: 60px;
-  right: 15px;
-}
-
-#d-alert button, #success-alert button {
-  line-height: 20px;
-}
-
 .fa-spin {
   animation: fa-spin 1.5s infinite linear !important;
 }
-
-/* For profile page */
-#profile-col {
-  scrollbar-width: none;
-}
-#profile-col::-webkit-scrollbar {
-  display: none;
-}
-#profile-pic {
-  margin: 5px;
-  display: block !important;
-}
-#profile-username {
-  overflow: scroll;
-  text-overflow: ellipsis;
-  font-weight: normal;
-}
-#tiles {
-  display: flex;
-  flex-wrap: wrap;
-}
-table {
-  table-layout: fixed;
-}
-.profile-empty {
-  text-align: center;
-  padding: 100px;
-  background-color: #090909;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  width: 100%;
-}
-/*#context-menu {
-  border-radius: 8px;
-  display: none;
-  min-width: 180px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  line-height: 0.5;
-}*/
-/* End code for profile page */
 
 #page-display-name {
   margin: 5px 5px 5px 0;

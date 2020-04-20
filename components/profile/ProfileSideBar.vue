@@ -3,30 +3,30 @@
 
     <div class="container-fluid">
       <div class="row">
-        <img v-if="isProfilePage && $auth.user.image" ref="profilePic" class="rounded-circle" :src="$auth.user.image" height="55" width="55">
-        <img v-else-if="!isProfilePage" class="rounded-circle" src="user_displayed.image.url" height="65" width="65">
+        <img v-if="isProfilePage && $auth.user.image" ref="profilePic" id="profile-pic" class="rounded-circle" :src="$auth.user.image" height="55" width="55">
+        <img v-else-if="image && !isProfilePage" class="rounded-circle mt-1 ml-1 mr-2" :src="image" height="60" width="60">
         <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 60px;margin: 5px;" />
         <div>
-          <h5 id="profile-username" class="m-1">user_displayed.username</h5>
+          <h5 id="profile-username" class="m-1">{{ isProfilePage ? $auth.user.username : $route.params.username }}</h5>
           <template v-if="isProfilePage && pathname !== '/profile/settings'">
             <small class="text-muted pointer" @click="openInputPic">
               <template v-if="updatingPic">&nbsp;Updating <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></template>
               <template v-else>&nbsp;Edit profile picture</template>
             </small>
-            <input type="file" ref="inputPic" accept="image/jpeg, image/png" class="d-none" onchange="updateProfilePic">
+            <input type="file" ref="inputPic" accept="image/jpeg, image/png" class="d-none" @change="updateProfilePic">
           </template>
-          <span v-else id="follow-btn"><follow-button :following="true" :is-profile="true"></follow-button></span>
+          <FollowButton v-else :isFollowing="isFollowing" @following-changed-event="changeFollow" />
         </div>
       </div>
     </div>
 
     <div class="mt-2">
-      <div v-if="isProfilePage" id="vue-bio"><bio-desc bio-or-desc="user.bio" add-text="bio"></bio-desc></div>
-      <span v-else style="font-size: 14px;white-space: pre-wrap;">user_displayed.bio</span>
+      <BioDescription v-if="isProfilePage" :bio-or-desc="bio" add-text="bio" />
+      <span v-else style="font-size: 14px;white-space: pre-wrap;">{{ bio }}</span>
     </div>
     <hr class="mb-2" style="background-color: grey;">
 
-    <div v-if="pathname !== '/profile/settings'" id="pstats"><profile-stats></profile-stats></div>
+    <UserStats v-if="pathname !== '/profile/settings'" :stats="stats" />
 
     <div class="mt-4 mb-5">
       <h5>Profile</h5>
@@ -45,16 +45,46 @@
         <font-awesome-icon :icon="['fas', 'box-open']" />&ensp;Memes
       </a>
       <br>
+      <template v-if="isProfilePage && $auth.user.moderating.length">
+        <h5>Meme Pages</h5>
+        <nuxt-link v-for="m in $auth.user.moderating" :key="m.name" :to="'/page/'+m.name">
+          <font-awesome-icon :icon="['fas', m.private ? 'lock' : 'star']" />&ensp;{{ m.dname || m.name }}
+        </nuxt-link>
+      </template>
+      <template v-else-if="!isProfilePage && userPages.length">
+        <h5>Meme Pages</h5>
+        <nuxt-link v-for="p in userPages" :key="p.name" :to="'/page/'+p.name">
+          <font-awesome-icon :icon="['fas', p.private ? 'lock' : 'star']" />&ensp;{{ p.dname || p.name }}
+        </nuxt-link>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+import UserStats from './UserStats'
+import FollowButton from './FollowButton'
+import BioDescription from './BioDescription'
+
 export default {
   name: 'ProfileSideBar',
+  components: {
+    UserStats,
+    FollowButton,
+    BioDescription
+  },
   data() {
     return {
-      updatingPic: false
+      image: null,
+      isFollowing: false,
+      bio: "",
+      updatingPic: false,
+      stats: {
+        clout: 0,
+        followers: 0,
+        following: 0
+      },
+      userPages: this.isProfilePage ? this.$auth.user.moderating : [] // For user page only
     }
   },
   computed: {
@@ -63,6 +93,20 @@ export default {
     },
     isProfilePage() {
       return this.$auth.loggedIn && this.pathname.startsWith("/profile")
+    }
+  },
+  async created() {
+    const response = await this.$axios.get(`/api/profile/user/?${this.isProfilePage ? "p=1" : `u=${this.$route.params.username}`}`)
+    const res = response.data
+    console.log(res)
+    this.image = res.image
+    this.bio = res.bio
+    if (!this.isProfilePage) {
+      this.isFollowing = res.is_following
+      this.stats.clout = res.clout
+      this.stats.followers = res.num_followers
+      this.stats.following = res.num_following
+      this.userPages.push(...res.moderating)
     }
   },
   methods: {
@@ -96,6 +140,10 @@ export default {
           .catch(err => console.log(err.response.data || err))
           .finally(() => this.updatingPic = false)
       }
+    },
+    changeFollow(f) {
+      this.isFollowing = f
+      this.stats.followers += f ? 1 : -1
     }
   }
 }
@@ -103,4 +151,30 @@ export default {
 
 <style scoped>
 @import '~/assets/sidebar.css';
+#profile-col {
+  scrollbar-width: none;
+}
+#profile-col::-webkit-scrollbar {
+  display: none;
+}
+#profile-pic {
+  margin: 5px;
+  display: block !important;
+}
+#profile-username {
+  overflow: scroll;
+  text-overflow: ellipsis;
+  font-weight: normal;
+}
+@media (min-width: 767.98px) {
+  #profile-col {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 4rem;
+    height: 100%;
+  }
+  #profile-col {
+    overflow-y: auto;
+  }
+}
 </style>

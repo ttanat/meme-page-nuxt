@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <MyComment v-for="comment in comments" :key="comment.uuid" :comment="comment" />
     <div v-if="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     <div v-if="no_content && !comments.length" class="profile-empty">No comments yet</div>

@@ -1,9 +1,9 @@
 <template>
   <table class="mb-3 w-100 text-center">
     <tr>
-      <td title="Total points">{{ clout }}</td>
-      <td class="pointer" id="follower-count">{{ followers }}</td>
-      <td class="pointer">{{ following }}</td>
+      <td title="Total points">{{ stats.clout }}</td>
+      <td class="pointer" id="follower-count">{{ stats.followers }}</td>
+      <td class="pointer">{{ stats.following }}</td>
     </tr>
     <tr>
       <td title="Total points"><small>clout</small></td>
@@ -16,26 +16,33 @@
 <script>
 export default {
   name: 'UserStats',
-  data() {
-    return {
-      clout: 0,
-      followers: 0,
-      following: 0
+  props: {
+    stats: {
+      type: Object,
+      required: true
     }
-  },
-  mounted() {
-    const is_profile_page = $route.path.startsWith("profile")
-    this.$axios.get(`/api/pstats/?${is_profile_page ? "p=1" : `u=${USER_PAGE}`}`)
-      .then(res => {
-        this.clout = res.data.clout
-        this.followers = res.data.num_followers
-        this.following = res.data.num_following
-      })
-      .catch(console.log)
-  },
+  }
+  // data() {
+  //   return {
+  //     clout: 0,
+  //     followers: 0,
+  //     following: 0
+  //   }
+  // },
+  // mounted() {
+  //   this.$axios.get(`/api/profile/stats/?${this.$route.path.startsWith("/profile") ? "p=1" : `u=${this.$route.params.username}`}`)
+  //     .then(res => {
+  //       this.clout = res.data.clout
+  //       this.followers = res.data.num_followers
+  //       this.following = res.data.num_following
+  //     })
+  //     .catch(console.log)
+  // },
 }
 </script>
 
-<style>
-
+<style scoped>
+table {
+  table-layout: fixed;
+}
 </style>

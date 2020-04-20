@@ -118,7 +118,9 @@ export default {
         alert("Please select a file.");
       } else if (input.files.length > 1) {
         alert("Cannot upload multiple files together.");
-      } else if (!SFT.includes(type) || (type === "image/jpeg" && (!lfname.endsWith(".jpg") && !lfname.endsWith(".jpeg"))) || (type === "video/quicktime" && !lfname.endsWith(".mov"))) {
+      } else if (!["image/jpeg", "image/png", "image/gif", "video/mp4", "video/quicktime"].includes(type)
+                 || (type === "image/jpeg" && (!lfname.endsWith(".jpg") && !lfname.endsWith(".jpeg")))
+                 || (type === "video/quicktime" && !lfname.endsWith(".mov"))) {
         alert("Supported media types: JPG, PNG, GIF, MP4, MOV");
       } else if (type === "image/gif" && file.size > 5242880) {
         alert("Maximum file size for GIF is 5 MB");

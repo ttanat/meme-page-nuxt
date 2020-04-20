@@ -6,10 +6,8 @@
         <ProfileSideBar />
 
         <div class="col-md-8 col-xl-9">
-          <h5 :style="{paddingLeft: pathname !== '/profile/comments' ? '5px' : ''}" id="profile-page"></h5>
-          <TileItems v-if="pathname.startsWith('/user/') || ['/profile', '/profile/likes'].includes(pathname)" />
-          <MyComments v-else-if="pathname === '/profile/comments'" />
-          <ProfileSettings v-else-if="pathname === '/profile/settings'" />
+          <h5 :style="{paddingLeft: $route.path !== '/profile/comments' ? '5px' : ''}" id="profile-page"></h5>
+          <TileItems v-if="$route.path.startsWith('/user/')" />
         </div>
       </div>
     </div>
@@ -24,12 +22,6 @@ export default {
   components: {
     ProfileSideBar,
     TileItems
-  },
-  middleware: "auth",
-  computed: {
-    pathname() {
-      return this.$route.path
-    }
   }
 }
 </script>
