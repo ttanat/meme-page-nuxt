@@ -6,8 +6,10 @@
         <ProfileSideBar />
 
         <div class="col-md-8 col-xl-9">
-          <h5 :style="{paddingLeft: pathname !== '/profile/comments' ? '5px' : ''}" id="profile-page"></h5>
-          <TileItems v-if="pathname.startsWith('/user/') || ['/profile', '/profile/likes'].includes(pathname)" />
+          <h5 :style="{paddingLeft: pathname !== '/profile/comments' ? '5px' : ''}">
+            {{ pathname === '/profile' ? 'Uploads' : pathname === '/profile/likes' ? 'Likes' : 'Comments' }}
+          </h5>
+          <TileItems v-if="pathname === '/profile' || pathname === '/profile/likes'" />
           <MyComments v-else-if="pathname === '/profile/comments'" />
           <ProfileSettings v-else-if="pathname === '/profile/settings'" />
         </div>
@@ -19,11 +21,15 @@
 <script>
 import ProfileSideBar from '~/components/profile/ProfileSideBar'
 import TileItems from '~/components/profile/TileItems'
+import MyComments from '~/components/profile/MyComments'
+// import ProfileSettings from '~/components/profile/ProfileSettings'
 
 export default {
   components: {
     ProfileSideBar,
-    TileItems
+    TileItems,
+    MyComments,
+    // ProfileSettings
   },
   middleware: "auth",
   computed: {

@@ -32,7 +32,7 @@ export default {
   methods: {
     loadMore() {
       if (this.next) {
-        this.$axios.get(this.next)
+        this.$axios.get(this.next, {progress: false})
           .then(res => {
             if (res.data.results.length) {
               this.tiles.push(...res.data.results)

@@ -21,7 +21,7 @@
     </div>
 
     <div class="mt-2">
-      <BioDescription v-if="isProfilePage" :bio-or-desc="bio" add-text="bio" />
+      <BioDescription v-if="isProfilePage" :current-bio="bio" add-text="bio" @bio-change-event="changeBio" />
       <span v-else style="font-size: 14px;white-space: pre-wrap;">{{ bio }}</span>
     </div>
     <hr class="mb-2" style="background-color: grey;">
@@ -31,19 +31,19 @@
     <div class="mt-4 mb-5">
       <h5>Profile</h5>
       <template v-if="isProfilePage">
-        <nuxt-link :class="{'sl-active': pathname === '/profile'}" :to="pathname === '/profile' ? 'javascript:void(0);' : '/profile'" data-profile-page="Uploads">
+        <nuxt-link :class="{'sl-active': pathname === '/profile'}" to="/profile">
           <font-awesome-icon :icon="['fas', 'box-open']" />&ensp;Your memes
         </nuxt-link>
-        <nuxt-link :class="{'sl-active': pathname === '/profile/likes'}" :to="pathname === '/profile/likes' ? 'javascript:void(0);' : '/profile/likes'" data-profile-page="Likes">
+        <nuxt-link :class="{'sl-active': pathname === '/profile/likes'}" to="/profile/likes">
           <font-awesome-icon :icon="['fas', 'thumbs-up']" />&ensp;Likes
         </nuxt-link>
-        <nuxt-link :class="{'sl-active': pathname === '/profile/comments'}" :to="pathname === '/profile/comments' ? 'javascript:void(0);' : '/profile/comments'" data-profile-page="Comments">
+        <nuxt-link :class="{'sl-active': pathname === '/profile/comments'}" to="/profile/comments">
           <font-awesome-icon :icon="['fas', 'comment']" />&ensp;Comments
         </nuxt-link>
       </template>
-      <a v-else class="sidebar-link sl-active" href="javascript:void(0);" data-profile-page="Uploads">
+      <nuxt-link v-else class="sidebar-link sl-active" to="">
         <font-awesome-icon :icon="['fas', 'box-open']" />&ensp;Memes
-      </a>
+      </nuxt-link>
       <br>
       <template v-if="isProfilePage && $auth.user.moderating.length">
         <h5>Meme Pages</h5>
@@ -98,14 +98,15 @@ export default {
   async created() {
     const response = await this.$axios.get(`/api/profile/user/?${this.isProfilePage ? "p=1" : `u=${this.$route.params.username}`}`)
     const res = response.data
-    console.log(res)
-    this.image = res.image
     this.bio = res.bio
+    this.stats = {
+      clout: res.clout,
+      num_followers: res.num_followers,
+      num_following: res.num_following
+    }
     if (!this.isProfilePage) {
+      this.image = res.image
       this.isFollowing = res.is_following
-      this.stats.clout = res.clout
-      this.stats.followers = res.num_followers
-      this.stats.following = res.num_following
       this.userPages.push(...res.moderating)
     }
   },
@@ -144,6 +145,9 @@ export default {
     changeFollow(f) {
       this.isFollowing = f
       this.stats.followers += f ? 1 : -1
+    },
+    changeBio(b) {
+      this.bio = b
     }
   }
 }
