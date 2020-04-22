@@ -7,6 +7,7 @@
       @new-comment-loaded-event="observeNewComment"
       @comment-edited-event="commentEdited"
       @comment-deleted-event="commentDeleted"
+      @set-points-event="setPoints"
     />
     <div v-show="loading" class="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
   </div>
@@ -41,18 +42,21 @@ export default {
       lazyCommentObserver: new IntersectionObserver(lazyLoad)
     }
   },
-  mounted() {
+  created() {
     this.loadMore()
   },
   methods: {
     observeNewComment(comment) {
       this.lazyCommentObserver.observe(comment)
     },
+    setPoints(uuid, new_points_val) {
+      this.comments = this.comments.map(comment => comment.uuid === uuid ? {...comment, points: new_points_val} : comment)
+    },
     loadMore() {
       if (this.next === null) return false
       this.loading = true
 
-      this.$axios.get(this.next || `/api/comments/?u=${this.$route.params.uuid}`)
+      this.$axios.get(this.next || `/api/comments/?u=${this.$route.params.uuid}`, {progress: false})
         .then(res => res.data)
         .then(response => {
           const l_uuids = []
@@ -65,7 +69,7 @@ export default {
               offset++
             }
           }
-          if (response["auth"] && this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids)
+          if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids)
           this.next = response["next"]
           if (offset) {
             const url = new URL(this.next)
@@ -79,12 +83,12 @@ export default {
     },
     loadLikes(uuids) {
       if (this.$auth.loggedIn && uuids.length) {
-        axios.get(`/api/likes/c/?${uuids.slice(0, 20).map(uuid => `u=${uuid}`).join("&")}`)
+        this.$axios.get(`/api/likes/c/?${uuids.slice(0, 20).map(uuid => `u=${uuid}`).join("&")}`, {progress: false})
           .then(res => {
             for (let vote of res.data) {
-              const i = this.$children.findIndex(c => c.comment.uuid === vote["uuid"])
-              this.$children[i].isLiked = vote["point"] === 1
-              this.$children[i].isDisliked = vote["point"] === -1
+              const meme = this.$children.find(c => c.comment.uuid === vote["uuid"])
+              meme.isLiked = vote["point"] === 1
+              meme.isDisliked = vote["point"] === -1
             }
           })
           .catch(console.log)

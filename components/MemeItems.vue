@@ -63,9 +63,8 @@ export default {
       this.lazyMemeObserver.observe(meme)
       if (isVideo) this.autoplayObserver.observe(meme)
     },
-    setPoints(meme, new_points) {
-      const i = this.$children.findIndex(c => c === meme)
-      if (i > -1) this.$children[i].points = new_points
+    setPoints(uuid, new_points_val) {
+      this.memes = this.memes.map(meme => meme.uuid === uuid ? {...meme, points: new_points_val} : meme)
     },
     loadMore() {
       // if (this.next === null || (this.$route.path.startsWith("/page/") && (!SHOW || !PAGE_NUM_POSTS))
@@ -85,7 +84,7 @@ export default {
                 l_uuids.push(r.uuid)
               }
             }
-            if (response["auth"] && this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids)
+            if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids)
             this.next = response["next"]
           } else {
             if (this.next === "" && !this.$children.length) this.noMemes = true
@@ -106,9 +105,9 @@ export default {
         this.$axios.get(`/api/likes/m/?${uuids.slice(0, 20).map(uuid => `u=${uuid}`).join("&")}`)
           .then(res => {
             for (let vote of res.data) {
-              const i = this.$children.findIndex(c => c.meme.uuid === vote["uuid"])
-              this.$children[i].isLiked = vote["point"] === 1
-              this.$children[i].isDisliked = vote["point"] === -1
+              const meme = this.$children.find(c => c.meme.uuid === vote["uuid"])
+              meme.isLiked = vote["point"] === 1
+              meme.isDisliked = vote["point"] === -1
             }
           })
           .catch(console.log)
