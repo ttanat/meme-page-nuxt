@@ -38,7 +38,8 @@ export default {
   plugins: [
     '~/plugins/fontawesome.js',
     '~/plugins/toasted.js',
-    '~/plugins/displayError.js'
+    '~/plugins/displayError.js',
+    '~/plugins/axios.js'
   ],
   /*
   ** Nuxt.js dev-modules
@@ -68,9 +69,9 @@ export default {
       local: {
         endpoints: {
           login: { url: '/api/token/', method: 'post', propertyName: 'access' },
-          logout: { propertyName: false },
-          // logout: { url: '/api/auth/logout/', method: 'post' },
-          user: { url: '/api/auth/user', method: 'get', propertyName: false }
+          // logout: { url: false },
+          // logout: { url: '/api/auth/logout', method: 'post' },
+          user: { url: '/api/auth/user', method: 'get', propertyName: false, progress: false }
         },
         tokenType: 'Bearer'
       }
