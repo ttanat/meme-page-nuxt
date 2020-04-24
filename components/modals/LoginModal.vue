@@ -53,9 +53,8 @@ export default {
               document.querySelector(".modal-backdrop.show").remove()
             } catch {}
             this.$auth.setRefreshToken("local", r.data.refresh)
-            this.$router.push("/feed")
           })
-          .catch(res => alert(res.response.status === 401 ? "Username or password incorrect" : "Unexpected error occurred. Please try again"))
+          .catch(err => alert(err.response.status === 401 ? "Username or password incorrect" : "Unexpected error occurred. Please try again"))
           .finally(() => this.loading = false)
       }
     }

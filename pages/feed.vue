@@ -1,6 +1,7 @@
 <script>
 export default {
   layout: 'ScrollView',
+  middleware: 'custom-auth',
   head() {
     return {
       title: "Feed - Meme Page",

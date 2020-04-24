@@ -31,7 +31,7 @@ export default {
     MyComments,
     // ProfileSettings
   },
-  middleware: "auth",
+  middleware: 'custom-auth',
   computed: {
     pathname() {
       return this.$route.path

@@ -69,15 +69,18 @@ export default {
       local: {
         endpoints: {
           login: { url: '/api/token/', method: 'post', propertyName: 'access' },
-          // logout: { url: false },
-          // logout: { url: '/api/auth/logout', method: 'post' },
-          user: { url: '/api/auth/user', method: 'get', propertyName: false, progress: false }
+          logout: false,
+          // logout: { url: '/api/auth/logout/', method: 'post' },
+          user: { url: '/api/auth/user/', method: 'get', propertyName: false, progress: false }
         },
         tokenType: 'Bearer'
       }
     },
     redirect: {
-      login: '/'
+      login: false,
+      logout: '/',
+      callback: false,
+      home: '/feed' // If using 'auth' middleware, then must be false
     },
     cookie: false
   },
