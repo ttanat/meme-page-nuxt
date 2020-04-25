@@ -22,7 +22,7 @@
   <table class="content-section" style="margin-bottom: 5px;">
     <tr>
       <td>
-        <VoteButtons :points="meme.points" />
+        <VoteButtons :points="meme.points" @set-points-event="setPoints" />
       </td>
       <td>
         <button class="btn btn-sm lower-btn" @click="copyLink">
@@ -44,14 +44,15 @@
       </td>
     </tr>
   </table>
-  <span v-if="tags.length" class="text-muted content-section">
-    <button v-for="tag in tags" :key="tag" @click="openLink(tag)" class="tag btn btn-outline-primary mr-2">{{ tag }}</button>
+  <span v-if="meme.tags.length" class="text-muted content-section">
+    <button v-for="tag_name in meme.tags" :key="tag_name" @click="openLink(tag_name)" class="tag btn btn-outline-primary mr-2">{{ tag_name }}</button>
   </span>
 </div>
 </template>
 
 <script>
 import VoteButtons from './VoteButtons'
+import copy from 'copy-to-clipboard'
 
 export default {
   name: 'MemeViewContainer',
@@ -62,10 +63,6 @@ export default {
     meme: {
       type: Object,
       required: true
-    },
-    tags: {
-      type: Array,
-      required: true
     }
   },
   data() {
@@ -74,30 +71,18 @@ export default {
       copyLinkClicked: false
     }
   },
-  mounted() {
-    // setTimeout(() => {
-    //   if ((this.isGif || this.meme.content_type.startsWith("video/"))
-    //       && this.$refs.vidMeme.readyState !== 4) {
-    //         this.$refs.vidMeme.load()
-    //       }
-    // }, 5000)
-  },
   methods: {
+    setPoints(uuid, new_points_val) {
+      this.$emit("set-points-event", uuid, new_points_val)
+    },
     copyLink() {
-      // copy(window.location.href)
+      copy(window.location.href)
       this.copyLinkClicked = true
       setTimeout(() => this.copyLinkClicked = false, 1500)
     },
-    openLink(tag) {
-      window.open(`/search?q=${tag.slice(1)}`)
+    openLink(tag_name) {
+      window.open(`/search?q=%23${tag_name.slice(1)}`)
     }
   }
 }
 </script>
-
-<style scoped>
-/* .tag {
-  padding: 3px;
-  font-size: 12px;
-} */
-</style>

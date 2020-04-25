@@ -10,8 +10,8 @@
         </div>
 
         <div class="col-md-8 col-lg-6">
-          <div class="item pt-0 w-100" :style="{paddingBottom: tags.length ? '10px' : ''}">
-            <MemeViewContainer :meme="meme" :tags="tags" />
+          <div class="item pt-0 w-100" :style="{paddingBottom: meme.tags.length ? '10px' : ''}">
+            <MemeViewContainer :meme="meme" @set-points-event="setPoints" />
           </div>
           <div v-if="meme.num_comments > 3" class="mt-3 mb-3" id="item-mid-ad">
             <img src="~/assets/argos.jpg" style="height: 100px;width: 100%;border-radius: 5px;cursor: pointer;">
@@ -46,8 +46,6 @@ import LeftSidebar from '~/components/LeftSidebar'
 import MemeViewContainer from '~/components/meme_view/MemeViewContainer'
 import CommentSection from '~/components/meme_view/CommentSection'
 import DeleteModal from '~/components/modals/DeleteModal'
-import { mapMutations } from 'vuex'
-import axios from 'axios'
 
 export default {
   components: {
@@ -56,31 +54,23 @@ export default {
     CommentSection,
     DeleteModal
   },
-  data() {
-    return {
-      // meme: {username: "", pname: "", pdname: "", uuid: "", caption: "", content_type: "", url: "", points: 0, num_comments: 0, dp_url: ""},
-      tags: []
-    }
-  },
-  async asyncData({ params }) {
-    const { data } = await axios.get(`http://127.0.0.1:8000/api/memes/?u=${params.uuid}`)
-    return { meme: data.results[0] }
-  },
-  async created() {
-    const { data } = await this.$axios.get(`/api/tags/?u=${this.$route.params.uuid}`)
-    this.tags.push(...data)
+  async asyncData({ $axios, params }) {
+    const { data } = await $axios.get(`/api/m/${params.uuid}`)
+    return { meme: data }
   },
   head() {
     return {
       title: `${this.meme.caption ? `${this.meme.caption} - ` : ''}Meme Page`,
       meta: [
         {hid: "description", name: "description", content: this.meme.caption},
-        {hid: "description", name: "keywords", content: this.tags.map(t => t.slice(1)).join(",")}
+        {hid: "description", name: "keywords", content: this.meme.tags.map(t => t.slice(1)).join(",")}
       ]
     }
   },
   methods: {
-    ...mapMutations(["addMeme"]),
+    setPoints(uuid, new_points_val) {
+      this.meme.points = new_points_val
+    },
     incrementCommentCount() {
       this.meme.num_comments++
     }

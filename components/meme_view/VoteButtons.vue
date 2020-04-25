@@ -25,7 +25,7 @@ export default {
   mixins: [voteMixin],
   mounted() {
     if (this.$auth.loggedIn) {
-      this.$axios.get(`http://127.0.0.1:8000/api/likes/m/?u=${this.$route.params.uuid}`)
+      this.$axios.get(`/api/likes/m/?u=${this.$route.params.uuid}`)
         .then(res => {
           if (res.data.length) {
             this.isLiked = res["data"][0]["point"] === 1;
@@ -46,8 +46,9 @@ export default {
     }
   },
   methods: {
-    vote(v) {
-      this.sendVote(this.meme, v, "m")
+    async vote(v) {
+      await this.sendVote(this.meme, v, "m")
+      this.meme.points = this.points
     }
   }
 }
