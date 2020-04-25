@@ -18,6 +18,7 @@ import ProfileSideBar from '~/components/profile/ProfileSideBar'
 import TileItems from '~/components/profile/TileItems'
 
 export default {
+  middleware: 'profile-redirect',
   components: {
     ProfileSideBar,
     TileItems
