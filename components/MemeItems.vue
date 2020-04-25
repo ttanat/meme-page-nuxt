@@ -9,11 +9,11 @@
       @toggle-sound-event="toggleSound"
       @set-points-event="setPoints"
     />
-    <div v-show="loading" class="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
+    <div v-show="loading || $fetchState.pending" class="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     <div v-if="noMemes" style="margin-top: 30px;text-align: center;">
-      <template v-if="$route.path === '/search'">No results matching query.<br><br>Return <a href="/">home</a></template>
+      <template v-if="$route.path === '/search'">No results matching query.<br><br>Return <nuxt-link to="/">home</nuxt-link></template>
       <template v-else-if="$route.path === '/feed'">No new posts.<br><br>Subscribe to more pages or follow other users for more posts!</template>
-      <template v-else>No memes here :(<br><br>Return <a href="/">home</a></template>
+      <template v-else>No memes here :(<br><br>Return <nuxt-link to="/">home</nuxt-link></template>
     </div>
   </div>
 </template>
@@ -38,15 +38,37 @@ export default {
       muted: true,
       scrollObserver: null,
       scrollRoot: null,
-      next: "",
+      next: null,
       loading: false,
       lazyMemeObserver: new IntersectionObserver(lazyLoad, {rootMargin: "300px 0px"}),
       autoplayObserver: null,
-      noMemes: false,
+      noMemes: false
     }
   },
+  watch: {
+    "$route.path": "$fetch",
+    "$route.query.q": "$fetch"
+  },
+  async fetch() {
+    /*
+      BUG:
+      When navigating from '/feed' or '/all' or '/browse/category' (through left sidebar) to '/',
+      '/api/memes/?p=' is loaded twice
+    */
+    this.noMemes = false
+    const { data } = await this.$axios.get(this.getNewURL(), {progress: false})
+    const { results } = data
+    this.memes = results
+    this.$nextTick(() => {if (results.length) {
+      const l_uuids = results.map(r => r.uuid)
+      if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids)
+      this.next = data.next
+    } else {
+      this.noMemes = true
+      this.scrollObserver = this.scrollRoot = null
+    }})
+  },
   mounted() {
-    this.loadMore() // Initial load
     this.autoplayObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const i = this.$children.findIndex(child => child.$refs.memeEl === entry.target)
@@ -64,30 +86,30 @@ export default {
       if (isVideo) this.autoplayObserver.observe(meme)
     },
     setPoints(uuid, new_points_val) {
-      this.memes = this.memes.map(meme => meme.uuid === uuid ? {...meme, points: new_points_val} : meme)
+      const i = this.memes.findIndex(meme => meme.uuid === uuid)
+      this.memes.splice(i, 1, {...this.memes[i], points: new_points_val})
     },
     loadMore() {
-      // if (this.next === null || (this.$route.path.startsWith("/page/") && (!SHOW || !PAGE_NUM_POSTS))
-      //     || (!["/", "/all", "/feed", "/search"].includes(this.$route.path) && !this.$route.path.match(/^\/page\/[a-zA-Z0-9_]+$/)
-      //     && !this.$route.path.match(/^\/browse\/[a-zA-Z0-9_]+$|^\/browse\/tv-shows$/))) return false;
+      if (this.next === null /*|| (this.$route.path.startsWith("/page/") && (!SHOW || !PAGE_NUM_POSTS))*/
+          || (!["/", "/all", "/feed", "/search"].includes(this.$route.path) && !this.$route.path.match(/^\/page\/[a-zA-Z0-9_]+$/)
+          && !this.$route.path.match(/^\/browse\/[a-zA-Z0-9_]+$|^\/browse\/tv-shows$/))) return false
       this.loading = true
 
-      this.$axios.get(this.next || this.getNewURL(), {progress: false})
+      this.$axios.get(this.next, {progress: false})
         .then(res => res.data)
-        .then(response => {
-          const results = response.results
+        .then(data => {
+          const { results } = data
           if (results.length) {
             const l_uuids = []
             for (let r of results) {
-              if (this.memes.findIndex(meme => meme.uuid === r.uuid) === -1) {
+              if (!this.memes.find(m => m.uuid === r.uuid)) {
                 this.memes.push(r)
                 l_uuids.push(r.uuid)
               }
             }
             if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids)
-            this.next = response["next"]
+            this.next = data.next
           } else {
-            if (this.next === "" && !this.$children.length) this.noMemes = true
             if (this.scrollRoot) this.scrollObserver.unobserve(this.scrollRoot)
             this.scrollObserver = this.scrollRoot = this.next = null
           }
@@ -96,18 +118,20 @@ export default {
         .finally(() => this.loading = false)
     },
     getNewURL() {
-        return this.$route.path === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(new URL(window.location.href).searchParams.get("q").slice(0, 64))}`
-              : this.$route.path.startsWith("/page/") && AUTH && PRIVATE && SHOW ? `/api/memes/pv/?n=${encodeURIComponent(PAGE_NAME)}`
-              : `/api/memes/?p=${encodeURIComponent(this.$route.path.slice(1))}`
+      return this.$route.path === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(new URL(window.location.href).searchParams.get("q").slice(0, 64))}`
+            : this.$route.path.startsWith("/page/") && this.$auth.loggedIn && PRIVATE && SHOW ? `/api/memes/pv/?n=${encodeURIComponent(this.$route.name)}`
+            : `/api/memes/?p=${encodeURIComponent(this.$route.path.slice(1))}`
     },
     loadLikes(uuids) {
       if (this.$auth.loggedIn && uuids.length) {
-        this.$axios.get(`/api/likes/m/?${uuids.slice(0, 20).map(uuid => `u=${uuid}`).join("&")}`)
+        this.$axios.get(`/api/likes/m/?${uuids.slice(0, 20).map(uuid => `u=${uuid}`).join("&")}`, {progress: false})
           .then(res => {
             for (let vote of res.data) {
               const meme = this.$children.find(c => c.meme.uuid === vote["uuid"])
-              meme.isLiked = vote["point"] === 1
-              meme.isDisliked = vote["point"] === -1
+              if (meme) {
+                meme.isLiked = vote["point"] === 1
+                meme.isDisliked = vote["point"] === -1
+              }
             }
           })
           .catch(console.log)
@@ -126,9 +150,5 @@ export default {
 </script>
 
 <style scoped>
-.loading {
-  text-align: center;
-  font-size: x-large;
-  padding: 20px;
-}
+
 </style>
