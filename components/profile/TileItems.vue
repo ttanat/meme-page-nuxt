@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       tiles: [],
-      next: this.$route.path === "/profile" ? "/api/profile/memes" : this.$route.path === "/profile/likes" ? "/api/profile/likes" : `/api/user_page/memes/?u=${this.$route.params.username}`,
+      next: this.$route.path === "/profile" ? "/api/profile/memes/" : this.$route.path === "/profile/likes" ? "/api/profile/likes/" : `/api/user_page/memes/?u=${this.$route.params.username}`,
       no_content: false
     }
   },

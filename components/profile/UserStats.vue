@@ -22,22 +22,6 @@ export default {
       required: true
     }
   }
-  // data() {
-  //   return {
-  //     clout: 0,
-  //     followers: 0,
-  //     following: 0
-  //   }
-  // },
-  // mounted() {
-  //   this.$axios.get(`/api/profile/stats/?${this.$route.path.startsWith("/profile") ? "p=1" : `u=${this.$route.params.username}`}`)
-  //     .then(res => {
-  //       this.clout = res.data.clout
-  //       this.followers = res.data.num_followers
-  //       this.following = res.data.num_following
-  //     })
-  //     .catch(console.log)
-  // },
 }
 </script>
 

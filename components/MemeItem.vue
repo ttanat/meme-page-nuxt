@@ -9,7 +9,7 @@
     <div ref="cbody" @contextmenu.prevent class="item-body" :style="{backgroundColor: isVideo ? '#111' : ''}" style="height: 80vh;">
       <template v-if="isVideo">
         <nuxt-link @click.prevent="vidClick" :to="'/m/'+meme.uuid" target="_blank" class="item-body-link" draggable="false">
-          <video ref="memeEl" draggable="false" class="content autoplay" controlsList="nodownload" muted loop playsinline @loadeddata="rmCBodyHeight" style="max-height: 70vh;">
+          <video ref="memeEl" draggable="false" class="content autoplay" controlsList="nodownload" :muted="muted" loop playsinline @loadeddata="rmCBodyHeight" style="max-height: 70vh;">
             <source :data-src="meme.url">
           </video>
         </nuxt-link>
@@ -66,8 +66,7 @@
 
 <script>
 import voteMixin from '~/mixins/voteMixin'
-import getCookieMixin from '~/mixins/getCookieMixin'
-import { mapMutations } from 'vuex'
+import copy from 'copy-to-clipboard'
 
 export default {
   name: 'Meme',
@@ -81,7 +80,7 @@ export default {
       required: true
     }
   },
-  mixins: [voteMixin, getCookieMixin],
+  mixins: [voteMixin],
   data() {
     return {
       isLiked: false,
@@ -93,17 +92,15 @@ export default {
   },
   mounted() {
     this.$emit("new-meme-event", this.$refs.memeEl, this.isVideo)
-    this.addMeme(this.meme)
   },
   methods: {
-    ...mapMutations(["addMeme"]),
     vidClick() {this.paused ? this.togglePlayback() : window.open(`/m/${this.meme.uuid}`)},
     togglePlayback(play=true) {
         this.paused = !play
         play ? this.$refs.memeEl.play() : this.$refs.memeEl.pause()
     },
     rmCBodyHeight() {this.$refs.cbody.style.height = null},
-    copyLink() {/*copy_link(this.meme.uuid)*/},
+    copyLink() {copy(`${window.location.origin}/m/${this.meme.uuid}`)},
     vote(v) {this.sendVote(this.meme, v, "m")},
     restartVid() {this.$refs.memeEl.currentTime = 0}
   }

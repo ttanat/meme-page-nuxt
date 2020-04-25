@@ -18,7 +18,6 @@ import CommentItem from './CommentItem'
 import infiniteScrollMixin from '~/mixins/infiniteScrollMixin'
 import lazyLoad from '~/assets/lazyLoad'
 import formatDate from '~/assets/formatDate'
-import axios from 'axios'
 
 export default {
   name: 'CommentItems',
@@ -50,7 +49,8 @@ export default {
       this.lazyCommentObserver.observe(comment)
     },
     setPoints(uuid, new_points_val) {
-      this.comments = this.comments.map(comment => comment.uuid === uuid ? {...comment, points: new_points_val} : comment)
+      const i = this.comments.findIndex(comment => comment.uuid === uuid)
+      this.comments.splice(i, 1, {...this.comments[i], points: new_points_val})
     },
     loadMore() {
       if (this.next === null) return false
@@ -58,11 +58,11 @@ export default {
 
       this.$axios.get(this.next || `/api/comments/?u=${this.$route.params.uuid}`, {progress: false})
         .then(res => res.data)
-        .then(response => {
+        .then(data => {
           const l_uuids = []
           let offset = 0
-          for (let r of response.results) {
-            if (this.comments.findIndex(c => c.uuid === r.uuid) === -1) {
+          for (let r of data.results) {
+            if (!this.comments.find(c => c.uuid === r.uuid)) {
               this.comments.push(r)
               l_uuids.push(r.uuid)
             } else {
@@ -70,7 +70,7 @@ export default {
             }
           }
           if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids)
-          this.next = response["next"]
+          this.next = data.next
           if (offset) {
             const url = new URL(this.next)
             const old_offset = url.searchParams.get("offset")
@@ -114,8 +114,5 @@ export default {
 </script>
 
 <style>
-.loading {
-  text-align: center;
-  font-size: xx-large;
-}
+
 </style>
