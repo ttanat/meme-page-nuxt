@@ -2,6 +2,7 @@
   <div>
     <div class="input-group">
       <input
+        ref="input"
         v-model.trim="query"
         @keyup.enter="search"
         type="text"
@@ -40,7 +41,10 @@ export default {
       this.searchIconOpacity = val
     },
     search() {
-      if (this.query) this.$router.push(`/search?q=${this.query}`)
+      if (this.query) {
+        this.$router.push({name: 'search', query: {q: this.query}})
+        this.$refs.input.blur()
+      }
     }
   }
 }

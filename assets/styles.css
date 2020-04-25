@@ -21,6 +21,12 @@
   opacity: 1;
 }
 
+.loading {
+  text-align: center;
+  font-size: x-large;
+  padding: 20px;
+}
+
 .btn-group-xs > .btn, .btn-xs {
   padding: .5rem .4rem;
   font-size: .875rem;
@@ -250,27 +256,6 @@ a {
     height: 45px;
   }
 }
-
-/* For search view */
-.media-img {
-  height: 40px;
-  width: 40px;
-  cursor: pointer;
-  margin-bottom: 10px;
-  margin-top: 3px;
-}
-i.media-img {
-  font-size: 35px;
-  color: lightgrey;
-}
-.media-body a {
-  color: darkgrey;
-}
-.media-body .bio {
-  white-space: pre-wrap;
-  font-size: 13px;
-}
-/* End search view */
 
 .fa-spin {
   animation: fa-spin 1.5s infinite linear !important;
