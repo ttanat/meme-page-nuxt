@@ -1,6 +1,5 @@
 <template>
   <div class="col-md-4 col-xl-3" id="profile-col">
-
     <div class="container-fluid">
       <div class="row">
         <img v-if="isProfilePage && $auth.user.image" ref="profilePic" id="profile-pic" class="rounded-circle" :src="$auth.user.image" height="55" width="55">
@@ -72,6 +71,14 @@ export default {
     UserStats,
     FollowButton,
     BioDescription
+  },
+  head() {
+    return {
+      meta: [
+        {hid: "description", name: "description", content: this.bio},
+        {hid: "keywords", name: "keywords", content: "Meme,Memes,Funny,Profile"}
+      ]
+    }
   },
   data() {
     return {
@@ -176,9 +183,8 @@ export default {
     position: -webkit-sticky;
     top: 4rem;
     height: 100%;
-  }
-  #profile-col {
     overflow-y: auto;
+    max-height: 90vh;
   }
 }
 </style>
