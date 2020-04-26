@@ -46,14 +46,14 @@ export default {
     }
   },
   watch: {
-    "$route.path": "$fetch",
+    "$route.params": "$fetch", // Duplicate request bug caused by this line
     "$route.query.q": "$fetch"
   },
   async fetch() {
     /*
-      BUG:
-      When navigating from '/feed' or '/all' or '/browse/category' (through left sidebar) to '/',
-      '/api/memes/?p=' is loaded twice
+      Duplicate request bug fixed
+      Index wasn't using ScrollView layout, but other routes were
+      Switched index to ScrollView layout
     */
     this.noMemes = false
     const { data } = await this.$axios.get(this.getNewURL(), {progress: false})
