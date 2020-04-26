@@ -1,6 +1,6 @@
 <template>
   <div class="mb-4" id="tiles">
-    <TileItem v-for="tile in tiles" :key="tile.uuid" :tile="tile" />
+    <TileItem v-for="tile in tiles" :key="tile.uuid" :tile="tile" @context-menu-event="closeAllContextMenus" />
     <div v-if="no_content && !tiles.length" class="profile-empty" onclick="$('#uploadModal').modal('show')">
       <template v-if="$route.path === '/profile/likes'">No likes yet :(</template>
       <template v-else><font-awesome-icon :icon="['fas', 'plus']" /> Upload your first meme!</template>
@@ -43,6 +43,11 @@ export default {
           })
           .catch(console.log)
       }
+    },
+    closeAllContextMenus() {
+      this.$children.forEach(c => {
+        c.$refs.menu.close()
+      })
     }
   }
 }

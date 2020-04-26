@@ -21,6 +21,7 @@
     "js-cookie": "^2.2.1",
     "jsonwebtoken": "^8.5.1",
     "nuxt": "^2.0.0",
+    "vue-context": "^5.1.0",
     "vue-toasted": "^1.1.28"
   },
   "devDependencies": {}
