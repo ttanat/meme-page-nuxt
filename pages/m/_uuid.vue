@@ -63,7 +63,7 @@ export default {
       title: `${this.meme.caption ? `${this.meme.caption} - ` : ''}Meme Page`,
       meta: [
         {hid: "description", name: "description", content: this.meme.caption},
-        {hid: "description", name: "keywords", content: this.meme.tags.map(t => t.slice(1)).join(",")}
+        {hid: "keywords", name: "keywords", content: `Meme,${this.meme.tags.map(t => t.slice(1)).join(",")}`}
       ]
     }
   },

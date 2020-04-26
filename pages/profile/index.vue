@@ -36,6 +36,11 @@ export default {
     pathname() {
       return this.$route.path
     }
+  },
+  head() {
+    return {
+      title: `${this.$auth.user.username} - Profile`
+    }
   }
 }
 </script>

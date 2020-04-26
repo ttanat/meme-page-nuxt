@@ -6,7 +6,7 @@
         <ProfileSideBar />
 
         <div class="col-md-8 col-xl-9">
-          <TileItems v-if="$route.path.startsWith('/user/')" />
+          <TileItems />
         </div>
       </div>
     </div>
