@@ -32,8 +32,6 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
-
 export default {
   data() {
     return {
@@ -46,7 +44,7 @@ export default {
         ['s', 'globe-americas', 'Internet'],
         ['s', 'school', 'School'],
         ['r', 'grin-beam', 'Anime'],
-        ['r', 'grin-stars', 'Celebrities'],
+        ['r', 'grin-alt', 'People'],
         ['s', 'running', 'Sports'],
         ['s', 'futbol', 'Football'],
         ['s', 'basketball-ball', 'NBA'],

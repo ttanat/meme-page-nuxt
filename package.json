@@ -17,12 +17,13 @@
     "@fortawesome/vue-fontawesome": "^0.1.9",
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.10.1",
+    "@nuxtjs/toast": "^3.3.0",
     "copy-to-clipboard": "^3.3.1",
-    "js-cookie": "^2.2.1",
+    "file-saver": "^2.0.2",
+    "html-to-image": "^0.1.1",
     "jsonwebtoken": "^8.5.1",
     "nuxt": "^2.0.0",
-    "vue-context": "^5.1.0",
-    "vue-toasted": "^1.1.28"
+    "vue-context": "^5.1.0"
   },
   "devDependencies": {}
 }

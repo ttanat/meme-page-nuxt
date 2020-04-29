@@ -1,63 +1,86 @@
 <template>
   <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div :class="{'modal-xl': canSubmit}" class="modal-dialog modal-dialog-centered">
       <div class="modal-content text-light">
         <div class="modal-header">
           <h5 class="modal-title">Upload Meme</h5>
         </div>
         <div class="modal-body">
-          <div class="form-row">
-            <div class="col-sm-6">
-              <label>Upload to</label>
-              <select v-model="page" class="custom-select custom-select-sm mr-sm-2">
-                <option value="" selected>Your memes</option>
-              </select>
-            </div>
-            <div class="col-sm-6">
-              <label>
-                Category <span class="text-muted" style="font-size: 12px;"><i class="far fa-question-circle" data-toggle="tooltip" title="Let your meme be discovered in more places!"></i></span>
-              </label>
-              <select v-model="category" class="custom-select custom-select-sm mr-sm-2">
-                <option value="">None</option>
-                <option value="movies">Movies</option>
-                <option value="tv-shows">TV Shows</option>
-                <option value="gaming">Gaming</option>
-                <option value="animals">Animals</option>
-                <option value="internet">Internet</option>
-                <option value="school">School</option>
-                <option value="anime">Anime</option>
-                <option value="celebrities">Celebrities</option>
-                <option value="sports">Sports</option>
-                <option value="football">Football</option>
-                <option value="nba">NBA</option>
-                <option value="nfl">NFL</option>
-                <option value="news">News</option>
-                <option value="university">University</option>
-              </select>
+          <div class="container-fluid px-0">
+            <div class="row">
+              <div v-show="canSubmit" class="col-6">
+                <div ref="fullPreview">
+                  <h5 ref="captionPreview" class="caption-preview" :style="{width: captionPreviewWidth + 'px'}">{{ caption }}</h5>
+                  <img v-show="showImgPreview" ref="imgPreview" class="preview w-100">
+                  <video v-show="showVidPreview" ref="vidPreview" class="preview" controls></video>
+                </div>
+              </div>
+              <div :class="[canSubmit ? 'col-6' : 'col-12']">
+                <div class="form-row">
+                  <div class="col-sm-6">
+                    <label>Upload to</label>
+                    <select v-model="page" class="custom-select custom-select-sm mr-sm-2">
+                      <option value="" selected>Your memes</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>
+                      Category <span class="text-muted" style="font-size: 13px;"><font-awesome-icon :icon="['far', 'question-circle']" data-toggle="tooltip" title="Let your meme be discovered in more places!" /></span>
+                    </label>
+                    <select v-model="category" class="custom-select custom-select-sm mr-sm-2">
+                      <option value="">None</option>
+                      <option value="movies">Movies</option>
+                      <option value="tv-shows">TV Shows</option>
+                      <option value="gaming">Gaming</option>
+                      <option value="animals">Animals</option>
+                      <option value="internet">Internet</option>
+                      <option value="school">School</option>
+                      <option value="anime">Anime</option>
+                      <option value="people">People</option>
+                      <option value="sports">Sports</option>
+                      <option value="football">Football</option>
+                      <option value="nba">NBA</option>
+                      <option value="nfl">NFL</option>
+                      <option value="news">News</option>
+                      <option value="university">University</option>
+                    </select>
+                  </div>
+                </div>
+                <br>
+                <label>Caption</label>
+                <br>
+                <input v-model.trim="caption" @keyup="adjustCaptionPreviewWidth" type="text" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off">
+                <br>
+                <small id="uploadCaptionSmall">{{ 100 - caption.length }} characters left</small>
+                <div v-show="caption && canSubmit" class="custom-control custom-checkbox custom-checkbox-sm mt-2 mb-3">
+                  <input v-model="embedCaption" :disabled="embedCaptionDisabled" type="checkbox" id="embedCaptionInput" class="custom-control-input custom-control-input-sm" autocomplete="off">
+                  <label for="embedCaptionInput" class="custom-control-label" style="font-size: 15px;">
+                    Embed caption&nbsp;
+                    <span class="text-muted" style="font-size: 13px;"><font-awesome-icon :icon="['far', 'question-circle']" data-toggle="tooltip" title="Add caption onto image. Available only for JPG and PNG images" /></span>
+                  </label>
+                </div>
+                <div :class="{'mt-3': !(caption && canSubmit)}" class="custom-file mb-3">
+                  <input ref="inputFile" @change="validateForm" type="file" class="custom-file-input" accept="image/jpeg, image/png, image/gif, video/mp4, video/quicktime" autocomplete="off" required>
+                  <label class="custom-file-label">{{ fname }}</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-checkbox-sm mb-3">
+                  <input v-model="nsfw" type="checkbox" id="uploadNsfw" class="custom-control-input custom-control-input-sm" autocomplete="off">
+                  <label for="uploadNsfw" class="custom-control-label" style="color: tomato;font-size: 15px;">NSFW</label>
+                </div>
+                <textarea v-model="tags" class="form-control" rows="2" placeholder="#tags (optional)" autocomplete="off" style="resize: none;padding: .15em;padding-left: 4px;"></textarea>
+                <div style="color: royalblue;">{{ displayTags }}</div>
+              </div>
             </div>
           </div>
-          <br>
-          <label>Caption</label>
-          <br>
-          <input v-model.trim="caption" type="text" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off">
-          <br>
-          <small id="uploadCaptionSmall">{{ 100 - caption.length }} characters left</small>
-          <div class="custom-file mt-3 mb-3">
-            <input ref="inputFile" @change="validateForm" type="file" class="custom-file-input" accept="image/jpeg, image/png, image/gif, video/mp4, video/quicktime" autocomplete="off" required>
-            <label class="custom-file-label">{{ fname }}</label>
-          </div>
-          <div class="custom-control custom-checkbox custom-checkbox-sm mb-3">
-            <input v-model="nsfw" type="checkbox" id="uploadNsfw" class="custom-control-input custom-control-input-sm" autocomplete="off">
-            <label for="uploadNsfw" class="custom-control-label" style="color: tomato;font-size: 15px;">NSFW</label>
-          </div>
-          <textarea v-model="tags" class="form-control" rows="2" placeholder="#tags (optional)" autocomplete="off" style="resize: none;padding: .15em;padding-left: 4px;"></textarea>
-          <div style="color: royalblue;">{{ displayTags }}</div>
-            </div>
-            <div class="modal-footer">
+        </div>
+        <div class="modal-footer">
+          <!-- <button ref="dnbtn" type="button" class="btn btn-success modal-btn mr-auto" title="Download">Download</button> -->
           <button type="button" class="btn btn-secondary modal-btn" data-dismiss="modal" title="Cancel">Cancel</button>
           <button ref="submitButton" @click="upload" :class="{'not-allowed': !canSubmit}" type="button" class="btn btn-primary modal-btn" title="Upload" disabled>
-            <template v-if="uploading">Uploading <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></template><template v-else>Upload</template>
+            <template v-if="uploading">Uploading <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></template>
+            <template v-else>Upload</template>
           </button>
+          <!-- <button @click="fff">click me</button> -->
         </div>
       </div>
     </div>
@@ -65,9 +88,9 @@
 </template>
 
 <script>
-import axios from 'axios'
-import jwt from 'jsonwebtoken'
-import { mapMutations } from 'vuex'
+import htmlToImage from 'html-to-image'
+import axios from 'axios' // For converting generated image to blob
+import { saveAs } from 'file-saver'
 
 export default {
   name: 'UploadModal',
@@ -77,117 +100,180 @@ export default {
       page: "",
       category: "",
       caption: "",
-      nsfw: "",
+      embedCaption: false,
+      nsfw: false,
       tags: "",
       videoDuration: 99,
       canSubmit: false,
-      uploading: false
+      uploading: false,
+      showImgPreview: false,
+      showVidPreview: false,
+      captionPreviewWidth: 0,
+      embedCaptionDisabled: true
     }
   },
   computed: {
     displayTags() {
       const tags = this.tags.match(/#[a-zA-Z]\w*/g)
       return tags ? tags.slice(0, 20).join(" ") : ""
+    },
+    pathname() {
+      return this.$route.path
     }
   },
   methods: {
     validateForm() {
-      const uf = this.$refs.inputFile;
-      this.canSubmit = uf.files.length === 1 && ["image/jpeg", "image/png", "image/gif", "video/mp4", "video/quicktime"].includes(uf.files[0].type);
-      uf.files[0].type.startsWith("video/") ? this.setVidDuration(uf.files[0]) : this.videoDuration = 99;
-      this.$refs.submitButton.disabled = !this.canSubmit;
-      this.fname = this.canSubmit ? uf.files[0].name : "Choose File";
-      if (!this.canSubmit) uf.value = null;
+      const uf = this.$refs.inputFile
+      this.canSubmit = uf.files.length === 1 && ["image/jpeg", "image/png", "image/gif", "video/mp4", "video/quicktime"].includes(uf.files[0].type)
+      uf.files[0].type.startsWith("video/") ? this.setVidDuration(uf.files[0]) : this.videoDuration = 99
+      this.$refs.submitButton.disabled = !this.canSubmit
+      this.fname = this.canSubmit ? uf.files[0].name : "Choose File"
+      this.canSubmit ? this.createPreview() : uf.value = null
+
+      this.embedCaptionDisabled = !(uf && uf.files.length === 1 && ['image/jpeg', 'image/png'].includes(uf.files[0].type))
+      if (this.embedCaptionDisabled) this.embedCaption = false
+    },
+    createPreview() {
+      const file = this.$refs.inputFile.files[0]
+      const el = file.type.startsWith("image/") ? this.$refs.imgPreview : this.$refs.vidPreview
+      this.showImgPreview = file.type.startsWith("image/")
+      this.showVidPreview = !this.showImgPreview
+      el.onload = () => {
+        // URL.revokeObjectURL(el.src)
+        this.captionPreviewWidth = this.showImgPreview ? this.$refs.imgPreview.offsetWidth : this.$refs.vidPreview.offsetWidth
+      }
+      el.src = URL.createObjectURL(file)
+    },
+    async getCaptionedImage() {
+      /*
+        Returns promise with blob data for image file
+      */
+      this.caption = this.caption.slice(0, 100)
+      const canvas = this.$refs.fullPreview
+      const dataUrl = await htmlToImage.toJpeg(canvas, {backgroundColor: '#252525', quality: 0.92})
+      const { data } = await axios.get(dataUrl, {responseType: 'blob'})
+      return data
+    },
+    adjustCaptionPreviewWidth() {
+      this.captionPreviewWidth = this.showImgPreview ? this.$refs.imgPreview.offsetWidth : this.showVidPreview ? this.$refs.vidPreview.offsetWidth : 0
     },
     setVidDuration(file) {
-      const v = document.createElement("video");
-      v.preload = "metadata";
+      const v = document.createElement("video")
+      v.preload = "metadata"
       v.onloadedmetadata = () => {
-          URL.revokeObjectURL(v.src);
-          this.videoDuration = v.duration;
+          URL.revokeObjectURL(v.src)
+          this.videoDuration = v.duration
       }
-      v.src = URL.createObjectURL(file);
+      v.src = URL.createObjectURL(file)
+    },
+    checkEmbedCaption() {
+      const uf = this.$refs.inputFile
+      const canEmbed = uf && uf.files.length === 1 && ['image/jpeg', 'image/png'].includes(uf.files[0].type)
+      if (!canEmbed) this.embedCaption = false
+      return canEmbed
     },
     check() {
-      const input = this.$refs.inputFile;
-      const file = input.files[0];
-      const type = file.type;
-      const lfname = file.name.toLowerCase();
-      type.startsWith("video/") ? this.setVidDuration(file) : this.videoDuration = 99;
+      const input = this.$refs.inputFile
+      const file = input.files[0]
+      const type = file.type
+      const lfname = file.name.toLowerCase()
+      type.startsWith("video/") ? this.setVidDuration(file) : this.videoDuration = 99
       if (!file || !input.files.length) {
-        alert("Please select a file.");
+        alert("Please select a file.")
       } else if (input.files.length > 1) {
-        alert("Cannot upload multiple files together.");
+        alert("Cannot upload multiple files together.")
       } else if (!["image/jpeg", "image/png", "image/gif", "video/mp4", "video/quicktime"].includes(type)
                  || (type === "image/jpeg" && (!lfname.endsWith(".jpg") && !lfname.endsWith(".jpeg")))
                  || (type === "video/quicktime" && !lfname.endsWith(".mov"))) {
-        alert("Supported media types: JPG, PNG, GIF, MP4, MOV");
+        alert("Supported media types: JPG, PNG, GIF, MP4, MOV")
       } else if (type === "image/gif" && file.size > 5242880) {
-        alert("Maximum file size for GIF is 5 MB");
+        alert("Maximum file size for GIF is 5 MB")
       } else if (type.startsWith("image/") && file.size > 3145728) {
-        alert("Maximum file size for images is 3 MB");
+        alert("Maximum file size for images is 3 MB")
       } else if (type.startsWith("video/") && this.videoDuration > 60) {
-        alert("Maximum video duration is 60 seconds");
+        alert("Maximum video duration is 60 seconds")
       } else if (type.startsWith("video/") && file.size > 15728640) {
-        alert("Maximum file size for videos is 15 MB");
+        alert("Maximum file size for videos is 15 MB")
       } else {
-        return true;
+        return true
       }
-      return false;
+      return false
     },
-    setData() {
-      const d = new FormData();
-      d.set("file", this.$refs.inputFile.files[0]);
-      if (this.page) d.set("page", this.page);
-      if (this.category) d.set("category", this.category);
-      if (this.caption) d.set("caption", this.caption.trim().slice(0, 100));
-      if (!d.get("caption") && !confirm("Are you sure you want to upload without a caption?")) return null;
-      const tags = this.tags.match(/#[a-zA-Z]\w*/g);
-      if (tags) {
-        for (let i = 0, n = tags.slice(0, 20).length; i < n; i++) {
-          d.append("tags", tags[i].slice(0, 64));
-        }
+    async setData() {
+      /*
+        Returns promise with FormData object
+      */
+      const data = new FormData()
+      if (this.page) data.set("page", this.page)
+      if (this.category) data.set("category", this.category)
+      if (this.caption) data.set("caption", this.caption.trim().slice(0, 100))
+      if (!data.get("caption") && !confirm("Are you sure you want to upload without a caption?")) return false
+      // Check that caption can be embedded then set in data
+      data.set("embed_caption", this.checkEmbedCaption() && this.embedCaption)
+      // Put all tags in list (empty list if none)
+      const tags = this.tags.match(/#[a-zA-Z]\w*/g) || []
+      for (let tag of tags.slice(0, 20)) {
+        data.append("tags", tag.slice(0, 64))
       }
-      d.set("nsfw", this.nsfw);
-      return d;
+      data.set("nsfw", this.nsfw)
+      if (this.pathname === "/profile") data.set("is_profile_page", true)
+      if (this.pathname.startsWith("/page/")) data.set("is_meme_page", true)
+      // Add file to data
+      if (JSON.parse(data.get("embed_caption"))) {
+        // Generate captioned image if "Embed caption" is selected
+        data.set("file", await this.getCaptionedImage(), 'image.jpeg')
+      } else {
+        // Otherwise, use file from input
+        data.set("file", this.$refs.inputFile.files[0])
+      }
+      return data
     },
     upload() {
-      if (!AUTH || !this.check()) return false;
-      const data = this.setData();
-      if (!data || !data.has("file")) return false;
-      if (PN === "/profile") data.set("is_profile_page", true);
-      if (PN.startsWith("/page/")) data.set("is_meme_page", true);
-      this.$refs.submitButton.disabled = true;
-      this.$refs.submitButton.style.cursor = "progress";
-      this.uploading = true;
-      axios.post("/upload", data, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
-        .then(res => res.data)
-        .then(response => {
-          if (response["s"]) {
-            display_success("Meme successfully uploaded.");
-            $("#uploadModal").modal("hide");
-            // Tell vue component that content_type is PNG so that GIF is displayed in IMG tag
-            const tile_data = {uuid: response.uuid, url: URL.createObjectURL(data.get("file")), content_type: data.get("file").type === "image/gif" ? "image/png" : data.get("file").type};
-            if (PN === "/profile" && TilesInstance) {
-              TilesInstance.tiles.unshift(tile_data);
-            } else if (MemesInstance) {
-              const meme_data = Object.assign(tile_data, {username: USERNAME, caption: data.get("caption"), points: 0, num_comments: 0, dp_url: DP_URL});
-              if (PN === `/page/${data.get("page")}`) {
-                MemesInstance.mdata.unshift(Object.assign(meme_data, {pname: data.get("page"), pdname: PAGE_DNAME ? PAGE_DNAME : null}));
-              } else if (PN === "/all") {
-                MemesInstance.mdata.unshift(meme_data);
-              }
+      if (!this.$auth.loggedIn || !this.check()) return false
+      this.setData().then(data => {
+        if (!data || !data.has("file")) return false
+        this.$refs.submitButton.disabled = true
+        this.$refs.submitButton.style.cursor = "progress"
+        this.uploading = true
+        this.$axios.post("/upload", data)
+          .then(res => res.data)
+          .then(response => {
+            if (response.s) {
+              $("#uploadModal").modal("hide")
+              this.$toast.success("Meme successfully uploaded", {
+                position: 'bottom-center',
+                duration: 2000,
+                keepOnHover: true
+              })
+              this.page = this.category = this.caption = this.tags = ""
+              this.nsfw = this.embedCaption = false
+              this.$refs.inputFile.value = null
+              this.fname = "Choose File"
+            } else {
+              alert(response.m)
             }
-            this.page = this.category = this.caption = this.nsfw = this.tags = "";
-            this.$refs.inputFile.value = null;
-            this.fname = "Choose File";
-          } else {
-            alert(response["m"]);
-          }
-        })
-        .catch(err => display_error(err))
-        .finally(() => this.uploading = this.canSubmit = false);
+          })
+          .catch(alert)
+          .finally(() => {
+            this.uploading = this.canSubmit = false
+            this.$refs.submitButton.disabled = !this.canSubmit
+            // Revoke preview URLs
+            // If user selected files more than once, then URLs before are NOT revoked
+            URL.revokeObjectURL(...[this.$refs.imgPreview.src, this.$refs.vidPreview.src])
+            this.$refs.submitButton.style.cursor = null
+          })
+      })
     }
   }
 }
 </script>
+
+<style scoped>
+.caption-preview {
+  font-weight: 400;
+  padding: 8px 10px 0 10px;
+}
+.preview {
+  max-width: 100%;
+}
+</style>
