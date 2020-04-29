@@ -8,11 +8,12 @@
       @new-meme-event="observeNewMeme"
       @toggle-sound-event="toggleSound"
       @set-points-event="setPoints"
+      @context-menu-event="closeAllContextMenus"
     />
     <div v-show="loading || $fetchState.pending" class="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     <div v-if="noMemes" style="margin-top: 30px;text-align: center;">
-      <template v-if="$route.path === '/search'">No results matching query.<br><br>Return <nuxt-link to="/">home</nuxt-link></template>
-      <template v-else-if="$route.path === '/feed'">No new posts.<br><br>Subscribe to more pages or follow other users for more posts!</template>
+      <template v-if="pathname === '/search'">No results matching query.<br><br>Return <nuxt-link to="/">home</nuxt-link></template>
+      <template v-else-if="pathname === '/feed'">No new posts.<br><br>Subscribe to more pages or follow other users for more posts!</template>
       <template v-else>No memes here :(<br><br>Return <nuxt-link to="/">home</nuxt-link></template>
     </div>
   </div>
@@ -43,6 +44,11 @@ export default {
       lazyMemeObserver: new IntersectionObserver(lazyLoad, {rootMargin: "300px 0px"}),
       autoplayObserver: null,
       noMemes: false
+    }
+  },
+  computed: {
+    pathname() {
+      return this.$route.path
     }
   },
   watch: {
@@ -90,9 +96,9 @@ export default {
       this.memes.splice(i, 1, {...this.memes[i], points: new_points_val})
     },
     loadMore() {
-      if (this.next === null /*|| (this.$route.path.startsWith("/page/") && (!SHOW || !PAGE_NUM_POSTS))*/
-          || (!["/", "/all", "/feed", "/search"].includes(this.$route.path) && !this.$route.path.match(/^\/page\/[a-zA-Z0-9_]+$/)
-          && !this.$route.path.match(/^\/browse\/[a-zA-Z0-9_]+$|^\/browse\/tv-shows$/))) return false
+      if (this.next === null /*|| (this.pathname.startsWith("/page/") && (!SHOW || !PAGE_NUM_POSTS))*/
+          || (!["/", "/all", "/feed", "/search"].includes(this.pathname) && !this.pathname.match(/^\/page\/[a-zA-Z0-9_]+$/)
+          && !this.pathname.match(/^\/browse\/[a-zA-Z0-9_]+$|^\/browse\/tv-shows$/))) return false
       this.loading = true
 
       this.$axios.get(this.next, {progress: false})
@@ -118,9 +124,9 @@ export default {
         .finally(() => this.loading = false)
     },
     getNewURL() {
-      return this.$route.path === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(new URL(window.location.href).searchParams.get("q").slice(0, 64))}`
-            : this.$route.path.startsWith("/page/") && this.$auth.loggedIn && PRIVATE && SHOW ? `/api/memes/pv/?n=${encodeURIComponent(this.$route.name)}`
-            : `/api/memes/?p=${encodeURIComponent(this.$route.path.slice(1))}`
+      return this.pathname === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(new URL(window.location.href).searchParams.get("q").slice(0, 64))}`
+            : this.pathname.startsWith("/page/") && this.$auth.loggedIn && PRIVATE && SHOW ? `/api/memes/pv/?n=${encodeURIComponent(this.$route.name)}`
+            : `/api/memes/?p=${encodeURIComponent(this.pathname.slice(1))}`
     },
     loadLikes(uuids) {
       if (this.$auth.loggedIn && uuids.length) {
@@ -140,6 +146,11 @@ export default {
     pauseAll() {
       this.$children.forEach(c => {
         if (c.isVideo) c.togglePlayback(false)
+      })
+    },
+    closeAllContextMenus() {
+      this.$children.forEach(c => {
+        c.$refs.menu.close()
       })
     }
   },

@@ -6,7 +6,7 @@
       <h6 class="mt-2" style="font-weight: 450;">{{ meme.caption }}</h6>
     </div>
 
-    <div ref="cbody" @contextmenu.prevent class="item-body" :style="{backgroundColor: isVideo ? '#111' : ''}" style="height: 80vh;">
+    <div ref="cbody" @contextmenu.prevent="openContextMenu" class="item-body" :style="{backgroundColor: isVideo ? '#111' : ''}" style="height: 80vh;">
       <template v-if="isVideo">
         <nuxt-link @click.prevent="vidClick" :to="'/m/'+meme.uuid" target="_blank" class="item-body-link" draggable="false">
           <video ref="memeEl" draggable="false" class="content autoplay" controlsList="nodownload" :muted="muted" loop playsinline @loadeddata="rmCBodyHeight" style="max-height: 70vh;">
@@ -61,15 +61,41 @@
         </td>
       </tr>
     </table>
+    <vue-context ref="menu">
+      <li>
+        <a :href="'/m/'+meme.uuid" target="_blank">
+          <font-awesome-icon :icon="['fas', 'external-link-alt']" />&ensp;Open in new tab
+        </a>
+      </li>
+      <li>
+        <a href="javascript:void(0);" @click="copyLink">
+          <font-awesome-icon :icon="['fas', 'link']" />&ensp;Copy link
+        </a>
+      </li>
+      <li>
+        <a :href="meme.url" target="_blank">
+          <font-awesome-icon :icon="['fas', 'download']" />&ensp;Download
+        </a>
+      </li>
+      <li v-if="$auth.loggedIn">
+        <a href="javascript:void(0);">
+          <font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report
+        </a>
+      </li>
+    </vue-context>
   </div>
 </template>
 
 <script>
 import voteMixin from '~/mixins/voteMixin'
 import copy from 'copy-to-clipboard'
+import VueContext from 'vue-context'
 
 export default {
   name: 'Meme',
+  components: {
+    VueContext
+  },
   props: {
     meme: {
       type: Object,
@@ -102,81 +128,91 @@ export default {
     rmCBodyHeight() {this.$refs.cbody.style.height = null},
     copyLink() {copy(`${window.location.origin}/m/${this.meme.uuid}`)},
     vote(v) {this.sendVote(this.meme, v, "m")},
-    restartVid() {this.$refs.memeEl.currentTime = 0}
+    restartVid() {this.$refs.memeEl.currentTime = 0},
+    async openContextMenu(e) {
+      // Close all other context menus first
+      await this.$emit("context-menu-event")
+      console.log(e)
+      this.$refs.menu.open(e)
+    }
   }
 }
 </script>
 
 <style scoped>
+@import  'vue-context/dist/css/vue-context.css';
+.item {
+  background-color: #191919;
+  border: 1px solid #333;
+  border-radius: 7px;
+}
+@media (max-width: 575.98px) {
   .item {
-    background-color: #191919;
-    border: 1px solid #333;
-    border-radius: 7px;
-  }
-  @media (max-width: 575.98px) {
-    .item {
-      border-left: none;
-      border-right: none;
-      border-radius: 0;
-    }
-    .content {
-      object-fit: unset;
-    }
-  }
-  .item-header {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 5px;
-  }
-  .header-username {
-    font-size: 14px;
-    color: darkgray;
-  }
-  .header-page {
-    font-size: 13px;
-    color: grey;
-  }
-  .item-body {
-    max-height: 30rem;
-    /* max-height: 80vh; */
-    position: relative;
-  }
-  .item-body-link {
-    max-height: inherit;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
   }
   .content {
-    width: 100%;
-    margin-bottom: 0;
-    max-height: inherit;
-    object-fit: contain;
+    object-fit: unset;
   }
-  .play-circle {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    opacity: .7;
-    background-color: black;
-    height: 5rem;
-    width: 5rem;
-    text-align: center;
-    padding-top: 1.75rem;
-    cursor: pointer;
-  }
-  .play-icon {
-    font-size: 1.5rem;
-  }
-  .sound-toggle {
-    position: absolute;
-    right: .5rem;
-    bottom: .5rem;
-    font-size: 1.25rem;
-    cursor: pointer;
-    text-shadow: .1rem .1rem .2rem #111;
-  }
-  .thumbs {
-    margin-left: 5px;
-  }
+}
+.item-header {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+}
+.header-username {
+  font-size: 14px;
+  color: darkgray;
+}
+.header-page {
+  font-size: 13px;
+  color: grey;
+}
+.item-body {
+  max-height: 30rem;
+  /* max-height: 80vh; */
+  position: relative;
+}
+.item-body-link {
+  max-height: inherit;
+}
+.content {
+  width: 100%;
+  margin-bottom: 0;
+  max-height: inherit;
+  object-fit: contain;
+}
+.play-circle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  opacity: .7;
+  background-color: black;
+  height: 5rem;
+  width: 5rem;
+  text-align: center;
+  padding-top: 1.75rem;
+  cursor: pointer;
+}
+.play-icon {
+  font-size: 1.5rem;
+}
+.sound-toggle {
+  position: absolute;
+  right: .5rem;
+  bottom: .5rem;
+  font-size: 1.25rem;
+  cursor: pointer;
+  text-shadow: .1rem .1rem .2rem #111;
+}
+.thumbs {
+  margin-left: 5px;
+}
+.v-context {
+  font-size: 14.5px;
+}
 </style>
