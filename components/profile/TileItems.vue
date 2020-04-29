@@ -1,6 +1,12 @@
 <template>
   <div class="mb-4" id="tiles">
-    <TileItem v-for="tile in tiles" :key="tile.uuid" :tile="tile" @context-menu-event="closeAllContextMenus" />
+    <TileItem
+      v-for="tile in tiles"
+      :key="tile.uuid"
+      :tile="tile"
+      @context-menu-event="closeAllContextMenus"
+      @meme-deleted-event="removeTile"
+    />
     <div v-if="no_content && !tiles.length" class="profile-empty" onclick="$('#uploadModal').modal('show')">
       <template v-if="$route.path === '/profile/likes'">No likes yet :(</template>
       <template v-else><font-awesome-icon :icon="['fas', 'plus']" /> Upload your first meme!</template>
@@ -48,6 +54,10 @@ export default {
       this.$children.forEach(c => {
         c.$refs.menu.close()
       })
+    },
+    removeTile(uuid) {
+      const i = this.tiles.findIndex(tile => tile.uuid === uuid)
+      this.tiles.splice(i, 1)
     }
   }
 }

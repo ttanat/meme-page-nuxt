@@ -62,7 +62,15 @@ export default {
     },
     deleteMeme() {
       if (confirm("Are you sure you want to delete this?")) {
-        this.$toasted.show("psych", {duration: 5000})
+        this.$axios.delete(`/delete/m?u=${this.tile.uuid}`)
+          .then(res => {
+            if (res.status === 204) {
+              this.$emit("meme-deleted-event", this.tile.uuid)
+              // Not actually an error, but using toast for errors
+              this.displayError("Meme has been deleted :(")
+            }
+          })
+          .catch(this.displayError)
       }
     }
   }
