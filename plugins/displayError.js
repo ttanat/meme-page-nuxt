@@ -3,7 +3,7 @@ import Vue from 'vue'
 Vue.mixin({
   methods: {
     displayError(message, duration=2000) {
-      this.$toasted.show(message, {
+      this.$toast.show(message, {
         position: 'bottom-center',
         duration,
         keepOnHover: true,

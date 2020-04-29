@@ -37,7 +37,6 @@ export default {
   */
   plugins: [
     '~/plugins/fontawesome.js',
-    '~/plugins/toasted.js',
     '~/plugins/displayError.js',
     '~/plugins/axios.js'
   ],
@@ -52,7 +51,8 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/auth'
+    '@nuxtjs/auth',
+    '@nuxtjs/toast'
   ],
   /*
   ** Axios module configuration
