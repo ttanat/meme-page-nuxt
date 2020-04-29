@@ -68,7 +68,7 @@ export default function (context) {
         // If refresh failed or refresh token isn't valid
         if (err.response && err.response.config.url === "/api/token/" && err.response.status === 401) {
           // If login failed, do nothing
-        } else if (err.message === "Session expired. Please log in again." || err.response.status === 401) {
+        } else if (err.message === "Session expired. Please log in again." || (err.response && err.response.status === 401)) {
           // If token refresh failed or not authenticated, logout
           alert("Session expired. Please log in again.")
           context.$auth.logout()
