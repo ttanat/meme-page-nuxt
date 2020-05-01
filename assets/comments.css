@@ -68,6 +68,7 @@
   white-space: pre-line;
   font-size: 14px;
   font-weight: 300;
+  overflow-wrap: break-word;
 }
 .comment-image {
   height: 15rem;

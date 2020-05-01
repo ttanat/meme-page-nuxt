@@ -3,7 +3,7 @@
     <div class="item-header">
       <a :href="'/user/' + meme.username" class="header-username"><img v-if="meme.dp_url" class="rounded-circle" :src="meme.dp_url" height="18" width="18"><font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 15px;" />&nbsp;{{ meme.username }}</a><template v-if="meme.pname"><span class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<a :href="'/page/'+meme.pname" class="header-page">{{ meme.pdname || meme.pname }}</a></span></template>
       <br>
-      <h6 class="mt-2" style="font-weight: 450;">{{ meme.caption }}</h6>
+      <h6 class="mt-2 caption">{{ meme.caption }}</h6>
     </div>
 
     <div ref="cbody" @contextmenu.prevent="openContextMenu" class="item-body" :style="{backgroundColor: isVideo ? '#111' : ''}" style="height: 80vh;">
@@ -168,6 +168,10 @@ export default {
 .header-page {
   font-size: 13px;
   color: grey;
+}
+.caption {
+  font-weight: 450;
+  overflow-wrap: break-word;
 }
 .item-body {
   max-height: 30rem;
