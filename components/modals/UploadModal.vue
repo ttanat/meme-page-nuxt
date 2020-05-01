@@ -25,7 +25,7 @@
                   </div>
                   <div class="col-sm-6">
                     <label>
-                      Category <span class="text-muted" style="font-size: 13px;"><font-awesome-icon :icon="['far', 'question-circle']" data-toggle="tooltip" title="Let your meme be discovered in more places!" /></span>
+                      Category
                     </label>
                     <select v-model="category" class="custom-select custom-select-sm mr-sm-2">
                       <option value="">None</option>
@@ -55,8 +55,7 @@
                 <div v-show="caption && canSubmit" class="custom-control custom-checkbox custom-checkbox-sm mt-2 mb-3">
                   <input v-model="embedCaption" :disabled="embedCaptionDisabled" type="checkbox" id="embedCaptionInput" class="custom-control-input custom-control-input-sm" autocomplete="off">
                   <label for="embedCaptionInput" class="custom-control-label" style="font-size: 15px;">
-                    Embed caption&nbsp;
-                    <span class="text-muted" style="font-size: 13px;"><font-awesome-icon :icon="['far', 'question-circle']" data-toggle="tooltip" title="Add caption onto image. Available only for JPG and PNG images" /></span>
+                    Embed caption <font-awesome-icon class="text-muted" style="font-size: 13px;" :icon="['far', 'question-circle']" data-toggle="tooltip" title="Image will be captured from the preview shown and may look worse on smaller screens. Available only for JPG and PNG images." />
                   </label>
                 </div>
                 <div :class="{'mt-3': !(caption && canSubmit)}" class="custom-file mb-3">
@@ -74,13 +73,12 @@
           </div>
         </div>
         <div class="modal-footer">
-          <!-- <button ref="dnbtn" type="button" class="btn btn-success modal-btn mr-auto" title="Download">Download</button> -->
+          <a v-show="showClearButton" @click="clearForm" href="javascript:void(0);" class="mr-3" style="color: white;">Clear</a>
           <button type="button" class="btn btn-secondary modal-btn" data-dismiss="modal" title="Cancel">Cancel</button>
           <button ref="submitButton" @click="upload" :class="{'not-allowed': !canSubmit}" type="button" class="btn btn-primary modal-btn" title="Upload" disabled>
             <template v-if="uploading">Uploading <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></template>
             <template v-else>Upload</template>
           </button>
-          <!-- <button @click="fff">click me</button> -->
         </div>
       </div>
     </div>
@@ -119,6 +117,9 @@ export default {
     },
     pathname() {
       return this.$route.path
+    },
+    showClearButton() {
+      return this.page || this.category || this.caption || this.nsfw || this.tags || this.canSubmit
     }
   },
   methods: {
@@ -192,6 +193,8 @@ export default {
         alert("Maximum file size for images is 3 MB")
       } else if (type.startsWith("video/") && this.videoDuration > 60) {
         alert("Maximum video duration is 60 seconds")
+      } else if (type.startsWith("video/") && this.videoDuration < 3) {
+        alert("Minimum video duration is 3 seconds")
       } else if (type.startsWith("video/") && file.size > 15728640) {
         alert("Maximum file size for videos is 15 MB")
       } else {
@@ -221,7 +224,7 @@ export default {
       // Add file to data
       if (JSON.parse(data.get("embed_caption"))) {
         // Generate captioned image if "Embed caption" is selected
-        data.set("file", await this.getCaptionedImage(), 'image.jpeg')
+        data.set("file", await this.getCaptionedImage(), "m.jpeg") // Filename will be changed in server anyway
       } else {
         // Otherwise, use file from input
         data.set("file", this.$refs.inputFile.files[0])
@@ -245,24 +248,28 @@ export default {
                 duration: 2000,
                 keepOnHover: true
               })
-              this.page = this.category = this.caption = this.tags = ""
-              this.nsfw = this.embedCaption = false
-              this.$refs.inputFile.value = null
-              this.fname = "Choose File"
+              this.clearForm()
             } else {
               alert(response.m)
             }
           })
           .catch(alert)
           .finally(() => {
-            this.uploading = this.canSubmit = false
-            this.$refs.submitButton.disabled = !this.canSubmit
-            // Revoke preview URLs
-            // If user selected files more than once, then URLs before are NOT revoked
-            URL.revokeObjectURL(...[this.$refs.imgPreview.src, this.$refs.vidPreview.src])
+            this.uploading = false
             this.$refs.submitButton.style.cursor = null
           })
       })
+    },
+    clearForm() {
+      this.page = this.category = this.caption = this.tags = ""
+      this.nsfw = this.embedCaption = false
+      this.$refs.inputFile.value = null
+      this.fname = "Choose File"
+      this.canSubmit = false
+      this.$refs.submitButton.disabled = !this.canSubmit
+      // Revoke preview URLs
+      // If user selected files more than once, then URLs before are NOT revoked
+      URL.revokeObjectURL(...[this.$refs.imgPreview.src, this.$refs.vidPreview.src])
     }
   }
 }
@@ -272,6 +279,7 @@ export default {
 .caption-preview {
   font-weight: 400;
   padding: 8px 10px 0 10px;
+  overflow-wrap: break-word;
 }
 .preview {
   max-width: 100%;
