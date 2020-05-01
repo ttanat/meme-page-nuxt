@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar sticky-top navbar-expand-xl navbar-dark justify-content-between">
+  <nav class="navbar sticky-top navbar-expand-lg navbar-dark justify-content-between">
     <nuxt-link class="navbar-brand ml-xl-4" to="/">Meme Page</nuxt-link>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -7,12 +7,12 @@
 
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 
-      <div class="navbar-nav collapse navbar-collapse justify-content-center">
+      <div id="navbar-middle" class="navbar-nav collapse navbar-collapse justify-content-center">
         <a class="nav-item nav-link mr-3 pointer">{{ $store.state.current_page }}</a>
         <SearchBar />
       </div>
 
-      <div class="navbar-nav ml-auto mr-3">
+      <div class="navbar-nav ml-auto mr-lg-0 mr-xl-3">
         <template v-if="$auth.loggedIn">
           <nuxt-link class="nav-item nav-link text-light mr-3" to="/"><font-awesome-icon :icon="['fas', 'home']" /> Home</nuxt-link>
           <a v-if="$route.path.startsWith('/profile')" type="button" class="nav-item nav-link text-light mr-3" data-toggle="modal" data-target="#newMemePage">
@@ -25,7 +25,7 @@
           <div class="dropdown">
             <a type="button" class="nav-item nav-link text-light mr-2" data-toggle="dropdown">
               <img v-if="$auth.user.image" class="rounded-circle" :src="$auth.user.image" height="21" width="21">
-              <font-awesome-icon v-else :icon="['fas', 'user-circle']" />&nbsp;{{ $auth.user.username }}&nbsp;<font-awesome-icon :icon="['fas', 'caret-down']" />
+              <font-awesome-icon v-else :icon="['fas', 'user-circle']" />&nbsp;{{ showUsername }}&nbsp;<font-awesome-icon :icon="['fas', 'caret-down']" />
             </a>
             <div class="dropdown-menu dropdown-menu-right" style="width: 190px;background-color: #252525;color: lightgrey;">
               <h5 class="dropdown-header m-0" style="overflow-x: hidden;text-overflow: ellipsis;">{{ $auth.user.username }}</h5>
@@ -50,25 +50,34 @@
 <script>
 import SearchBar from './SearchBar.vue'
 import NotificationsDropdown from './NotificationsDropdown.vue'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'NavBar',
   components: {
     SearchBar,
     NotificationsDropdown
+  },
+  computed: {
+    showUsername() {
+      return this.$auth.user.username.length < 7 ? this.$auth.user.username : ""
+    }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+nav {
+  background-color: #252525 !important;
+}
+@media (min-width: 992px) {
   nav {
-    background-color: #252525 !important;
+    height: 45px;
   }
-  @media (min-width: 1199.98px) {
-    nav {
-      height: 45px;
-    }
+}
+@media (max-width: 1199.98px) {
+  #navbar-middle {
+    display: none !important;
   }
+}
 </style>
