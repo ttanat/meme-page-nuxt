@@ -2,9 +2,9 @@
   <div>
     <div v-show="!editing" class="bio">
       <span v-if="updating">Updating <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></span>
-      <span v-else>{{ currentBio }}</span>&ensp;<small v-show="!updating" @click="editBio" class="text-muted pointer"><span v-if="!currentBio" style="font-size: 13px;">Add {{ addText }}&ensp;</span><font-awesome-icon :icon="['fas', 'pen']" /></small>
+      <span v-else v-html="parseBio(currentBio)"></span>&ensp;<small v-show="!updating" @click="editBio" class="text-muted pointer"><span v-if="!currentBio" style="font-size: 13px;">Add {{ addText }}&ensp;</span><font-awesome-icon :icon="['fas', 'pen']" /></small>
     </div>
-    <textarea ref="textarea" v-show="editing" v-model.trim="newBio" placeholder="Add your page description here!" rows="3"></textarea>
+    <textarea ref="textarea" v-show="editing" v-model.trim="newBio" placeholder="Add your page description here!" rows="9"></textarea>
     <span>
       <small v-show="editing" @click="editBio" class="text-muted pointer">Close</small>
       <small v-show="editing" @click="saveNew" class="text-muted pointer">&emsp;Save</small>
@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import parseBioMixin from '~/mixins/parseBioMixin'
+
 export default {
   name: 'BioDescription',
   props: {
@@ -25,6 +27,7 @@ export default {
       required: true
     }
   },
+  mixins: [parseBioMixin],
   data() {
     return {
       firstEdit: true, // First time clicking to edit bio since loading page
@@ -40,7 +43,11 @@ export default {
         this.firstEdit = false
       }
       this.editing = !this.editing
-      if (this.editing) this.$nextTick(() => this.$refs.textarea.focus())
+      if (this.editing) {
+        this.$nextTick(() => this.$refs.textarea.focus())
+      } else {
+        if (!this.newBio) this.newBio = this.currentBio
+      }
     },
     bioNoChange() {
       // New line in currentBio is '\r\n' but in newBio is '\n'
@@ -61,7 +68,7 @@ export default {
         } else {
           return false
         }
-      } 
+      }
 
       this.updating = true
 
@@ -85,6 +92,7 @@ export default {
 .bio {
   font-size: 14px;
   white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 textarea {
   width: 100%;

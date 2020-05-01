@@ -21,7 +21,7 @@
 
     <div class="mt-2">
       <BioDescription v-if="isProfilePage" :current-bio="bio" add-text="bio" @bio-change-event="changeBio" />
-      <span v-else style="font-size: 14px;white-space: pre-wrap;">{{ bio }}</span>
+      <span v-else v-html="parseBio(bio)" class="bio"></span>
     </div>
     <hr class="mb-2" style="background-color: grey;">
 
@@ -64,6 +64,7 @@
 import UserStats from './UserStats'
 import FollowButton from './FollowButton'
 import BioDescription from './BioDescription'
+import parseBioMixin from '~/mixins/parseBioMixin'
 
 export default {
   name: 'ProfileSideBar',
@@ -72,6 +73,7 @@ export default {
     FollowButton,
     BioDescription
   },
+  mixins: [parseBioMixin],
   head() {
     return {
       meta: [
@@ -169,7 +171,7 @@ export default {
   display: none;
 }
 #profile-pic {
-  margin: 5px;
+  margin: 5px 5px 5px 0;
   display: block !important;
 }
 #profile-username {
@@ -186,5 +188,9 @@ export default {
     overflow-y: auto;
     max-height: 90vh;
   }
+}
+.bio {
+  font-size: 14px;
+  white-space: pre-wrap;
 }
 </style>

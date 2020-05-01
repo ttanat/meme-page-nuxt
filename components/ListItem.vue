@@ -10,13 +10,15 @@
           {{ searchUser ? result.username : result.display_name || result.name }}
         </nuxt-link>
       </h6>
-      <div v-if="getDescription" class="bio"><span>{{ getDescription }}</span></div>
+      <div v-if="hasBio" class="bio" v-html="displayBio"></div>
       <small class="text-muted">{{ getBottomText }}</small>
     </div>
   </li>
 </template>
 
 <script>
+import parseBioMixin from '~/mixins/parseBioMixin'
+
 export default {
   name: 'ListItem',
   props: {
@@ -29,13 +31,16 @@ export default {
       required: true
     }
   },
+  mixins: [parseBioMixin],
   computed: {
     getURL() {
       return this.searchUser ? `/user/${this.result.username}` : `/page/${this.result.name}`
     },
-    getDescription() {
-      // return this.description.replace(/\r\n/g, "  ")
-      return this.searchUser ? this.result.bio : this.result.description
+    hasBio() {
+      return !!(this.searchUser ? this.result.bio : this.result.description)
+    },
+    displayBio() {
+      return this.parseBio(this.searchUser ? this.result.bio : this.result.description).replace(/\r\n/g, " ")
     },
     getBottomText() {
       return this.searchUser ? `${this.result.meme_count} meme${this.result.meme_count === 1 ? "" : "s"}` : `${this.result.num_subscribers} subscriber${this.result.num_subscribers === 1 ? "" : "s"}`
