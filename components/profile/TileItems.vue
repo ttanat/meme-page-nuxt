@@ -7,6 +7,7 @@
       @context-menu-event="closeAllContextMenus"
       @meme-deleted-event="removeTile"
     />
+    <div v-show="loading" class="loading w-100"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     <div v-if="no_content && !tiles.length" class="profile-empty" onclick="$('#uploadModal').modal('show')">
       <template v-if="$route.path === '/profile/likes'">No likes yet :(</template>
       <template v-else><font-awesome-icon :icon="['fas', 'plus']" /> Upload your first meme!</template>
@@ -24,20 +25,21 @@ export default {
     TileItem
   },
   mixins: [infiniteScrollMixin],
-  async mounted() {
-    await this.loadMore()
-    if (!this.tiles.length) this.no_content = true
+  mounted() {
+    this.loadMore()
   },
   data() {
     return {
       tiles: [],
       next: this.$route.path === "/profile" ? "/api/profile/memes/" : this.$route.path === "/profile/likes" ? "/api/profile/likes/" : `/api/user_page/memes/?u=${this.$route.params.username}`,
-      no_content: false
+      no_content: false,
+      loading: false
     }
   },
   methods: {
     loadMore() {
       if (this.next) {
+        this.loading = true
         this.$axios.get(this.next, {progress: false})
           .then(res => {
             if (res.data.results.length) {
@@ -48,6 +50,7 @@ export default {
             }
           })
           .catch(console.log)
+          .finally(() => this.loading = false)
       }
     },
     closeAllContextMenus() {
