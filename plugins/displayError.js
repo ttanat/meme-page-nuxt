@@ -7,10 +7,10 @@ Vue.mixin({
         position: 'bottom-center',
         duration,
         keepOnHover: true,
-        action : {
-          text : 'X',
+        action: {
+          text: 'X',
           class: 'red',
-          onClick : (toastObject) => {
+          onClick: toastObject => {
             toastObject.goAway(0)
           }
         }
