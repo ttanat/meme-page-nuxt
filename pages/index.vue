@@ -5,7 +5,7 @@ export default {
     return {
       title: "Meme Page",
       meta: [
-        {hid: "description", name: "description", content: "Post your dankest memes here!"},
+        {hid: "description", name: "description", content: "A place for the dankest memes and funniest content. Run your own meme page for your friends, or join existing communities and discover much more!"},
         {hid: "keywords", name: "keywords", content: "Meme,Memes,Funny,Posts"}
       ]
     }
