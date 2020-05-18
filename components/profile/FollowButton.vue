@@ -1,8 +1,8 @@
 <template>
   <button
     @click="follow"
-    :class="[isFollowing ? 'btn-outline-success' : 'btn-success']"
-    class="btn btn-sm follow-btn m-1"
+    :class="[isFollowing ? 'btn-outline-success' : 'btn-success', isUserPage ? 'm-1' : 'm-0']"
+    class="btn btn-sm follow-btn"
     :title="btnTitle"
     >
       {{ btnText }}

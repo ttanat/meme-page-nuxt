@@ -2,7 +2,7 @@
   <div>
     <div v-show="!editing" class="bio">
       <span v-if="updating">Updating <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></span>
-      <span v-else v-html="parseBio(currentBio)"></span>&ensp;<small v-show="!updating" @click="editBio" class="text-muted pointer"><span v-if="!currentBio" style="font-size: 13px;">Add {{ addText }}&ensp;</span><font-awesome-icon :icon="['fas', 'pen']" /></small>
+      <span v-else v-html="parseBio(currentBio)"></span><template v-if="currentBio">&ensp;</template><small v-show="!updating" @click="editBio" class="text-muted pointer"><span v-if="!currentBio" style="font-size: 13px;">Add {{ addText }}&ensp;</span><font-awesome-icon :icon="['fas', 'pen']" /></small>
     </div>
     <textarea ref="textarea" v-show="editing" v-model.trim="newBio" placeholder="Add your page description here!" rows="9"></textarea>
     <span>

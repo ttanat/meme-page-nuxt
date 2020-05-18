@@ -2,12 +2,12 @@
 <div>
   <div class="container-fluid content-section" style="width: 98%;margin-bottom: 5px;">
     <div class="row">
-      <div class="col" style="{padding: meme.caption ? '' : '15px'}">
-        <h5 style="margin-top: .65rem;color: lightgrey;font-weight: 420;">{{ meme.caption }}</h5>
+      <div class="col-9" :style="{paddingTop: meme.caption ? '' : '18px'}">
+        <h5 v-if="meme.caption" style="margin-top: .65rem;color: lightgrey;font-weight: 420;">{{ meme.caption }}</h5>
         <nuxt-link :to="'/user/' + meme.username" style="color: gainsboro;"><img v-if="meme.dp_url" class="rounded-circle" :src="meme.dp_url" height="24" width="24"><font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 20px;" />&ensp;{{ meme.username }}</nuxt-link>
         <span v-if="meme.pname" class="text-muted" style="font-size: 14px;">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<nuxt-link class="text-muted" :to="meme.pname">{{ meme.pdname || meme.pname }}</nuxt-link></span>
       </div>
-      <div class="col d-none d-lg-inline" id="rand-col" style="padding: 20px;">
+      <div class="col-3 d-none d-lg-inline" id="rand-col" :style="{padding: meme.caption ? '20px' : '15px'}">
         <a class="btn btn-sm btn-success float-right" href="/random" target="_blank">Random <font-awesome-icon :icon="['far', 'arrow-alt-circle-right']" /></a>
       </div>
     </div>
