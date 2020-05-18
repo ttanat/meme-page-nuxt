@@ -20,7 +20,6 @@
         </div>
       </div>
     </main>
-    <!-- <nuxt /> -->
   </div>
 </template>
 
@@ -45,10 +44,5 @@ export default {
   #mid {
     padding: 0 !important;
   }
-}
-.right-fixed {
-  position: sticky;
-  position: -webkit-sticky;
-  top: 4rem;
 }
 </style>

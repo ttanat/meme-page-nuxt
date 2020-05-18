@@ -14,7 +14,7 @@
             </small>
             <input type="file" ref="inputPic" accept="image/jpeg, image/png" class="d-none" @change="updateProfilePic">
           </template>
-          <FollowButton v-else :isFollowing="isFollowing" @following-changed-event="changeFollow" />
+          <FollowButton v-else :is-following="isFollowing" @following-changed-event="changeFollow" />
         </div>
       </div>
     </div>
