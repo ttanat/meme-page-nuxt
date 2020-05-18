@@ -21,6 +21,10 @@
                     <label>Upload to</label>
                     <select v-model="page" class="custom-select custom-select-sm mr-sm-2">
                       <option value="" selected>Your memes</option>
+                      <template v-if="$auth.loggedIn">
+                        <option v-for="m in $auth.user.moderating" :key="m.name" :value="m.name">{{ m.dname || m.name }}</option>
+                        <option v-for="s in $auth.user.subscriptions" :key="s.name" :value="s.name">{{ s.dname || s.name }}</option>
+                      </template>
                     </select>
                   </div>
                   <div class="col-sm-6">
