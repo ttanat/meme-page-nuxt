@@ -11,7 +11,7 @@
       @context-menu-event="closeAllContextMenus"
     />
     <div v-show="loading || $fetchState.pending" class="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
-    <div v-if="noMemes" style="margin-top: 30px;text-align: center;">
+    <div v-if="noMemes" class="no-memes">
       <template v-if="pathname === '/search'">No results matching query.<br><br>Return <nuxt-link to="/">home</nuxt-link></template>
       <template v-else-if="pathname === '/feed'">No new posts.<br><br>Subscribe to more pages or follow other users for more posts!</template>
       <template v-else>No memes here :(<br><br>Return <nuxt-link to="/">home</nuxt-link></template>
@@ -26,6 +26,12 @@ import lazyLoad from '~/assets/lazyLoad'
 
 export default {
   name: 'MemeItems',
+  props: {
+    pageConfig: {
+      type: Object,
+      required: false
+    }
+  },
   components: {
     MemeItem
   },
@@ -61,6 +67,7 @@ export default {
       Index wasn't using ScrollView layout, but other routes were
       Switched index to ScrollView layout
     */
+    if (!this.canLoadMore()) return false
     this.noMemes = false
     const { data } = await this.$axios.get(this.getNewURL(), {progress: false})
     const { results } = data
@@ -95,10 +102,15 @@ export default {
       const i = this.memes.findIndex(meme => meme.uuid === uuid)
       this.memes.splice(i, 1, {...this.memes[i], points: new_points_val})
     },
-    loadMore() {
-      if (this.next === null /*|| (this.pathname.startsWith("/page/") && (!SHOW || !PAGE_NUM_POSTS))*/
+    canLoadMore(check_next=false) {
+      if (check_next && this.next === null) return false
+      if ((this.pathname.startsWith("/page/") && (!this.pageConfig.show || !this.pageConfig.num_posts))
           || (!["/", "/all", "/feed", "/search"].includes(this.pathname) && !this.pathname.match(/^\/page\/[a-zA-Z0-9_]+$/)
           && !this.pathname.match(/^\/browse\/[a-zA-Z0-9_]+$|^\/browse\/tv-shows$/))) return false
+      return true
+    },
+    loadMore() {
+      if (!this.canLoadMore(true)) return false
       this.loading = true
 
       this.$axios.get(this.next, {progress: false})
@@ -125,7 +137,7 @@ export default {
     },
     getNewURL() {
       return this.pathname === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(new URL(window.location.href).searchParams.get("q").slice(0, 64))}`
-            : this.pathname.startsWith("/page/") && this.$auth.loggedIn && PRIVATE && SHOW ? `/api/memes/pv/?n=${encodeURIComponent(this.$route.name)}`
+            : this.pathname.startsWith("/page/") && this.$auth.loggedIn && this.pageConfig.private && this.pageConfig.show ? `/api/memes/pv/?n=${encodeURIComponent(this.$route.params.name)}`
             : `/api/memes/?p=${encodeURIComponent(this.pathname.slice(1))}`
     },
     loadLikes(uuids) {
