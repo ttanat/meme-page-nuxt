@@ -9,8 +9,9 @@
         <img src="~/assets/banner_dark.png" id="adm2">
       </div>
       <div class="col-md-3" id="right-col">
-        <h3 style="margin: 1rem;">Meme Page</h3>
-        <span style="margin: 1rem;">Drag and drop item to save</span>
+        <h3 class="m-3">Meme Page</h3>
+        <div class="m-3">Drag and drop item to save</div>
+        <a @click="copyLink" href="javascript:void(0);" class="m-3">Copy link</a>
         <img src="~/assets/banner_light.png" id="ad">
         <img src="~/assets/banner_dark.png" id="ad2">
       </div>
@@ -19,15 +20,33 @@
 </template>
 
 <script>
+import copy from 'copy-to-clipboard'
+
 export default {
   layout: 'plain',
   async asyncData({ $axios, route }) {
-    const { data } = await $axios.get(`/api/full_res${route.fullPath.slice(route.fullPath.indexOf("?"))}`)
-    return { url: data.url, isVid: data.isVid || false }
+    const obj = "m" in route.query ? "m" : "c" in route.query ? "c" : null
+    if (!obj) throw "Invalid URL"
+    try {
+      const { data } = await $axios.get(`/api/full_res/${obj}/${route.query[obj]}`)
+      return { url: data.url, isVid: data.isVid || false }
+    } catch(err) {
+      throw "404 Not found"
+    }
   },
   head() {
     return {
       title: "Full resolution"
+    }
+  },
+  methods: {
+    copyLink() {
+      copy(window.location.href)
+      this.$toast.success("Copied", {
+        position: 'bottom-center',
+        duration: 1500,
+        keepOnHover: true
+      })
     }
   }
 }
