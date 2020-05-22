@@ -1,5 +1,5 @@
 <template>
-  <div id="comments">
+  <div id="comment-section">
     <h6>Comments ({{ numComments }})</h6>
     <PostComment :num-comments="numComments" @new-comment-event="$emit('new-comment-posted-event')" />
     <CommentItems :num-comments="numComments" />
@@ -27,7 +27,7 @@ export default {
 </script>
 
 <style scoped>
-#comments {
+#comment-section {
   padding-bottom: 50px;
 }
 h6 {

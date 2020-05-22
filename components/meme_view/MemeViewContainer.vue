@@ -12,14 +12,15 @@
       </div>
     </div>
   </div>
-  <img v-if="['image/jpeg', 'image/png'].includes(meme.content_type)" class="content w-100" :src="meme.url" onclick="overlayOn()" @contextmenu.prevent style="cursor: zoom-in;">
+  <img v-if="['image/jpeg', 'image/png'].includes(meme.content_type)" class="content w-100" draggable="false" :src="meme.url" onclick="overlayOn()" @contextmenu.prevent style="cursor: zoom-in;">
   <video v-else-if="isGif" ref="vidMeme" @contextmenu.prevent class="content w-100" style="max-height: 85vh;" loop autoplay muted playsinline>
     <source :src="meme.url">
   </video>
   <video v-else ref="vidMeme" @contextmenu.prevent class="content w-100" style="max-height: 85vh;" loop :autoplay="isGif" :muted="isGif" :playsinline="isGif" :controls="!isGif" controlsList="nodownload" :preload="isGif ? 'auto' : 'metadata'">
     <source :src="meme.url">
   </video>
-  <table class="content-section" style="margin-bottom: 5px;">
+  <!-- ID is "comments" for scrolling to when URL has #comments hash -->
+  <table class="content-section" id="comments" style="margin-bottom: 5px;">
     <tr>
       <td>
         <VoteButtons :points="meme.points" @set-points-event="setPoints" />

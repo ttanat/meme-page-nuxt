@@ -3,7 +3,7 @@
     <div v-if="page.cover" style="overflow-x: hidden;"><img :src="page.cover" style="max-height: 150px;min-width: 100%;margin-left: 50%;transform: translateX(-50%);"></div>
 
     <div class="container-fluid">
-      <div class="row justify-content-center" style="/*padding-left: 4%;padding-right: 4%;">
+      <div class="row justify-content-center">
         <div class="col-lg-3 col-xl-2 mb-3 mt-4" id="page-left">
 
           <div class="container-fluid">

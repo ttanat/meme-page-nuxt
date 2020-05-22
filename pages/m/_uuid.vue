@@ -13,7 +13,7 @@
           <div class="item pt-0 w-100" :style="{paddingBottom: meme.tags.length ? '10px' : ''}">
             <MemeViewContainer :meme="meme" @set-points-event="setPoints" />
           </div>
-          <div v-if="meme.num_comments > 3" class="mt-3 mb-3" id="item-mid-ad">
+          <div v-if="meme.num_comments > 3" class="my-3" id="item-mid-ad">
             <img src="~/assets/argos.jpg" style="height: 100px;width: 100%;border-radius: 5px;cursor: pointer;">
           </div>
           <CommentSection :num-comments="meme.num_comments" @new-comment-posted-event="incrementCommentCount" />
