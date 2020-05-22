@@ -1,6 +1,15 @@
+<template>
+  <ScrollView />
+</template>
+
 <script>
+import ScrollView from '~/components/ScrollView'
+
 export default {
-  layout: 'ScrollView',
+  scrollToTop: true,
+  components: {
+    ScrollView
+  },
   head() {
     return {
       title: "Meme Page",
@@ -12,16 +21,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-/* @media (max-width: 575.98px) {
-  #mid {
-    padding: 0 !important;
-  }
-}
-.right-fixed {
-  position: sticky;
-  position: -webkit-sticky;
-  top: 4rem;
-} */
-</style>

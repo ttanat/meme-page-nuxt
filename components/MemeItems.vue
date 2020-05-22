@@ -58,15 +58,9 @@ export default {
     }
   },
   watch: {
-    "$route.params": "$fetch", // Duplicate request bug caused by this line
     "$route.query.q": "$fetch"
   },
   async fetch() {
-    /*
-      Duplicate request bug fixed
-      Index wasn't using ScrollView layout, but other routes were
-      Switched index to ScrollView layout
-    */
     if (!this.canLoadMore()) return false
     this.noMemes = false
     const { data } = await this.$axios.get(this.getNewURL(), {progress: false})
@@ -103,6 +97,8 @@ export default {
       this.memes.splice(i, 1, {...this.memes[i], points: new_points_val})
     },
     canLoadMore(check_next=false) {
+      // check_next is false when called from async fetch at the start
+      // ensure that memes are loaded during async fetch even though this.next is null
       if (check_next && this.next === null) return false
       if ((this.pathname.startsWith("/page/") && (!this.pageConfig.show || !this.pageConfig.num_posts))
           || (!["/", "/all", "/feed", "/search"].includes(this.pathname) && !this.pathname.match(/^\/page\/[a-zA-Z0-9_]+$/)
@@ -119,7 +115,7 @@ export default {
           const { results } = data
           if (results.length) {
             const l_uuids = []
-            for (let r of results) {
+            for (const r of results) {
               if (!this.memes.find(m => m.uuid === r.uuid)) {
                 this.memes.push(r)
                 l_uuids.push(r.uuid)
@@ -136,7 +132,7 @@ export default {
         .finally(() => this.loading = false)
     },
     getNewURL() {
-      return this.pathname === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(new URL(window.location.href).searchParams.get("q").slice(0, 64))}`
+      return this.pathname === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(this.$route.query.q.slice(0, 64))}`
             : this.pathname.startsWith("/page/") && this.$auth.loggedIn && this.pageConfig.private && this.pageConfig.show ? `/api/memes/pv/?n=${encodeURIComponent(this.$route.params.name)}`
             : `/api/memes/?p=${encodeURIComponent(this.pathname.slice(1))}`
     },
@@ -144,11 +140,11 @@ export default {
       if (this.$auth.loggedIn && uuids.length) {
         this.$axios.get(`/api/likes/m/?${uuids.slice(0, 20).map(uuid => `u=${uuid}`).join("&")}`, {progress: false})
           .then(res => {
-            for (let vote of res.data) {
-              const meme = this.$children.find(c => c.meme.uuid === vote["uuid"])
+            for (const vote of res.data) {
+              const meme = this.$children.find(c => c.meme.uuid === vote.uuid)
               if (meme) {
-                meme.isLiked = vote["point"] === 1
-                meme.isDisliked = vote["point"] === -1
+                meme.isLiked = vote.point === 1
+                meme.isDisliked = vote.point === -1
               }
             }
           })
@@ -171,7 +167,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

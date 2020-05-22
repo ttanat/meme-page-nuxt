@@ -1,6 +1,15 @@
+<template>
+  <ScrollView />
+</template>
+
 <script>
+import ScrollView from '~/components/ScrollView'
+
 export default {
-  layout: 'ScrollView',
+  scrollToTop: true,
+  components: {
+    ScrollView
+  },
   head() {
     return {
       title: "All Memes - Meme Page",

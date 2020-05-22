@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import NavBar from '~/components/NavBar'
+import NavBar from '~/components/header/NavBar'
 import ModalManager from '~/components/modals/ModalManager'
 
 export default {

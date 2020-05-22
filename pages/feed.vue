@@ -1,7 +1,16 @@
+<template>
+  <ScrollView />
+</template>
+
 <script>
+import ScrollView from '~/components/ScrollView'
+
 export default {
-  layout: 'ScrollView',
   middleware: 'custom-auth',
+  scrollToTop: true,
+  components: {
+    ScrollView
+  },
   head() {
     return {
       title: "Feed - Meme Page",
