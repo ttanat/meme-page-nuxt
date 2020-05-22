@@ -5,21 +5,22 @@
       <h6 class="mt-2 caption">{{ meme.caption }}</h6>
     </div>
 
-    <div ref="cbody" @contextmenu.prevent="openContextMenu" class="item-body" :style="{backgroundColor: isVideo ? '#111' : ''}" style="height: 80vh;">
+    <div @contextmenu.prevent="openContextMenu" class="item-body" :class="{'item-body-loading': loading}" :style="{backgroundColor: isVideo ? '#111' : ''}">
       <template v-if="isVideo">
         <nuxt-link @click.prevent="vidClick" :to="'/m/'+meme.uuid" target="_blank" class="item-body-link" draggable="false">
-          <video ref="memeEl" draggable="false" class="content autoplay" controlsList="nodownload" :muted="muted" loop playsinline @loadeddata="rmCBodyHeight" style="max-height: 70vh;">
+          <video ref="memeEl" draggable="false" class="content autoplay" controlsList="nodownload" :muted="muted" loop playsinline @loadeddata="memeLoaded" style="max-height: 70vh;">
             <source :data-src="meme.url">
           </video>
         </nuxt-link>
-        <div v-if="paused" @click="togglePlayback" class="rounded-circle play-circle" :style="{paddingLeft: isGif ? '' : '.35rem'}">
+        <div v-if="paused && !loading" @click="togglePlayback" class="rounded-circle play-circle" :style="{paddingLeft: isGif ? '' : '.35rem'}">
           <h5 v-if="isGif">GIF</h5><font-awesome-icon v-else :icon="['fas', 'play']" class="play-icon" />
         </div>
         <font-awesome-icon v-if="!isGif" @click="$emit('toggle-sound-event')" :icon="['fas', muted ? 'volume-mute' : 'volume-up']" class="sound-toggle" />
       </template>
       <nuxt-link v-else :to="'/m/'+meme.uuid" target="_blank" class="item-body-link" draggable="false">
-        <img ref="memeEl" @load="rmCBodyHeight" draggable="false" :data-srcset="meme.url" data-src="/media/users/john/profile/ivz59jjdeht31.jpg" class="content fade-in" loading="lazy">
+        <img ref="memeEl" @load="memeLoaded" draggable="false" :data-srcset="meme.url" :data-src="meme.url" class="content fade-in" loading="lazy">
       </nuxt-link>
+      <div v-if="loading" class="loading p-0"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     </div>
 
     <table>
@@ -112,19 +113,20 @@ export default {
       isDisliked: false,
       isVideo: this.meme.content_type.startsWith('video/') || this.meme.content_type === "image/gif",
       isGif: this.meme.content_type === "image/gif",
-      paused: true
+      paused: true,
+      loading: true
     }
   },
   mounted() {
     this.$emit("new-meme-event", this.$refs.memeEl, this.isVideo)
   },
   methods: {
+    memeLoaded() {this.loading = false},
     vidClick() {this.paused ? this.togglePlayback() : window.open(`/m/${this.meme.uuid}`)},
     togglePlayback(play=true) {
         this.paused = !play
         play ? this.$refs.memeEl.play() : this.$refs.memeEl.pause()
     },
-    rmCBodyHeight() {this.$refs.cbody.style.height = null},
     copyLink() {copy(`${window.location.origin}/m/${this.meme.uuid}`)},
     vote(v) {this.sendVote(this.meme, v, "m")},
     restartVid() {this.$refs.memeEl.currentTime = 0},
@@ -174,8 +176,18 @@ export default {
 }
 .item-body {
   max-height: 30rem;
-  /* max-height: 80vh; */
   position: relative;
+}
+.item-body-loading {
+  height: 80vh;
+  position: relative;
+}
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
 }
 .item-body-link {
   max-height: inherit;
