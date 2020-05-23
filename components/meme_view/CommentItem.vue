@@ -36,7 +36,7 @@
           <span v-show="!editing" :class="{'d-block': !editing, 'comment-deleted': isDeleted}" class="comment-content mr-2">{{ isDeleted ? "Comment has been REDACTED" : comment.content }}</span>
           <input v-if="!isDeleted" v-show="editing && isAuthenticated && isOwnComment" ref="editCommentInput" @keyup.enter="editComment(comment.uuid)" class="edit-comment-field" :value="comment.content">
           <a v-if="comment.image" :href="'/img?c='+comment.uuid" target="_blank">
-            <img ref="commentImg" class="mt-1 comment-image fade-in" :data-srcset="comment.image" data-src="/media/users/john/profile/ivz59jjdeht31.jpg">
+            <img ref="commentImg" class="mt-1 comment-image fade-in" :data-src="comment.image">
           </a>
 
           <div v-if="!isDeleted" class="container-fluid">
@@ -54,7 +54,16 @@
             </small>
             <br>
             <div v-show="showingReplies">
-              <ReplyItem v-for="reply in replies" :key="reply.uuid" :reply="reply" @reply-event="replyAdded" @new-reply-loaded-event="observeNewReply" @reply-edited-event="replyEdited" @reply-deleted-event="replyDeleted" />
+              <ReplyItem
+                v-for="reply in replies"
+                :key="reply.uuid"
+                :reply="reply"
+                @reply-event="replyAdded"
+                @new-reply-loaded-event="observeNewReply"
+                @reply-edited-event="replyEdited"
+                @reply-deleted-event="replyDeleted"
+                @set-points-event="setPoints"
+              />
             </div>
             <div v-if="loadMoreBtnShowing && showingReplies"><small class="comment-small" @click="loadReplies">Load more <font-awesome-icon :icon="['fas', 'angle-right']" /></small></div>
             <div v-show="loadSpinnerShowing" style="font-size: 20px;"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
@@ -79,9 +88,10 @@
 <script>
 import ReplyItem from './ReplyItem'
 import voteMixin from '~/mixins/voteMixin'
-import lazyLoad from '~/assets/lazyLoad'
 import formatDate from '~/assets/formatDate'
 import checkAuthMixin from '~/mixins/checkAuthMixin'
+import loadLikesMixin from '~/mixins/loadLikesMixin'
+import lazyLoadMixin from '~/mixins/lazyLoadMixin'
 
 export default {
   name: 'CommentItem',
@@ -94,7 +104,7 @@ export default {
       required: true
     }
   },
-  mixins: [voteMixin, checkAuthMixin],
+  mixins: [voteMixin, checkAuthMixin, lazyLoadMixin, loadLikesMixin],
   data() {
     return {
       replies: [],
@@ -111,7 +121,6 @@ export default {
       replyInputValue: "",
       replyInputPlaceholder: "Write a reply",
       imageFilename: "",
-      lazyReplyObserver: new IntersectionObserver(lazyLoad),
     }
   },
   mounted() {
@@ -138,7 +147,7 @@ export default {
     }
   },
   methods: {
-    observeNewReply(reply) {this.lazyReplyObserver.observe(reply)},
+    observeNewReply(reply) {this.lazyObjectObserver.observe(reply)},
     toggleEdit() {
       this.editing = !this.editing
       if (this.editing) this.$nextTick(() => this.$refs.editCommentInput.focus())
@@ -156,7 +165,7 @@ export default {
         .then(res => {
           if (res.status === 204) this.$emit("comment-deleted-event", this.comment.uuid)
         })
-        .catch(err => /**/console.log(err))
+        .catch(console.log)
     },
     editComment(uuid) {
       const val = this.$refs.editCommentInput.value.slice(0, 150).trim()
@@ -167,9 +176,12 @@ export default {
       data.set("u", uuid)
       this.$axios.post("/comment/edit", data, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
         .then(res => this.$emit("comment-edited-event", uuid, val))
-        .catch(err => /**/console.log(err))
+        .catch(console.log)
     },
     vote(v) {this.sendVote(this.comment, v, "c", this.hidePoints)},
+    setPoints(uuid, new_points_val) {
+      this.replies.find(reply => reply.uuid === uuid).points = new_points_val
+    },
     typeReply() {
       if (this.checkAuth()) {
         this.typingReply = !this.typingReply
@@ -195,23 +207,10 @@ export default {
           }
           this.loadMoreBtnShowing = !!response["next"]
           this.repliesAPILink = response["next"]
-          if (response["auth"] && this.isAuthenticated && l_uuids.length) this.loadReplyLikes(l_uuids)
+          if (this.isAuthenticated && l_uuids.length) this.loadLikes(l_uuids, "r")
         })
-        .catch(err => /**/console.log(err))
+        .catch(console.log)
         .finally(() => this.loadSpinnerShowing = false)
-    },
-    loadReplyLikes(uuids) {
-      if (this.isAuthenticated && uuids.length) {
-        this.$axios.get(`/api/likes/c/?${uuids.slice(0, 20).map(uuid => `u=${uuid}`).join("&")}`)
-          .then(res => {
-            for (vote of res.data) {
-              const i = this.$children.findIndex(c => c.reply.uuid === vote["uuid"])
-              this.$children[i].isLiked = vote["point"] === 1
-              this.$children[i].isDisliked = vote["point"] === -1
-            }
-          })
-          .catch(err => console.log(err))
-      }
     },
     submitReply() {
       const r_input = this.$refs.replyInput
@@ -225,7 +224,7 @@ export default {
         this.replyInputValue = ""
         this.replyInputPlaceholder = "Sending..."
 
-        this.$axios.post("/reply", data, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
+        this.$axios.post("/reply", data)
           .then(res => res.data)
           .then(response => {
             this.typingReply = false
@@ -250,7 +249,7 @@ export default {
     },
     imageInputValid() {
       const input = this.$refs.imageInput
-      return input.files.length === 1 && comment_img_types.includes(input.files[0].type)
+      return input.files.length === 1 && ["image/jpeg", "image/png"].includes(input.files[0].type)
     },
     addReplyImage() {
       this.imageInputValid() ? this.imageFilename = this.$refs.imageInput.files[0].name : this.removeReplyImage()
@@ -279,6 +278,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @import '~/assets/comments.css';
 </style>

@@ -16,15 +16,15 @@
 <script>
 import CommentItem from './CommentItem'
 import infiniteScrollMixin from '~/mixins/infiniteScrollMixin'
-import lazyLoad from '~/assets/lazyLoad'
-import formatDate from '~/assets/formatDate'
+import lazyLoadMixin from '~/mixins/lazyLoadMixin'
+import loadLikesMixin from '~/mixins/loadLikesMixin'
 
 export default {
   name: 'CommentItems',
   components: {
     CommentItem
   },
-  mixins: [infiniteScrollMixin],
+  mixins: [infiniteScrollMixin, lazyLoadMixin, loadLikesMixin],
   props: {
     numComments: {
       type: Number,
@@ -37,8 +37,7 @@ export default {
       scrollObserver: null,
       scrollRoot: null,
       next: "",
-      loading: false,
-      lazyCommentObserver: new IntersectionObserver(lazyLoad)
+      loading: false
     }
   },
   created() {
@@ -46,11 +45,10 @@ export default {
   },
   methods: {
     observeNewComment(comment) {
-      this.lazyCommentObserver.observe(comment)
+      this.lazyObjectObserver.observe(comment)
     },
     setPoints(uuid, new_points_val) {
-      const i = this.comments.findIndex(comment => comment.uuid === uuid)
-      this.comments.splice(i, 1, {...this.comments[i], points: new_points_val})
+      this.comments.find(comment => comment.uuid === uuid).points = new_points_val
     },
     loadMore() {
       if (this.next === null) return false
@@ -61,7 +59,7 @@ export default {
         .then(data => {
           const l_uuids = []
           let offset = 0
-          for (let r of data.results) {
+          for (const r of data.results) {
             if (!this.comments.find(c => c.uuid === r.uuid)) {
               this.comments.push(r)
               l_uuids.push(r.uuid)
@@ -69,7 +67,7 @@ export default {
               offset++
             }
           }
-          if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids)
+          if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids, "c")
           this.next = data.next
           if (offset) {
             const url = new URL(this.next)
@@ -80,19 +78,6 @@ export default {
         })
         .catch(console.log)
         .finally(() => this.loading = false)
-    },
-    loadLikes(uuids) {
-      if (this.$auth.loggedIn && uuids.length) {
-        this.$axios.get(`/api/likes/c/?${uuids.slice(0, 20).map(uuid => `u=${uuid}`).join("&")}`, {progress: false})
-          .then(res => {
-            for (let vote of res.data) {
-              const meme = this.$children.find(c => c.comment.uuid === vote["uuid"])
-              meme.isLiked = vote["point"] === 1
-              meme.isDisliked = vote["point"] === -1
-            }
-          })
-          .catch(console.log)
-      }
     },
     getComment(uuid) {
       const i = this.comments.findIndex(c => c.uuid === uuid)
@@ -112,7 +97,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

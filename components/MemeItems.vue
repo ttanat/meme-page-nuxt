@@ -22,7 +22,9 @@
 <script>
 import MemeItem from './MemeItem'
 import infiniteScrollMixin from '~/mixins/infiniteScrollMixin'
-import lazyLoad from '~/assets/lazyLoad'
+import lazyLoadMixin from '~/mixins/lazyLoadMixin'
+import autoplayMixin from '~/mixins/autoplayMixin'
+import loadLikesMixin from '~/mixins/loadLikesMixin'
 
 export default {
   name: 'MemeItems',
@@ -35,7 +37,7 @@ export default {
   components: {
     MemeItem
   },
-  mixins: [infiniteScrollMixin],
+  mixins: [infiniteScrollMixin, lazyLoadMixin, autoplayMixin, loadLikesMixin],
   created() {
     window.addEventListener("blur", this.pauseAll)
   },
@@ -47,8 +49,6 @@ export default {
       scrollRoot: null,
       next: null,
       loading: false,
-      lazyMemeObserver: new IntersectionObserver(lazyLoad, {rootMargin: "300px 0px"}),
-      autoplayObserver: null,
       noMemes: false
     }
   },
@@ -68,20 +68,12 @@ export default {
     this.memes = results
     this.$nextTick(() => {if (results.length) {
       const l_uuids = results.map(r => r.uuid)
-      if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids)
+      if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids, "m")
       this.next = data.next
     } else {
       this.noMemes = true
       this.scrollObserver = this.scrollRoot = null
     }})
-  },
-  mounted() {
-    this.autoplayObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const i = this.$children.findIndex(child => child.$refs.memeEl === entry.target)
-        if (i > -1) this.$children[i].togglePlayback(entry.intersectionRatio > 0.9)
-      })
-    }, {threshold: [0.1, 0.9]})
   },
   methods: {
     toggleSound() {
@@ -89,17 +81,16 @@ export default {
       this.$children.forEach(c => {if (c.isVideo) c.$refs.memeEl.muted = this.muted})
     },
     observeNewMeme(meme, isVideo) {
-      this.lazyMemeObserver.observe(meme)
+      this.lazyObjectObserver.observe(meme)
       if (isVideo) this.autoplayObserver.observe(meme)
     },
     setPoints(uuid, new_points_val) {
-      const i = this.memes.findIndex(meme => meme.uuid === uuid)
-      this.memes.splice(i, 1, {...this.memes[i], points: new_points_val})
+      this.memes.find(meme => meme.uuid === uuid).points = new_points_val
     },
-    canLoadMore(check_next=false) {
-      // check_next is false when called from async fetch at the start
+    canLoadMore(check_next_url=false) {
+      // check_next_url is false when called from async fetch at the start
       // ensure that memes are loaded during async fetch even though this.next is null
-      if (check_next && this.next === null) return false
+      if (check_next_url && this.next === null) return false
       if ((this.pathname.startsWith("/page/") && (!this.pageConfig.show || !this.pageConfig.num_posts))
           || (!["/", "/all", "/feed", "/search"].includes(this.pathname) && !this.pathname.match(/^\/page\/[a-zA-Z0-9_]+$/)
           && !this.pathname.match(/^\/browse\/[a-zA-Z0-9_]+$|^\/browse\/tv-shows$/))) return false
@@ -121,7 +112,7 @@ export default {
                 l_uuids.push(r.uuid)
               }
             }
-            if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids)
+            if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids, "m")
             this.next = data.next
           } else {
             if (this.scrollRoot) this.scrollObserver.unobserve(this.scrollRoot)
@@ -133,23 +124,8 @@ export default {
     },
     getNewURL() {
       return this.pathname === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(this.$route.query.q.slice(0, 64))}`
-            : this.pathname.startsWith("/page/") && this.$auth.loggedIn && this.pageConfig.private && this.pageConfig.show ? `/api/memes/pv/?n=${encodeURIComponent(this.$route.params.name)}`
-            : `/api/memes/?p=${encodeURIComponent(this.pathname.slice(1))}`
-    },
-    loadLikes(uuids) {
-      if (this.$auth.loggedIn && uuids.length) {
-        this.$axios.get(`/api/likes/m/?${uuids.slice(0, 20).map(uuid => `u=${uuid}`).join("&")}`, {progress: false})
-          .then(res => {
-            for (const vote of res.data) {
-              const meme = this.$children.find(c => c.meme.uuid === vote.uuid)
-              if (meme) {
-                meme.isLiked = vote.point === 1
-                meme.isDisliked = vote.point === -1
-              }
-            }
-          })
-          .catch(console.log)
-      }
+           : this.pathname.startsWith("/page/") && this.$auth.loggedIn && this.pageConfig.private && this.pageConfig.show ? `/api/memes/pv/?n=${encodeURIComponent(this.$route.params.name)}`
+           : `/api/memes/?p=${encodeURIComponent(this.pathname.slice(1))}`
     },
     pauseAll() {
       this.$children.forEach(c => {
@@ -157,9 +133,7 @@ export default {
       })
     },
     closeAllContextMenus() {
-      this.$children.forEach(c => {
-        c.$refs.menu.close()
-      })
+      this.$children.forEach(c => c.$refs.menu.close())
     }
   },
   destroyed() {
