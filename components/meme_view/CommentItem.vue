@@ -50,7 +50,7 @@
 
           <div v-if="comment.num_replies">
             <small @click="viewReplies" class="comment-small">
-              {{ showingReplies ? "Hide" : "View" }} {{ comment.num_replies === 1 ? "reply" : comment.num_replies + " replies" }} <font-awesome-icon :icon="['fas', showingReplies ? 'caret-up' : 'caret-down']" />
+              {{ showingReplies ? "Hide" : "View" }} {{ comment.num_replies === 1 ? "reply" : formatNumber(comment.num_replies) + " replies" }} <font-awesome-icon :icon="['fas', showingReplies ? 'caret-up' : 'caret-down']" />
             </small>
             <br>
             <div v-show="showingReplies">
@@ -92,6 +92,7 @@ import formatDateMixin from '~/mixins/formatDateMixin'
 import checkAuthMixin from '~/mixins/checkAuthMixin'
 import loadLikesMixin from '~/mixins/loadLikesMixin'
 import lazyLoadMixin from '~/mixins/lazyLoadMixin'
+import formatNumberMixin from '~/mixins/formatNumberMixin'
 
 export default {
   name: 'CommentItem',
@@ -104,7 +105,7 @@ export default {
       required: true
     }
   },
-  mixins: [formatDateMixin, voteMixin, checkAuthMixin, lazyLoadMixin, loadLikesMixin],
+  mixins: [formatDateMixin, formatNumberMixin, voteMixin, checkAuthMixin, lazyLoadMixin, loadLikesMixin],
   data() {
     return {
       replies: [],
@@ -137,7 +138,7 @@ export default {
       return this.isAuthenticated && this.$auth.user ? this.$auth.user.image : false
     },
     displayPoints() {
-      return this.comment.points && !this.hidePoints ? this.comment.points : ""
+      return this.comment.points && !this.hidePoints ? this.formatNumber(this.comment.points) : ""
     },
     isDeleted() {
       return !this.comment.content && !this.comment.image

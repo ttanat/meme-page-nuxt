@@ -3,7 +3,7 @@
     <button @click="vote('l')" :class="{green: isLiked}" class="btn btn-sm lower-btn thumbs like">
       <font-awesome-icon :icon="[isLiked ? 'fas' : 'far', 'thumbs-up']" />
     </button>
-    <span class="text-muted">{{ points }} point{{ points === 1 ? "" : "s" }}</span>
+    <span class="text-muted" :title="points > 999 ? points.toLocaleString() : ''">{{ formatNumber(points) }} point{{ points === 1 ? "" : "s" }}</span>
     <button @click="vote('d')" :class="{red: isDisliked}" class="btn btn-sm lower-btn thumbs dislike ml-3">
       <font-awesome-icon :icon="[isDisliked ? 'fas' : 'far', 'thumbs-down']" />
     </button>
@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import formatNumberMixin from '~/mixins/formatNumberMixin'
 import voteMixin from '~/mixins/voteMixin'
 
 export default {
@@ -22,7 +23,7 @@ export default {
       default: 0
     }
   },
-  mixins: [voteMixin],
+  mixins: [formatNumberMixin, voteMixin],
   mounted() {
     if (this.$auth.loggedIn) {
       this.$axios.get(`/api/likes/m/?u=${this.$route.params.uuid}`)
@@ -53,7 +54,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

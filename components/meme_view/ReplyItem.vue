@@ -70,10 +70,11 @@
 import voteMixin from '~/mixins/voteMixin'
 import formatDateMixin from '~/mixins/formatDateMixin'
 import checkAuthMixin from '~/mixins/checkAuthMixin'
+import formatNumberMixin from '~/mixins/formatNumberMixin'
 
 export default {
   name: 'ReplyItem',
-  mixins: [formatDateMixin, voteMixin, checkAuthMixin],
+  mixins: [formatDateMixin, formatNumberMixin, voteMixin, checkAuthMixin],
   props: {
     reply: {
       type: Object,
@@ -113,7 +114,7 @@ export default {
       return this.reply.content.slice(this.reply.content.indexOf(" "))
     },
     displayPoints() {
-      return this.reply.points && !this.hidePoints ? this.reply.points : ""
+      return this.reply.points && !this.hidePoints ? this.formatNumber(this.reply.points) : ""
     },
     isDeleted() {
       return !this.reply.content && !this.reply.image

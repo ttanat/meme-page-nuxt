@@ -29,7 +29,7 @@
           <button @click="vote('l')" :class="{green: isLiked}" class="btn btn-sm lower-btn thumbs like pr-0">
             <font-awesome-icon :icon="[isLiked ? 'fas' : 'far', 'thumbs-up']" />
           </button>
-          <span class="text-muted">&nbsp;<span class="points">{{ meme.points }}</span></span>
+          <span class="text-muted">&nbsp;<span class="points">{{ formatNumber(meme.points) }}</span></span>
         </td>
         <td>
           <button @click="vote('d')" :class="{red: isDisliked}" class="btn btn-sm lower-btn thumbs dislike">
@@ -38,7 +38,7 @@
         </td>
         <td>
           <nuxt-link class="btn btn-sm lower-btn" :to="'/m/'+meme.uuid+'#comments'" target="_blank">
-            <font-awesome-icon :icon="['far', 'comment']" />&nbsp;{{ meme.num_comments }}
+            <font-awesome-icon :icon="['far', 'comment']" />&nbsp;{{ formatNumber(meme.num_comments) }}
           </nuxt-link>
         </td>
         <td v-if="isVideo">
@@ -90,6 +90,7 @@
 import voteMixin from '~/mixins/voteMixin'
 import copy from 'copy-to-clipboard'
 import VueContext from 'vue-context'
+import formatNumberMixin from '~/mixins/formatNumberMixin'
 
 export default {
   name: 'Meme',
@@ -106,7 +107,7 @@ export default {
       required: true
     }
   },
-  mixins: [voteMixin],
+  mixins: [formatNumberMixin, voteMixin],
   data() {
     return {
       isLiked: false,
