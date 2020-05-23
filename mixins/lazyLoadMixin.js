@@ -16,7 +16,7 @@ export default {
             }
             el.firstChild.src = el.firstChild.dataset.src
             el.firstChild.removeAttribute("data-src")
-            el.load()
+            try{el.load()}catch{}
           } else if (el.tagName === "IMG") {
             el.onload = () => {
               el.classList.add("faded-in")
