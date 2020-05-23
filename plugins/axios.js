@@ -29,12 +29,13 @@ function refresh(context, config, resolve, reject) {
 export default function (context) {
   context.$axios.onRequest(config => {
     return new Promise((resolve, reject) => {
-      if (context.$auth.loggedIn && !["/api/token/refresh/", "/api/token/", "/api/auth/logout"].includes(config.url)) {
+      if (!context.$auth.loggedIn || ["/api/token/refresh/", "/api/token/", "/api/auth/logout"].includes(config.url)) {
+        resolve(config)
+      } else {
         // If access token about to expire...
         if (getCurrentTime() + 10000 > getAccessTokenExp(context)) {
           // If refresh token about to expire, log out
           if (getCurrentTime() + 10000 > getRefreshTokenExp(context)) {
-            context.$auth.logout()
             reject(new Error("Session expired. Please log in again."))
           } else {
             // Else, get new access token
@@ -43,8 +44,6 @@ export default function (context) {
         } else {
           resolve(config)
         }
-      } else {
-        resolve(config)
       }
     })
   })
@@ -54,27 +53,24 @@ export default function (context) {
       /*
         Case: Access token is expired and link is opened in new tab
         Default behaviour: Users are automatically logged out
-        This promise: Tries to refresh the access token if refresh token not expired
+        This promise refreshes the access token if the refresh token is not expired
       */
       if (err.response && err.response.status === 401 && err.response.config.url !== "/api/token/refresh/"
-          && getCurrentTime() + 10000 < getRefreshTokenExp(context)) {
+          && context.$auth.getRefreshToken('local') && getCurrentTime() + 10000 < getRefreshTokenExp(context)) {
         refresh(context, err.response.config, resolve, reject)
       } else {
-        reject(err)
-      }
-    })
-      .then(() => Promise.resolve()) // Resolve and reject both work
-      .catch(() => {
         // If refresh failed or refresh token isn't valid
-        if (err.response && err.response.config.url === "/api/token/" && err.response.status === 401) {
-          // If login failed, do nothing
-        } else if (err.message === "Session expired. Please log in again." || (err.response && err.response.status === 401)) {
+        if (err.message === "Session expired. Please log in again."
+            || (err.response && err.response.status === 401 && err.response.config.url !== "/api/token/")) {
           // If token refresh failed or not authenticated, logout
+          // Or if 401 response not from logging in
           alert("Session expired. Please log in again.")
           context.$auth.logout()
           // If logged out when navigating to '/', then memes will not load
         }
-        Promise.reject(err)
-      })
+        reject(err)
+      }
+    })
+      .then(() => Promise.resolve()) // Resolve and reject both work
   })
 }
