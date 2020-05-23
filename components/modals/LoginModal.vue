@@ -54,7 +54,15 @@ export default {
             } catch {}
             this.$auth.setRefreshToken("local", r.data.refresh)
           })
-          .catch(err => alert(err.response && err.response.status === 401 ? "Username or password incorrect" : "Unexpected error occurred. Please try again"))
+          .catch(err => {
+            const e401 = err.response && err.response.status === 401
+            const message = e401 ? "Username or password incorrect" : "Unexpected error occurred. Please try again"
+            this.$toast.error(message, {
+              position: 'top-center',
+              duration: 1500,
+              keepOnHover: true
+            })
+          })
           .finally(() => this.loading = false)
       }
     }
