@@ -51,7 +51,7 @@ export default {
         this.commentContent = ""
         this.placeholder = "Sending..."
 
-        axios.post("/comment/post", data, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
+        this.$axios.post("/comment/post", data)
           .then(res => res.data)
           .then(response => {
             this.removeFile()
@@ -70,8 +70,8 @@ export default {
     fileValid() {
       const input = this.$refs.inputFile
       if (input.files.length !== 1) return false
-      if (!comment_img_types.includes(input.files[0].type)) {
-        alert("Supported media types: JPG, PNG, GIF")
+      if (!["image/jpeg", "image/png"].includes(input.files[0].type)) {
+        alert("Supported media types: JPG, PNG")
         return false
       } else if (input.files[0].size > 3145728) {
         alert("Maximum file size: 3 MB")

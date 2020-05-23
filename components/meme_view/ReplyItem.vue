@@ -38,10 +38,7 @@
 
         <input v-if="!isDeleted" v-show="editing && isAuthenticated && isOwnReply" ref="editReplyInput" @keyup.enter="editReply(reply.uuid)" class="edit-comment-field" :value="reply.content">
         <a v-if="reply.image" :href="'/img?c='+reply.uuid" target="_blank">
-          <picture ref="replyImg">
-            <source :data-src="reply.image">
-            <img class="mt-1 reply-image" data-src="/media/users/john/profile/ivz59jjdeht31.jpg">
-          </picture>
+          <img ref="replyImg" class="mt-1 reply-image fade-in" :data-src="reply.image">
         </a>
 
         <div v-if="!isDeleted" class="container-fluid">
@@ -112,6 +109,7 @@ export default {
       return formatDate(this.reply.post_date)
     },
     rpattern() {
+      if (!this.reply.content) return null // Delete this line later
       return this.reply.content.match(/^@([a-z0-9_]+) /i)
     },
     replyAfterMention() {
@@ -147,11 +145,11 @@ export default {
     editReply(uuid) {
       const val = event.target.value.slice(0, 150).trim()
       this.toggleEdit(uuid)
-      if (AUTH && val.length && val !== this.reply.content) {
+      if (this.isAuthenticated && val.length && val !== this.reply.content) {
         const data = new FormData()
         data.set("c", val)
         data.set("u", uuid)
-        axios.post("/comment/edit", data, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
+        this.$axios.post("/comment/edit", data)
           .then(res => this.$emit("reply-edited-event", uuid, val))
           .catch(err => display_error(err))
       }
@@ -181,7 +179,7 @@ export default {
         this.replyInputValue = ""
         this.replyInputPlaceholder = "Sending..."
 
-        axios.post("/reply", data, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
+        this.$axios.post("/reply", data)
           .then(res => res.data)
           .then(response => {
             this.typingReply = false
@@ -213,6 +211,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @import '~/assets/comments.css';
 </style>

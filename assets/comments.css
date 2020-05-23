@@ -18,6 +18,7 @@
   border-bottom: solid 1.5px royalblue;
   line-height: 2.25;
   width: calc(100% - 35px - 22px - 54px);
+  outline: none;
 }
 .r-post-btn {
   height: 28px;
