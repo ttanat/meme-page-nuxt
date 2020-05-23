@@ -67,11 +67,12 @@ export default {
     return { meme: data }
   },
   head() {
+    this.$store.commit("setCurrentPage", "Meme")
     return {
       title: `${this.meme.caption ? `${this.meme.caption} - ` : ''}Meme Page`,
       meta: [
-        {hid: "description", name: "description", content: this.meme.caption},
-        {hid: "keywords", name: "keywords", content: `Meme,${this.meme.tags.map(t => t.slice(1)).join(",")}`}
+        {hid: "description", name: "description", content: `${this.meme.caption} ${this.meme.tags.join(' ')}`},
+        {hid: "keywords", name: "keywords", content: `Meme,Memes,Funny,Dank,${this.meme.tags.map(t => t.slice(1)).join(",")}`}
       ]
     }
   },

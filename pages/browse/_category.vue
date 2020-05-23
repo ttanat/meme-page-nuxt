@@ -12,12 +12,12 @@ export default {
   },
   head() {
     const category = this.$route.params.category
+    const title = category === "tv-shows" ? "TV Shows"
+                : ["nba", "nfl"].includes(category) ? category.toUpperCase()
+                : `${category[0].toUpperCase()}${category.slice(1)}`
+    this.$store.commit("setCurrentPage", title)
     return {
-      title: `${category === "tv-shows" ? "TV Shows" : `${category[0].toUpperCase()}${category.slice(1)}`} - Meme Page`,
-      meta: [
-        {hid: "description", name: "description", content: "Post your dankest memes here!"},
-        {hid: "description", name: "keywords", content: "Meme,Memes,Funny,Posts"}
-      ]
+      title: `${title} - Meme Page`
     }
   }
 }

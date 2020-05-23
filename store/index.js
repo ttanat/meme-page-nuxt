@@ -7,7 +7,7 @@ export const getters = {}
 
 export const mutations = {
   setCurrentPage (state, name) {
-    state.current_page = name
+    state.currentPage = name
   },
   setShowOverlay(state, show) {
     state.showOverlay = show

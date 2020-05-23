@@ -11,11 +11,11 @@ export default {
     ScrollView
   },
   head() {
+    this.$store.commit("setCurrentPage", "Search")
     return {
       title: `${this.$route.query.q} - Meme Page Search`,
       meta: [
-        {hid: "description", name: "description", content: "Post your dankest memes here!"},
-        {hid: "description", name: "keywords", content: "Meme,Memes,Funny,Posts,Search"}
+        {hid: "description", name: "keywords", content: `Meme,Memes,Funny,Dank,${this.$route.query.q.split(' ').join(',')}`}
       ]
     }
   }

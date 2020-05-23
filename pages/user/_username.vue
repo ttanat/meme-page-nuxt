@@ -22,6 +22,12 @@ export default {
   components: {
     ProfileSideBar,
     TileItems
+  },
+  head() {
+    this.$store.commit("setCurrentPage", this.$route.params.username)
+    return {
+      title: this.$route.params.username
+    }
   }
 }
 </script>

@@ -12,12 +12,9 @@ export default {
     ScrollView
   },
   head() {
+    this.$store.commit("setCurrentPage", "Feed")
     return {
-      title: "Feed - Meme Page",
-      meta: [
-        {hid: "description", name: "description", content: "Post your dankest memes here!"},
-        {hid: "description", name: "keywords", content: "Meme,Memes,Funny,Posts,Feed"}
-      ]
+      title: "Feed - Meme Page"
     }
   }
 }

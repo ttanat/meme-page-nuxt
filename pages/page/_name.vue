@@ -86,14 +86,24 @@ export default {
     const { data } = await $axios.get(`/api/page/${params.name}`)
     return {
       page: data.page,
-      is_subscribed: data.is_subscribed,
-      is_page_admin: data.is_page_admin,
+      is_subscribed: data.is_subscribed || false,
+      is_page_admin: data.is_page_admin || false,
       show: data.show,
       page_config: {
         num_posts: data.page.num_posts,
         private: data.page.private,
         show: data.show
       }
+    }
+  },
+  head() {
+    const p = this.page
+    this.$store.commit("setCurrentPage", p.dname.length <= 20 ? p.dname : p.name.length <= 20 ? p.name : "")
+    return {
+      title: `${p.dname} - Meme Page`,
+      meta: [
+        {hid: "keywords", name: "keywords", content: `Meme,Memes,Funny,Dank,${p.dname},${p.name}`}
+      ]
     }
   }
 }

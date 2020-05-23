@@ -38,6 +38,7 @@ export default {
     }
   },
   head() {
+    this.$store.commit("setCurrentPage", "Profile")
     return {
       title: `${this.$auth.user.username} - Profile`
     }
