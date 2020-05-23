@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar sticky-top navbar-expand-lg navbar-dark justify-content-between">
+  <nav class="navbar navbar-expand-lg navbar-dark justify-content-between" :class="{'sticky-top': !$store.state.showOverlay}">
     <nuxt-link class="navbar-brand ml-xl-4" to="/">Meme Page</nuxt-link>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -8,7 +8,7 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 
       <div id="navbar-middle" class="navbar-nav collapse navbar-collapse justify-content-center">
-        <a class="nav-item nav-link mr-3 pointer">{{ $store.state.current_page }}</a>
+        <a class="nav-item nav-link mr-3 pointer">{{ $store.state.currentPage }}</a>
         <SearchBar />
       </div>
 

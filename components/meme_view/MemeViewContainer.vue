@@ -12,13 +12,23 @@
       </div>
     </div>
   </div>
-  <img v-if="['image/jpeg', 'image/png'].includes(meme.content_type)" class="content w-100" draggable="false" :src="meme.url" onclick="overlayOn()" @contextmenu.prevent style="cursor: zoom-in;">
+
+  <img
+    v-if="['image/jpeg', 'image/png'].includes(meme.content_type)"
+    class="content w-100"
+    draggable="false"
+    :src="meme.url"
+    @click="$store.commit('setShowOverlay', true)"
+    @contextmenu.prevent
+    style="cursor: zoom-in;"
+  >
   <video v-else-if="isGif" ref="vidMeme" @contextmenu.prevent class="content w-100" style="max-height: 85vh;" loop autoplay muted playsinline>
     <source :src="meme.url">
   </video>
   <video v-else ref="vidMeme" @contextmenu.prevent class="content w-100" style="max-height: 85vh;" loop :autoplay="isGif" :muted="isGif" :playsinline="isGif" :controls="!isGif" controlsList="nodownload" :preload="isGif ? 'auto' : 'metadata'">
     <source :src="meme.url">
   </video>
+
   <!-- ID is "comments" for scrolling to when URL has #comments hash -->
   <table class="content-section" id="comments" style="margin-bottom: 5px;">
     <tr>
@@ -46,7 +56,15 @@
     </tr>
   </table>
   <span v-if="meme.tags.length" class="text-muted content-section">
-    <button v-for="tag_name in meme.tags" :key="tag_name" @click="openLink(tag_name)" class="tag btn btn-outline-primary mr-2">{{ tag_name }}</button>
+    <button
+      v-for="(tag_name, i) in meme.tags"
+      :key="tag_name"
+      @click="openLink(tag_name)"
+      class="tag btn btn-sm btn-outline-primary mr-2"
+      :class="{'ml-2': i === 0}"
+    >
+      {{ tag_name }}
+    </button>
   </span>
 </div>
 </template>
@@ -87,3 +105,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.tag {
+  padding: 3px;
+  font-size: 12px;
+}
+</style>

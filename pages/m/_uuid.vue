@@ -35,8 +35,16 @@
       </div>
     </div>
 
-    <div v-if="meme.content_type.includes('image/')" id="overlay" onclick="overlayOff()" @contextmenu.prevent><img :src="meme.url"></div>
-    <input id="copy_text" style="display: none;">
+    <div
+      v-if="['image/jpeg', 'image/png'].includes(meme.content_type)"
+      v-show="$store.state.showOverlay"
+      id="overlay"
+      @click="$store.commit('setShowOverlay', false)"
+      @contextmenu.prevent
+    >
+      <img :src="meme.url" draggable="false" @contextmenu.prevent>
+    </div>
+
     <DeleteModal />
   </main>
 </template>
@@ -89,5 +97,26 @@ export default {
   top: 4rem;
   position: sticky;
   position: -webkit-sticky;
+}
+#overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.9);
+  z-index: 2;
+}
+#overlay img {
+  height: 85%;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+  cursor: zoom-out;
 }
 </style>
