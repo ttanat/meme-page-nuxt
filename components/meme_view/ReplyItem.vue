@@ -11,7 +11,7 @@
 
       <div class="reply-right-column" :style="{paddingTop: reply.dp_url ? '3px' : ''}">
 
-        <span><a :href="'/user/'+reply.username" class="comment-username">{{ reply.username }}</a>&ensp;<span class="comment-date">{{ timesince }}{{ reply.edited ? " (edited)" : "" }}</span></span>
+        <span><a :href="'/user/'+reply.username" class="comment-username">{{ reply.username }}</a>&ensp;<span class="comment-date">{{ formatDate(reply.post_date) }}{{ reply.edited ? " (edited)" : "" }}</span></span>
 
         <div v-if="isAuthenticated && !isDeleted" class="dropdown comment-down-btn float-right">
           <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -68,12 +68,12 @@
 
 <script>
 import voteMixin from '~/mixins/voteMixin'
-import formatDate from '~/assets/formatDate'
+import formatDateMixin from '~/mixins/formatDateMixin'
 import checkAuthMixin from '~/mixins/checkAuthMixin'
 
 export default {
   name: 'ReplyItem',
-  mixins: [voteMixin, checkAuthMixin],
+  mixins: [formatDateMixin, voteMixin, checkAuthMixin],
   props: {
     reply: {
       type: Object,
@@ -104,9 +104,6 @@ export default {
     },
     hasDP() {
       return this.isAuthenticated && this.$auth.user ? this.$auth.user.image : false
-    },
-    timesince() {
-      return formatDate(this.reply.post_date)
     },
     rpattern() {
       if (!this.reply.content) return null // Delete this line later

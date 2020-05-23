@@ -13,7 +13,7 @@
         <div class="comment-right-column" :style="{paddingTop: comment.dp_url ? '10px' : '5px'}">
 
           <div>
-            <span><a :href="'/user/'+comment.username" class="comment-username">{{ comment.username }}</a>&ensp;<span class="comment-date">{{ timesince }}{{ comment.edited ? " (edited)" : "" }}</span></span>
+            <span><a :href="'/user/'+comment.username" class="comment-username">{{ comment.username }}</a>&ensp;<span class="comment-date">{{ formatDate(comment.post_date) }}{{ comment.edited ? " (edited)" : "" }}</span></span>
             <div v-if="isAuthenticated && !isDeleted" class="dropdown comment-down-btn float-right">
               <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <font-awesome-icon :icon="['fas', 'angle-down']" />
@@ -88,7 +88,7 @@
 <script>
 import ReplyItem from './ReplyItem'
 import voteMixin from '~/mixins/voteMixin'
-import formatDate from '~/assets/formatDate'
+import formatDateMixin from '~/mixins/formatDateMixin'
 import checkAuthMixin from '~/mixins/checkAuthMixin'
 import loadLikesMixin from '~/mixins/loadLikesMixin'
 import lazyLoadMixin from '~/mixins/lazyLoadMixin'
@@ -104,7 +104,7 @@ export default {
       required: true
     }
   },
-  mixins: [voteMixin, checkAuthMixin, lazyLoadMixin, loadLikesMixin],
+  mixins: [formatDateMixin, voteMixin, checkAuthMixin, lazyLoadMixin, loadLikesMixin],
   data() {
     return {
       replies: [],
@@ -135,9 +135,6 @@ export default {
     },
     hasDP() {
       return this.isAuthenticated && this.$auth.user ? this.$auth.user.image : false
-    },
-    timesince() {
-      return formatDate(this.comment.post_date)
     },
     displayPoints() {
       return this.comment.points && !this.hidePoints ? this.comment.points : ""
