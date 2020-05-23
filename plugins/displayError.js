@@ -10,7 +10,7 @@ Vue.mixin({
         action: {
           text: 'X',
           class: 'red',
-          onClick: toastObject => {
+          onClick: (e, toastObject) => {
             toastObject.goAway(0)
           }
         }
