@@ -35,7 +35,12 @@
           </table>
 
           <div class="my-3">
-            <BioDescription v-if="is_page_admin" :current-bio="page.description" add-text="page description" />
+            <BioDescription
+              v-if="is_page_admin"
+              :current-bio="page.description"
+              add-text="page description"
+              @bio-change-event="changeBio"
+            />
             <span v-else id="bio">{{ page.description }}</span>
           </div>
 
@@ -100,10 +105,15 @@ export default {
     const p = this.page
     this.$store.commit("setCurrentPage", p.dname.length <= 20 ? p.dname : p.name.length <= 20 ? p.name : "")
     return {
-      title: `${p.dname} - Meme Page`,
+      title: `${p.dname || p.name} - Meme Page`,
       meta: [
         {hid: "keywords", name: "keywords", content: `Meme,Memes,Funny,Dank,${p.dname},${p.name}`}
       ]
+    }
+  },
+  methods: {
+    changeBio(val) {
+      this.page.description = val
     }
   }
 }

@@ -64,7 +64,7 @@ export default {
 
       if (this.$route.path.startsWith("/page/")) {
         if (IS_PAGE_ADMIN) {
-          data.set("n", this.$route.path.params.name)
+          data.set("n", this.$route.params.name)
         } else {
           return false
         }
