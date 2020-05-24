@@ -1,7 +1,7 @@
 <template>
   <div class="tile" @contextmenu.prevent="openContextMenu">
     <nuxt-link :to="'/m/'+tile.uuid" target="_blank" draggable="false">
-      <div class="points" :class="[tile.points > 0 ? 'green' : tile.points < 0 ? 'red' : '']">{{ formatNumber(tile.points) }}</div>
+      <div v-if="$route.path === '/profile'" class="points" :class="[tile.points > 0 ? 'green' : tile.points < 0 ? 'red' : '']">{{ formatNumber(tile.points) }}</div>
       <span v-if="!isImg && !isGif" class="play-icon"><font-awesome-icon :icon="['fas', 'play']" /></span>
       <h5 v-else-if="isGif" class="play-icon">GIF</h5>
       <video v-if="!isImg" ref="vid" :src="tile.url" preload="metadata" loop class="content" draggable="false"></video>
