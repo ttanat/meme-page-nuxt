@@ -6,14 +6,14 @@
 import ProfileManager from '~/components/profile/ProfileManager'
 
 export default {
-  middleware: 'custom-auth',
   components: {
     ProfileManager
   },
+  middleware: 'custom-auth',
   head() {
-    this.$store.commit("setCurrentPage", "Profile")
+    this.$store.commit("setCurrentPage", "Likes")
     return {
-      title: `${this.$auth.user.username} - Profile`
+      title: `${this.$auth.user.username} - Likes`
     }
   }
 }

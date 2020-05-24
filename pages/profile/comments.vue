@@ -11,9 +11,9 @@ export default {
     ProfileManager
   },
   head() {
-    this.$store.commit("setCurrentPage", "Profile")
+    this.$store.commit("setCurrentPage", "Comments")
     return {
-      title: `${this.$auth.user.username} - Profile`
+      title: `${this.$auth.user.username} - Comments`
     }
   }
 }
