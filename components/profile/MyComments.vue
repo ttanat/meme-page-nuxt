@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid px-3">
     <MyComment v-for="comment in comments" :key="comment.uuid" :comment="comment" />
     <div v-if="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     <div v-if="no_content && !comments.length" class="profile-empty">No comments yet</div>
@@ -34,7 +34,7 @@ export default {
     loadMore() {
       if (this.next === null) return false
       this.loading = true
-      axios.get(this.next)
+      this.$axios.get(this.next)
         .then(res => {
           this.comments.push(...res.data.results)
           this.next = res.data.next
@@ -45,7 +45,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
