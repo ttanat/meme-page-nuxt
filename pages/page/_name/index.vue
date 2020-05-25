@@ -17,7 +17,7 @@
               </div>
               <div class="col mt-1 px-0">
                 <span v-if="!is_page_admin" id="follow-btn" class="float-right float-lg-none">
-                  <FollowButton :is-following="is_subscribed" />
+                  <FollowButton :is-following="is_subscribed" @following-changed-event="changeSubscribe" />
                 </span>
               </div>
             </div>
@@ -114,6 +114,10 @@ export default {
   methods: {
     changeBio(val) {
       this.page.description = val
+    },
+    changeSubscribe(f) {
+      this.is_subscribed = f
+      this.page.subs += f ? 1 : -1
     }
   }
 }
@@ -128,6 +132,9 @@ main {
 }
 #page-left {
   /*min-height: calc(100vh - 5rem);*/
+}
+#bio {
+  font-size: 14px;
 }
 .item {
   border: 1px solid #333333;
