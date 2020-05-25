@@ -8,7 +8,7 @@
         <span v-if="meme.pname" class="text-muted" style="font-size: 14px;">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<nuxt-link class="text-muted" :to="meme.pname">{{ meme.pdname || meme.pname }}</nuxt-link></span>
       </div>
       <div class="col-3 d-none d-lg-inline" id="rand-col" :style="{padding: meme.caption ? '20px' : '15px'}">
-        <a class="btn btn-sm btn-success float-right" href="/random" target="_blank">Random <font-awesome-icon :icon="['far', 'arrow-alt-circle-right']" /></a>
+        <button @click="goToRandom" class="btn btn-sm btn-success float-right">Random <font-awesome-icon :icon="['far', 'arrow-alt-circle-right']" /></button>
       </div>
     </div>
   </div>
@@ -22,9 +22,9 @@
     @contextmenu.prevent
     style="cursor: zoom-in;"
   >
-  <video v-else-if="isGif" ref="vidMeme" @contextmenu.prevent class="content w-100" style="max-height: 85vh;" loop autoplay muted playsinline>
+  <!-- <video v-else-if="isGif" ref="vidMeme" @contextmenu.prevent class="content w-100" style="max-height: 85vh;" loop autoplay muted playsinline>
     <source :src="meme.url">
-  </video>
+  </video> -->
   <video v-else ref="vidMeme" @contextmenu.prevent class="content w-100" style="max-height: 85vh;" loop :autoplay="isGif" :muted="isGif" :playsinline="isGif" :controls="!isGif" controlsList="nodownload" :preload="isGif ? 'auto' : 'metadata'">
     <source :src="meme.url">
   </video>
@@ -55,13 +55,12 @@
       </td>
     </tr>
   </table>
-  <span v-if="meme.tags.length" class="text-muted content-section">
+  <span v-if="meme.tags.length" class="text-muted content-section pl-2">
     <button
-      v-for="(tag_name, i) in meme.tags"
+      v-for="tag_name in meme.tags"
       :key="tag_name"
       @click="openLink(tag_name)"
       class="tag btn btn-sm btn-outline-primary mr-2"
-      :class="{'ml-2': i === 0}"
     >
       {{ tag_name }}
     </button>
@@ -91,6 +90,11 @@ export default {
     }
   },
   methods: {
+    goToRandom() {
+      this.$axios.get("/api/random")
+        .then(res => this.$router.push(`/m/${res.data.uuid}`))
+        .catch(console.log)
+    },
     setPoints(uuid, new_points_val) {
       this.$emit("set-points-event", uuid, new_points_val)
     },
