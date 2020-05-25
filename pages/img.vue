@@ -29,7 +29,7 @@ export default {
     if (!obj) throw "Invalid URL"
     try {
       const { data } = await $axios.get(`/api/full_res/${obj}/${route.query[obj]}`)
-      return { url: data.url, isVid: data.isVid || false }
+      return { url: data.url, isVid: data.isVid || data.url.endsWith(".mp4") || false }
     } catch(err) {
       throw "404 Not found"
     }
