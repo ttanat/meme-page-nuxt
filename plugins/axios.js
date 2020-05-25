@@ -29,7 +29,7 @@ function refresh(context, config, resolve, reject) {
 export default function (context) {
   context.$axios.onRequest(config => {
     return new Promise((resolve, reject) => {
-      if (!context.$auth.loggedIn || ["/api/token/refresh/", "/api/token/", "/api/auth/logout"].includes(config.url)) {
+      if (!context.$auth.loggedIn || ["/api/token/refresh/", "/api/token/", "/api/register", "/api/auth/logout"].includes(config.url)) {
         resolve(config)
       } else {
         // If access token about to expire...
@@ -61,7 +61,7 @@ export default function (context) {
       } else {
         // If refresh failed or refresh token isn't valid
         if (err.message === "Session expired. Please log in again."
-            || (err.response && err.response.status === 401 && err.response.config.url !== "/api/token/")) {
+            || (err.response && err.response.status === 401 && !["/api/token/", "/api/register"].includes(err.response.config.url))) {
           // If token refresh failed or not authenticated, logout
           // Or if 401 response not from logging in
           alert("Session expired. Please log in again.")
