@@ -87,11 +87,9 @@ export default {
       } else if (!this.email.match(/^\S+@\S+\.[a-zA-Z]+$/)) {
         this.emailRed = true
         this.emailError = "Please enter a valid email address."
-      } else if (!this.password1) {
-      // } else if (this.password1.length < 6) {
+      } else if (!this.password1/* .length < 6 */) {
         this.password1Red = true
-        this.password1Error = "Password cannot be blank."
-          // this.password1Error = "Password must be at least 6 characters."
+        this.password1Error = "Password cannot be blank." // "Password must be at least 6 characters."
       } else if (this.password1 !== this.password2) {
         this.password2Red = true
         this.password2Error = "Password does not match."
@@ -100,47 +98,73 @@ export default {
       }
       return false
     },
-    submit() {
+    getData() {
       if (this.checkForm()) {
-        this.loading = true
         const data = new FormData()
         data.set("username", this.username)
         data.set("email", this.email)
         data.set("password1", this.password1)
         data.set("password2", this.password2)
-
-        axios.post("/register", data/*, {headers: {"X-CSRFToken": getCookie('csrftoken')}}*/)
-          .then(r => r.data)
-          .then(res => {
-            if (res.success) {
-              window.location.replace("/profile")
-            } else {
-              this.loading = false
-              if (res.field) {
-                const field = res.field
-                if (field === "u") {
-                  this.usernameRed = true
-                  this.usernameError = res["m"]
-                  if (res["t"]) this.TAKEN_USERNAMES.push(data.get("username").toLowerCase())
-                } else if (field === "e") {
-                  this.emailRed = true
-                  this.emailError = res["m"]
-                } else if (field === "p") {
-                  this.password1Red = true
-                  this.password1Error = res["m"]
-                } else if (field === "p2") {
-                  this.password2Red = true
-                  this.password2Error = res["m"]
-                }
-              } else {
-                alert(res["m"])
-              }
-            }
-          })
-          .catch(err => {
-            this.loading = false
-            alert(err)
-          })
+        return data
+      } else {
+        return null
+      }
+    },
+    async submit() {
+      this.loading = true
+      try {
+        const formData = this.getData()
+        if (formData) {
+          const { data } = await this.$axios.post("/api/register", formData)
+          if (data.registered) {
+            await this.registerSuccess(data, formData.get("username"))
+            this.$router.push("/profile")
+          } else {
+            await this.registerError(data, formData.get("username"))
+          }
+        }
+        this.loading = false
+      } catch (err) {
+        this.errorToast(err)
+      }
+    },
+    registerSuccess(data, username) {
+      this.removeModal()
+      this.$axios.setToken(data.access, "Bearer")
+      this.$auth.setToken("local", `Bearer ${data.access}`)
+      this.$auth.setRefreshToken("local", data.refresh)
+      this.$auth.setUser({
+        username,
+        image: null,
+        moderating: [],
+        subscriptions: []
+      })
+    },
+    removeModal() {
+      $("#registerModal").modal("hide")
+      document.body.classList.remove("modal-open")
+      try {
+        document.querySelector(".modal-backdrop.show").remove()
+      } catch {}
+    },
+    registerError(response, submitted_username) {
+      if (response.field) {
+        if (response.field === "u") {
+          this.usernameRed = true
+          this.usernameError = response.message
+          if (response.taken) this.TAKEN_USERNAMES.push(submitted_username.get("username").toLowerCase())
+        } else if (response.field === "e") {
+          this.emailRed = true
+          this.emailError = response.message
+        } else if (response.field === "p") {
+          this.password1Red = true
+          this.password1Error = response.message
+        } else if (response.field === "p2") {
+          this.password2Red = true
+          this.password2Error = response.message
+        }
+      } else {
+        this.errorToast(response.message)
       }
     }
   }
