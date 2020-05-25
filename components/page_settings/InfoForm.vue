@@ -92,21 +92,14 @@ export default {
       this.$axios.post(`/api/page/settings/${this.$route.params.name}`, data)
         .then(() => {
           this.$emit("change-info-event", {...this.page})
-          this.$toast.success("Preferences saved", {
-            position: 'bottom-center',
-            duration: 1500
-          })
+          this.successToast("Preferences saved")
         })
         .catch(this.displayError)
     },
     deletePage() {
       if (confirm('Are you sure you want to delete this page?')) {
         this.$router.push('/')
-        this.$toast.error(`${this.pageInfo.dname || this.pageInfo.name} has been deleted :(`, {
-          position: 'top-center',
-          duration: 4000,
-          keepOnHover: true
-        })
+        this.errorToast(`${this.pageInfo.dname || this.pageInfo.name} has been deleted :(`, duration=4000)
       }
     }
   }

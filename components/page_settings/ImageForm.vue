@@ -50,11 +50,7 @@ export default {
             this.$refs.oldImage.onload = this.removeInputImage
             this.url = this.$refs.newImage.src
             this.$refs.newImage.src = null
-            this.$toast.success("Page image changed", {
-              position: 'bottom-center',
-              duration: 2000,
-              keepOnHover: true
-            })
+            this.successToast("Page image changed")
           })
           .catch(this.displayError)
       }

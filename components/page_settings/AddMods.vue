@@ -38,10 +38,7 @@ export default {
         err = "Moderator already exists"
       }
       if (err) {
-        this.$toast.error(err, {
-          position: 'bottom-right',
-          duration: 1500
-        })
+        this.errorToast(err)
       } else {
         this.newMods.push(val)
         this.newModUsername = ""

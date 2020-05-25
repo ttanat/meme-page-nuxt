@@ -21,7 +21,6 @@
 
 <script>
 import jwt from 'jsonwebtoken'
-import Cookies from 'js-cookie'
 
 export default {
   name: 'LoginModal',
@@ -39,32 +38,31 @@ export default {
       if (!this.login.username || !this.login.password ||
           this.login.username.length > 32 ||
           !this.login.username.match(/^[a-z0-9_]+$/i)) {
-        alert("Username or password incorrect.")
+        this.errorToast("Username or password incorrect.")
       } else {
         this.loading = true
 
         this.$auth.loginWith("local", {
           data: this.login
         })
-          .then(r => {
-            $("#loginModal").modal("hide")
-            document.body.classList.remove("modal-open")
-            try {
-              document.querySelector(".modal-backdrop.show").remove()
-            } catch {}
-            this.$auth.setRefreshToken("local", r.data.refresh)
+          .then(res => {
+            this.removeModal()
+            this.$auth.setRefreshToken("local", res.data.refresh)
           })
           .catch(err => {
             const e401 = err.response && err.response.status === 401
             const message = e401 ? "Username or password incorrect" : "Unexpected error occurred. Please try again"
-            this.$toast.error(message, {
-              position: 'top-center',
-              duration: 1500,
-              keepOnHover: true
-            })
+            this.errorToast(message)
           })
           .finally(() => this.loading = false)
       }
+    },
+    removeModal() {
+      $("#loginModal").modal("hide")
+      document.body.classList.remove("modal-open")
+      try {
+        document.querySelector(".modal-backdrop.show").remove()
+      } catch {}
     }
   }
 }

@@ -92,7 +92,7 @@
 <script>
 import htmlToImage from 'html-to-image'
 import axios from 'axios' // For converting generated image to blob
-import { saveAs } from 'file-saver'
+// import { saveAs } from 'file-saver'
 
 export default {
   name: 'UploadModal',
@@ -184,23 +184,23 @@ export default {
       const lfname = file.name.toLowerCase()
       type.startsWith("video/") ? this.setVidDuration(file) : this.videoDuration = 99
       if (!file || !input.files.length) {
-        alert("Please select a file.")
+        this.errorToast("Please select a file.", duration=3000)
       } else if (input.files.length > 1) {
-        alert("Cannot upload multiple files together.")
+        this.errorToast("Cannot upload multiple files together.", duration=3000)
       } else if (!["image/jpeg", "image/png", "image/gif", "video/mp4", "video/quicktime"].includes(type)
                  || (type === "image/jpeg" && (!lfname.endsWith(".jpg") && !lfname.endsWith(".jpeg")))
                  || (type === "video/quicktime" && !lfname.endsWith(".mov"))) {
-        alert("Supported media types: JPG, PNG, GIF, MP4, MOV")
+        this.errorToast("Supported media types: JPG, PNG, GIF, MP4, MOV", duration=4000)
       } else if (type === "image/gif" && file.size > 5242880) {
-        alert("Maximum file size for GIF is 5 MB")
+        this.errorToast("Maximum file size for GIF is 5 MB", duration=3000)
       } else if (type.startsWith("image/") && file.size > 3145728) {
-        alert("Maximum file size for images is 3 MB")
+        this.errorToast("Maximum file size for images is 3 MB", duration=3000)
       } else if (type.startsWith("video/") && this.videoDuration > 60) {
-        alert("Maximum video duration is 60 seconds")
+        this.errorToast("Maximum video duration is 60 seconds", duration=3000)
       } else if (type.startsWith("video/") && this.videoDuration < 3) {
-        alert("Minimum video duration is 3 seconds")
+        this.errorToast("Minimum video duration is 3 seconds", duration=3000)
       } else if (type.startsWith("video/") && file.size > 15728640) {
-        alert("Maximum file size for videos is 15 MB")
+        this.errorToast("Maximum file size for videos is 15 MB", duration=3000)
       } else {
         return true
       }
@@ -247,17 +247,13 @@ export default {
           .then(response => {
             if (response.s) {
               $("#uploadModal").modal("hide")
-              this.$toast.success("Meme successfully uploaded", {
-                position: 'bottom-center',
-                duration: 2000,
-                keepOnHover: true
-              })
+              this.successToast("Meme successfully uploaded")
               this.clearForm()
             } else {
-              alert(response.m)
+              this.errorToast(response.m)
             }
           })
-          .catch(alert)
+          .catch(this.displayError)
           .finally(() => {
             this.uploading = false
             this.$refs.submitButton.style.cursor = null
