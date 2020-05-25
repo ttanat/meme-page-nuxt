@@ -132,22 +132,16 @@ export default {
       } else if (confirm('Are you sure you want to change your profile picture?')) {
         this.updatingPic = true
         const data = new FormData()
-        data.set("img", file)
+        data.set("field", "image")
+        data.set("image", file)
 
-        axios.post("/settings?f=image", data, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
+        this.$axios.post("/api/settings", data)
           .then(() => {
             // Add image to img element
-            this.$refs.profilePic.onload = function() {
-              URL.revokeObjectURL(this.src)
-            }
             const new_src = URL.createObjectURL(file)
-            this.$auth.user.image = new_src
-            // Change profile picture in nav bar
-            // const pi = document.querySelector("#profile-image");
-            // if (pi.firstChild.tagName !== "IMG") pi.innerHTML = `<img class="rounded-circle" id="profile-image" height="21" width="21">`;
-            // pi.firstChild.src = new_src;
+            this.$auth.setUser(Object.assign({}, this.$auth.user, {image: new_src}))
           })
-          .catch(err => console.log(err.response.data || err))
+          .catch(console.log)
           .finally(() => this.updatingPic = false)
       }
     },
