@@ -39,6 +39,8 @@ export default {
   */
   plugins: [
     '~/plugins/fontawesome.js',
+    '~/plugins/successToast.js',
+    '~/plugins/errorToast.js',
     '~/plugins/displayError.js',
     '~/plugins/axios.js'
   ],
