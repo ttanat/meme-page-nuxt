@@ -105,18 +105,17 @@ export default {
     }
   },
   async created() {
-    const response = await this.$axios.get(`/api/profile/user/?${this.isProfilePage ? "p=1" : `u=${this.$route.params.username}`}`)
-    const res = response.data
-    this.bio = res.bio
+    const { data } = await this.$axios.get(`/api/profile/user/?${this.isProfilePage ? "p=1" : `u=${this.$route.params.username}`}`)
+    this.bio = data.bio
     this.stats = {
-      clout: res.clout,
-      num_followers: res.num_followers,
-      num_following: res.num_following
+      clout: data.clout,
+      num_followers: data.num_followers,
+      num_following: data.num_following
     }
     if (!this.isProfilePage) {
-      this.image = res.image
-      this.isFollowing = res.is_following
-      this.userPages.push(...res.moderating)
+      this.image = data.image
+      this.isFollowing = data.is_following
+      this.userPages.push(...data.moderating)
     }
   },
   methods: {
@@ -141,13 +140,13 @@ export default {
             const new_src = URL.createObjectURL(file)
             this.$auth.setUser(Object.assign({}, this.$auth.user, {image: new_src}))
           })
-          .catch(console.log)
+          .catch(this.displayError)
           .finally(() => this.updatingPic = false)
       }
     },
-    changeFollow(f) {
-      this.isFollowing = f
-      this.stats.followers += f ? 1 : -1
+    changeFollow(is_following) {
+      this.isFollowing = is_following
+      this.stats.followers += is_following ? 1 : -1
     },
     changeBio(b) {
       this.bio = b

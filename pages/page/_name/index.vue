@@ -37,6 +37,7 @@
           <div class="my-3">
             <BioDescription
               v-if="is_page_admin"
+              :is-page-admin="is_page_admin"
               :current-bio="page.description"
               add-text="page description"
               @bio-change-event="changeBio"

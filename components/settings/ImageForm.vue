@@ -52,7 +52,7 @@ export default {
             this.$refs.oldImage.onload = this.removeInputImage
             this.$auth.setUser(Object.assign({}, this.$auth.user, {image: this.$refs.newImage.src}))
             this.$refs.newImage.src = null
-            this.successToast("Page image changed")
+            this.successToast("Profile picture changed")
           })
           .catch(this.displayError)
           .finally(() => this.savingImage = false)
