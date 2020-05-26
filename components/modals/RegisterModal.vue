@@ -130,8 +130,7 @@ export default {
     },
     registerSuccess(data, username) {
       this.removeModal()
-      this.$axios.setToken(data.access, "Bearer")
-      this.$auth.setToken("local", `Bearer ${data.access}`)
+      this.$auth.setUserToken(data.access)
       this.$auth.setRefreshToken("local", data.refresh)
       this.$auth.setUser({
         username,
