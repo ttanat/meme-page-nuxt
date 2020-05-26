@@ -217,11 +217,10 @@ export default {
       if (!data.get("caption") && !confirm("Are you sure you want to upload without a caption?")) return false
       // Check that caption can be embedded then set in data
       data.set("embed_caption", this.checkEmbedCaption() && this.embedCaption)
-      // Put all tags in list (empty list if none)
-      const tags = this.tags.match(/#[a-zA-Z]\w*/g) || []
-      for (let tag of tags.slice(0, 20)) {
-        data.append("tags", tag.slice(0, 64))
-      }
+      // Find all tags in text area
+      const tags = this.tags.match(/#[a-zA-Z]\w*/g)
+      // Join all tags into one string (will be processed in backend instead)
+      data.set("tags", tags ? tags.slice(0, 20).join("") : "")
       data.set("nsfw", this.nsfw)
       if (this.pathname === "/profile") data.set("is_profile_page", true)
       if (this.pathname.startsWith("/page/")) data.set("is_meme_page", true)
@@ -245,12 +244,12 @@ export default {
         this.$axios.post("/upload", data)
           .then(res => res.data)
           .then(response => {
-            if (response.s) {
+            if (response.success) {
               $("#uploadModal").modal("hide")
               this.successToast("Meme successfully uploaded")
               this.clearForm()
             } else {
-              this.errorToast(response.m)
+              this.errorToast(response.message)
             }
           })
           .catch(this.displayError)
