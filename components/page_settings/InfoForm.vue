@@ -98,9 +98,22 @@ export default {
     },
     deletePage() {
       if (confirm('Are you sure you want to delete this page?')) {
-        this.$router.push('/')
-        this.errorToast(`${this.pageInfo.dname || this.pageInfo.name} has been deleted :(`, duration=4000)
+        this.$axios.delete(`/api/page/settings/${this.$route.params.name}?d=page`)
+          .then(res => {
+            if (res.status === 204) {
+              this.removeFromAuthUser()
+              this.errorToast(`${this.pageInfo.dname || this.pageInfo.name} has been deleted :(`)
+              this.$router.push('/')
+            } else {
+              throw "Unexpected error occurred"
+            }
+          })
+          .catch(console.log)
       }
+    },
+    removeFromAuthUser() {
+      const new_moderating = this.$auth.user.moderating.filter(page => page.name !== this.$route.params.name)
+      this.$auth.setUser(Object.assign({}, this.$auth.user, {moderating: new_moderating}))
     }
   }
 }
