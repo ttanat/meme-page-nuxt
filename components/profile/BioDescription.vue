@@ -18,9 +18,15 @@ import parseBioMixin from '~/mixins/parseBioMixin'
 export default {
   name: 'BioDescription',
   props: {
+    isPageAdmin: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     currentBio: {
       type: String,
-      required: true
+      required: false,
+      default: ""
     },
     addText: {
       type: String,
@@ -59,11 +65,8 @@ export default {
       this.editing = false
       if (this.bioNoChange()) return false // Don't send if bio is same
 
-      const IS_PAGE_ADMIN = true
-
-
       if (this.$route.path.startsWith("/page/")) {
-        if (IS_PAGE_ADMIN) {
+        if (this.isPageAdmin) {
           data.set("n", this.$route.params.name)
         } else {
           return false
@@ -72,7 +75,7 @@ export default {
 
       this.updating = true
 
-      this.$axios.post(data.has("n") ? "/updateDesc" : "/updateBio", data, {progress: false})
+      this.$axios.post(`/update/${data.has("n") ? "description" : "bio"}`, data, {progress: false})
         .then(res => res.data.nb)
         .then(new_bio => {
           this.$emit("bio-change-event", new_bio)
