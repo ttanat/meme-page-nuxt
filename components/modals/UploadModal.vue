@@ -79,7 +79,7 @@
         <div class="modal-footer">
           <a v-show="showClearButton" @click="clearForm" href="javascript:void(0);" class="mr-3" style="color: white;">Clear</a>
           <button type="button" class="btn btn-secondary modal-btn" data-dismiss="modal" title="Cancel">Cancel</button>
-          <button ref="submitButton" @click="upload" :class="{'not-allowed': !canSubmit}" type="button" class="btn btn-primary modal-btn" title="Upload" disabled>
+          <button ref="submitButton" @click="upload" :disabled="!canSubmit" :class="{'not-allowed': !canSubmit}" type="button" class="btn btn-primary modal-btn" title="Upload">
             <template v-if="uploading">Uploading <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></template>
             <template v-else>Upload</template>
           </button>
@@ -131,7 +131,6 @@ export default {
       const uf = this.$refs.inputFile
       this.canSubmit = uf.files.length === 1 && ["image/jpeg", "image/png", "image/gif", "video/mp4", "video/quicktime"].includes(uf.files[0].type)
       uf.files[0].type.startsWith("video/") ? this.setVidDuration(uf.files[0]) : this.videoDuration = 99
-      this.$refs.submitButton.disabled = !this.canSubmit
       this.fname = this.canSubmit ? uf.files[0].name : "Choose File"
       this.canSubmit ? this.createPreview() : uf.value = null
 
@@ -139,14 +138,18 @@ export default {
       if (this.embedCaptionDisabled) this.embedCaption = false
     },
     createPreview() {
+      // Revoke existing preview URLs
+      URL.revokeObjectURL(...[this.$refs.imgPreview.src, this.$refs.vidPreview.src])
       const file = this.$refs.inputFile.files[0]
+      // Get image or video element
       const el = file.type.startsWith("image/") ? this.$refs.imgPreview : this.$refs.vidPreview
       this.showImgPreview = file.type.startsWith("image/")
       this.showVidPreview = !this.showImgPreview
       el.onload = () => {
-        // URL.revokeObjectURL(el.src)
+        // Adjust caption width on preview once image is loaded
         this.captionPreviewWidth = this.showImgPreview ? this.$refs.imgPreview.offsetWidth : this.$refs.vidPreview.offsetWidth
       }
+      // Create preview URL and show preview
       el.src = URL.createObjectURL(file)
     },
     async getCaptionedImage() {
@@ -235,10 +238,10 @@ export default {
       return data
     },
     upload() {
-      if (!this.$auth.loggedIn || !this.check()) return false
+      if (!this.$auth.loggedIn || !this.check() || !this.canSubmit) return false
       this.setData().then(data => {
         if (!data || !data.has("file")) return false
-        this.$refs.submitButton.disabled = true
+        this.canSubmit = false
         this.$refs.submitButton.style.cursor = "progress"
         this.uploading = true
         this.$axios.post("/upload", data)
@@ -256,6 +259,7 @@ export default {
           .finally(() => {
             this.uploading = false
             this.$refs.submitButton.style.cursor = null
+            this.canSubmit = true
           })
       })
     },
@@ -265,9 +269,7 @@ export default {
       this.$refs.inputFile.value = null
       this.fname = "Choose File"
       this.canSubmit = false
-      this.$refs.submitButton.disabled = !this.canSubmit
       // Revoke preview URLs
-      // If user selected files more than once, then URLs before are NOT revoked
       URL.revokeObjectURL(...[this.$refs.imgPreview.src, this.$refs.vidPreview.src])
     }
   }
