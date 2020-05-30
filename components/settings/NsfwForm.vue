@@ -1,15 +1,15 @@
 <template>
   <div class="form-group mb-5">
     <div class="custom-control custom-switch mb-3">
-      <input v-model="filter" type="checkbox" id="nsfw" class="custom-control-input">
-      <label class="custom-control-label" for="nsfw">Filter NSFW content</label>
+      <input v-model="showNsfw" type="checkbox" id="nsfw" class="custom-control-input">
+      <label class="custom-control-label" for="nsfw">Show NSFW content</label>
     </div>
     <button @click="changeNsfwFilter"
       :disabled="formNotChanged"
       :class="{'not-allowed': formNotChanged}"
       class="btn btn-primary btn-sm"
     >
-      <font-awesome-icon v-if="savingFilter" :icon="['fas', 'circle-notch']" spin />
+      <font-awesome-icon v-if="saving" :icon="['fas', 'circle-notch']" spin />
       <template v-else>Save</template>
     </button>
   </div>
@@ -19,37 +19,37 @@
 export default {
   name: 'NsfwForm',
   props: {
-    currentFilter: {
+    currentShowNsfw: {
       type: Boolean,
       required: true
     }
   },
   data() {
     return {
-      filter: this.currentFilter,
-      savingFilter: false,
+      showNsfw: this.currentShowNsfw,
+      saving: false,
     }
   },
   computed: {
     formNotChanged() {
-      return this.filter === this.currentFilter
+      return this.showNsfw === this.currentShowNsfw
     }
   },
   methods: {
     changeNsfwFilter() {
-      if (this.filter !== this.currentFilter) {
-        this.savingFilter = true
+      if (this.showNsfw !== this.currentShowNsfw) {
+        this.saving = true
         const data = new FormData()
         data.set("field", "nsfw")
-        data.set("filter", this.filter)
+        data.set("show_nsfw", this.showNsfw)
 
         this.$axios.post("/api/settings", data)
           .then(() => {
-            this.$emit("nsfw-changed-event", this.filter)
+            this.$emit("nsfw-changed-event", this.showNsfw)
             this.successToast("Preference has been saved")
           })
           .catch(this.displayError)
-          .finally(() => this.savingFilter = false)
+          .finally(() => this.saving = false)
       }
     }
   }

@@ -6,7 +6,7 @@
           <h4>Settings - {{ $auth.user.username }}</h4>
           <br>
           <ImageForm />
-          <NsfwForm :current-filter="data.nsfw_filter" @nsfw-changed-event="changeNsfw" />
+          <NsfwForm :current-show-nsfw="data.show_nsfw" @nsfw-changed-event="changeNsfw" />
           <EmailForm :current-email="data.email" @email-changed-event="changeEmail" />
           <PasswordForm />
           <DeleteAccountForm />
@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     changeNsfw(val) {
-      this.data.nsfw_filter = val
+      this.data.show_nsfw = val
     },
     changeEmail(val) {
       this.data.email = val
