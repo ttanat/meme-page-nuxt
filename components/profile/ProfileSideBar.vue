@@ -105,7 +105,8 @@ export default {
     }
   },
   async created() {
-    const { data } = await this.$axios.get(`/api/profile/user/?${this.isProfilePage ? "p=1" : `u=${this.$route.params.username}`}`)
+    const url = this.isProfilePage ? "/api/profile" : `/api/profile/user/${this.$route.params.username}`
+    const { data } = await this.$axios.get(url)
     this.bio = data.bio
     this.stats = {
       clout: data.clout,
