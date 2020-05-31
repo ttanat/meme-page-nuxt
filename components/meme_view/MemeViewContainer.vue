@@ -62,7 +62,7 @@
       @click="openLink(tag_name)"
       class="tag btn btn-sm btn-outline-primary mr-2"
     >
-      {{ tag_name }}
+      #{{ tag_name }}
     </button>
   </span>
 </div>
@@ -104,7 +104,7 @@ export default {
       setTimeout(() => this.copyLinkClicked = false, 1500)
     },
     openLink(tag_name) {
-      window.open(`/search?q=%23${tag_name.slice(1)}`)
+      window.open(`/search?q=%23${tag_name}`)
     }
   }
 }
