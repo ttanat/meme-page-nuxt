@@ -1,7 +1,8 @@
 export default {
   methods: {
     formatDate(timestring) {
-      const min = (new Date() - new Date(timestring)) / 1000 / 60
+      const s = (new Date() - new Date(timestring)) / 1000
+      const min = s / 60
       if (min < 1) return `${Math.round(s)} second${Math.round(s) === 1 ? "" : "s"}`
       const hrs = min / 60
       if (hrs < 1) return `${Math.round(min)} minute${Math.round(min) === 1 ? "" : "s"}`
