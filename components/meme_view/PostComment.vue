@@ -41,13 +41,13 @@ export default {
   methods: {
     post() {
       const data = new FormData()
-      data.set("u", this.$route.params.uuid)
-      if (this.fileValid()) data.set("i", this.$refs.inputFile.files[0])
+      data.set("uuid", this.$route.params.uuid)
+      if (this.fileValid()) data.set("image", this.$refs.inputFile.files[0])
       if (this.commentContent.length > 150) return false
       const val = this.commentContent.slice(0, 150).trim()
-      if (val && val.length > 0 && val.match(/\S+/)) data.set("c", val)
+      if (val && val.length > 0 && val.match(/\S+/)) data.set("content", val)
 
-      if (this.checkAuth() && (data.has("c") || data.has("i"))) {
+      if (this.checkAuth() && (data.has("content") || data.has("image"))) {
         this.commentContent = ""
         this.placeholder = "Sending..."
 
@@ -57,11 +57,21 @@ export default {
             this.removeFile()
             this.placeholder = "Sent"
             setTimeout(() => {this.placeholder = "Write a comment here!"}, 1000)
-            CommentsInstance.cdata.unshift(Object.assign(response, NC, {post_date: new Date().toISOString(), content: val, image: data.has("i") ? URL.createObjectURL(data.get("i")) : null}))
-            this.$emit("new-comment-event")
+
+            const new_comment = {
+              uuid: response.uuid,
+              username: this.$auth.user.username,
+              points: 0,
+              num_replies: 0,
+              dp_url: this.$auth.user.image,
+              post_date: new Date().toISOString(),
+              content: val,
+              image: data.has("image") ? URL.createObjectURL(data.get("image")) : null
+            }
+            this.$emit("new-comment-posted-event", new_comment)
           })
           .catch(err => {
-            display_error(err)
+            this.displayError(err)
             this.commentContent = val
             this.placeholder = "Write a comment here!"
           })
