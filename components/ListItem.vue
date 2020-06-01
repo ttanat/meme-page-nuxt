@@ -43,7 +43,7 @@ export default {
       return this.parseBio(this.searchUser ? this.result.bio : this.result.description).replace(/\r\n/g, " ")
     },
     getBottomText() {
-      return this.searchUser ? `${this.result.meme_count} meme${this.result.meme_count === 1 ? "" : "s"}` : `${this.result.num_subscribers} subscriber${this.result.num_subscribers === 1 ? "" : "s"}`
+      return this.searchUser ? `${this.result.num_memes} meme${this.result.num_memes === 1 ? "" : "s"}` : `${this.result.num_subscribers} subscriber${this.result.num_subscribers === 1 ? "" : "s"}`
     }
   }
 }
