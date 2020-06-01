@@ -27,13 +27,6 @@
   padding: 20px;
 }
 
-.btn-group-xs > .btn, .btn-xs {
-  padding: .5rem .4rem;
-  font-size: .875rem;
-  line-height: .5;
-  border-radius: .2rem;
-}
-
 nav {
   background-color: #252525;
 }
