@@ -8,18 +8,23 @@
       <img v-else :src="tile.url" class="content" draggable="false">
     </nuxt-link>
     <!-- Context menu is here because it doesn't work on TileItem component in ./TileItems.vue -->
-    <vue-context v-if="isProfilePage" ref="menu">
+    <vue-context ref="menu">
       <li>
         <a :href="'/m/'+tile.uuid" target="_blank">
           <font-awesome-icon :icon="['fas', 'external-link-alt']" />&ensp;Open in new tab
         </a>
       </li>
       <li>
-        <a :href="tile.url" target="_blank">
-          <font-awesome-icon :icon="['fas', 'download']" />&ensp;Download
+        <a href="javascript:void(0);" @click="copyLink">
+          <font-awesome-icon :icon="['fas', 'link']" />&ensp;Copy link
         </a>
       </li>
       <li>
+        <a :href="isProfilePage ? tile.url : '/img?m='+tile.uuid" target="_blank">
+          <font-awesome-icon :icon="['fas', 'download']" />&ensp;Download
+        </a>
+      </li>
+      <li v-if="isProfilePage">
         <a href="javascript:void(0);" @click="deleteMeme">
           <font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;Delete
         </a>
@@ -31,6 +36,7 @@
 <script>
 import VueContext from 'vue-context'
 import formatNumberMixin from '~/mixins/formatNumberMixin'
+import copy from 'copy-to-clipboard'
 
 export default {
   name: 'TileItem',
@@ -57,11 +63,12 @@ export default {
   },
   methods: {
     async openContextMenu(e) {
-      if (this.isProfilePage) {
-        // Close all other context menus first
-        await this.$emit("context-menu-event")
-        this.$refs.menu.open(e)
-      }
+      // Close all other context menus first
+      await this.$emit("context-menu-event")
+      this.$refs.menu.open(e)
+    },
+    copyLink() {
+      copy(`${window.location.origin}/m/${this.tile.uuid}`)
     },
     deleteMeme() {
       if (confirm("Are you sure you want to delete this?")) {
