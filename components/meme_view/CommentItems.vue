@@ -1,5 +1,9 @@
 <template>
   <div>
+    <PostComment
+      :num-comments="numComments"
+      @new-comment-posted-event="newCommentPosted"
+    />
     <CommentItem
       v-for="comment in comments"
       :key="comment.uuid"
@@ -8,12 +12,14 @@
       @comment-edited-event="commentEdited"
       @comment-deleted-event="commentDeleted"
       @set-points-event="setPoints"
+      @increment-comment-count-event="incrementCommentCount"
     />
     <div v-show="loading" class="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
   </div>
 </template>
 
 <script>
+import PostComment from './PostComment'
 import CommentItem from './CommentItem'
 import infiniteScrollMixin from '~/mixins/infiniteScrollMixin'
 import lazyLoadMixin from '~/mixins/lazyLoadMixin'
@@ -22,6 +28,7 @@ import loadLikesMixin from '~/mixins/loadLikesMixin'
 export default {
   name: 'CommentItems',
   components: {
+    PostComment,
     CommentItem
   },
   mixins: [infiniteScrollMixin, lazyLoadMixin, loadLikesMixin],
@@ -44,6 +51,13 @@ export default {
     this.loadMore()
   },
   methods: {
+    incrementCommentCount() {
+      this.$emit('increment-comment-count-event')
+    },
+    newCommentPosted(comment) {
+      this.incrementCommentCount()
+      this.comments.unshift(comment)
+    },
     observeNewComment(comment) {
       this.lazyObjectObserver.observe(comment)
     },
@@ -51,10 +65,10 @@ export default {
       this.comments.find(comment => comment.uuid === uuid).points = new_points_val
     },
     loadMore() {
-      if (this.next === null) return false
+      if (this.next === null || !this.numComments) return false
       this.loading = true
 
-      this.$axios.get(this.next || `/api/comments/?u=${this.$route.params.uuid}`, {progress: false})
+      this.$axios.get(this.next || `/api/comments/?u=${this.$route.params.uuid}`)
         .then(res => res.data)
         .then(data => {
           const l_uuids = []
@@ -80,8 +94,7 @@ export default {
         .finally(() => this.loading = false)
     },
     getComment(uuid) {
-      const i = this.comments.findIndex(c => c.uuid === uuid)
-      return this.comments[i]
+      return this.comments.find(c => c.uuid === uuid)
     },
     commentEdited(uuid, val) {
       const comment = this.getComment(uuid)
@@ -90,8 +103,6 @@ export default {
     },
     commentDeleted(uuid) {
       const comment = this.getComment(uuid)
-      // num_comments_span.textContent -= (1 + this.comments[i].num_replies)
-      // this.comments.splice(i, 1)
       comment.content = comment.image = null
     }
   }

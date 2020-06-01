@@ -1,19 +1,19 @@
 <template>
   <div id="comment-section">
     <h6>Comments ({{ numComments }})</h6>
-    <PostComment :num-comments="numComments" @new-comment-event="$emit('new-comment-posted-event')" />
-    <CommentItems :num-comments="numComments" />
+    <CommentItems
+      :num-comments="numComments"
+      @increment-comment-count-event="$emit('increment-comment-count-event')"
+    />
   </div>
 </template>
 
 <script>
-import PostComment from './PostComment'
 import CommentItems from './CommentItems'
 
 export default {
   name: 'CommentSection',
   components: {
-    PostComment,
     CommentItems,
   },
   props: {

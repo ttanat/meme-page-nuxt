@@ -14,7 +14,7 @@
 
           <div>
             <span><a :href="'/user/'+comment.username" class="comment-username">{{ comment.username }}</a>&ensp;<span class="comment-date">{{ formatDate(comment.post_date) }}{{ comment.edited ? " (edited)" : "" }}</span></span>
-            <div v-if="isAuthenticated && !isDeleted" class="dropdown comment-down-btn float-right">
+            <div v-if="isAuthenticated && !isDeleted" class="dropdown comment-dropdown-btn float-right">
               <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <font-awesome-icon :icon="['fas', 'angle-down']" />
               </span>
@@ -71,11 +71,28 @@
 
           <div v-if="!isDeleted" v-show="typingReply && isAuthenticated" class="container-fluid">
             <div class="row">
-              <img v-if="hasDP" :src="hasDP" class="reply-field-dp rounded-circle" height="25" width="25"><font-awesome-icon v-else :icon="['fas', 'user-circle']" class="reply-field-dp" style="font-size: 25px;" />
-              <input ref="replyInput" v-model.trim="replyInputValue" :placeholder="replyInputPlaceholder" class="reply-field" type="text" maxlength="150" name="reply">
-              <a href="javascript:void(0);" @click="openImageInput" class="rf-img"><font-awesome-icon :icon="['far', 'image']" /></a><button @click="submitReply" class="btn btn-xs btn-primary r-post-btn">Post</button>
-              <input ref="imageInput" @change="addReplyImage" type="file" accept="image/jpeg, image/png, image/gif" class="d-none">
-              <span v-if="imageFilename" class="mt-1" style="margin-left: 35px;"><span>{{ imageFilename }}</span><a @click="removeReplyImage" class="ml-2" href="javascript:void(0);" style="color: red;"><font-awesome-icon :icon="['fas', 'times']" /></a></span>
+              <!-- Profile picture or user icon -->
+              <img v-if="hasDP" :src="hasDP" class="reply-field-dp rounded-circle" height="25" width="25">
+              <font-awesome-icon v-else :icon="['fas', 'user-circle']" class="reply-field-dp" style="font-size: 25px;" />
+              <!-- Input to write comment -->
+              <input
+                ref="replyInput"
+                v-model.trim="replyInputValue"
+                :placeholder="replyInputPlaceholder"
+                class="reply-field"
+                type="text"
+                maxlength="150"
+                name="reply"
+              >
+              <!-- Choose image and submit button -->
+              <a href="javascript:void(0);" @click="openImageInput" class="rf-img"><font-awesome-icon :icon="['far', 'image']" /></a>
+              <button @click="submitReply" class="btn btn-primary post-reply-btn">Post</button>
+              <!-- File input -->
+              <input v-show="false" ref="imageInput" @change="addReplyImage" type="file" accept="image/jpeg, image/png">
+              <!-- Show filename if a file is selected -->
+              <span v-if="imageFilename" class="mt-1" style="margin-left: 35px;">
+                {{ imageFilename }}<a @click="removeReplyImage" class="ml-2 red" href="javascript:void(0);"><font-awesome-icon :icon="['fas', 'times']" /></a>
+              </span>
             </div>
           </div>
 
@@ -159,7 +176,7 @@ export default {
       $("#deleteModal").modal('show')
     },
     deleteComment() {
-      this.$axios.delete(`/comment/delete?u=${this.comment.uuid}`, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
+      this.$axios.delete(`/comment/delete?u=${this.comment.uuid}`)
         .then(res => {
           if (res.status === 204) this.$emit("comment-deleted-event", this.comment.uuid)
         })
@@ -170,9 +187,9 @@ export default {
       this.toggleEdit(uuid)
       if (!this.isAuthenticated || !val.length || val === this.comment.content) return false
       const data = new FormData()
-      data.set("c", val)
-      data.set("u", uuid)
-      this.$axios.post("/comment/edit", data, {headers: {"X-CSRFToken": getCookie('csrftoken'), "X-Requested-With": "XMLHttpRequest"}})
+      data.set("content", val)
+      data.set("uuid", uuid)
+      this.$axios.post("/comment/edit", data)
         .then(res => this.$emit("comment-edited-event", uuid, val))
         .catch(console.log)
     },
@@ -197,14 +214,14 @@ export default {
         .then(res => res.data)
         .then(response => {
           const l_uuids = []
-          for (let r of response["results"]) {
+          for (const r of response.results) {
             if (this.replies.findIndex(r2 => r2.uuid === r.uuid) === -1) {
               this.replies.push(r)
               if (r.points !== null) l_uuids.push(r.uuid)
             }
           }
-          this.loadMoreBtnShowing = !!response["next"]
-          this.repliesAPILink = response["next"]
+          this.loadMoreBtnShowing = !!response.next
+          this.repliesAPILink = response.next
           if (this.isAuthenticated && l_uuids.length) this.loadLikes(l_uuids, "r")
         })
         .catch(console.log)
@@ -213,11 +230,11 @@ export default {
     submitReply() {
       const r_input = this.$refs.replyInput
       const data = new FormData()
-      const val = this.replyInputValue.slice(0, 150).trim()
-      if (val && val.length > 0 && val.match(/\S+/)) data.set("r", val)
+      const content = this.replyInputValue.slice(0, 150).trim()
+      if (content && content.length > 0 && content.match(/\S+/)) data.set("content", content)
       const img = this.imageInputValid() ? this.$refs.imageInput.files[0] : null
-      if (img) data.set("i", img)
-      if (this.$store.state.auth && (data.has("r") || data.has("i"))) {
+      if (img) data.set("image", img)
+      if (this.isAuthenticated && (data.has("content") || data.has("image"))) {
         data.set("c_uuid", this.comment.uuid)
         this.replyInputValue = ""
         this.replyInputPlaceholder = "Sending..."
@@ -227,11 +244,22 @@ export default {
           .then(response => {
             this.typingReply = false
             this.removeReplyImage()
-            this.replyAdded(Object.assign(response, {c_uuid: this.comment.uuid, post_date: new Date().toISOString(), content: val, image: data.has("i") ? URL.createObjectURL(img) : null}, NR))
+
+            const new_reply = {
+              uuid: response.uuid,
+              c_uuid: this.comment.uuid,
+              username: this.$auth.user.username,
+              dp_url: this.$auth.user.image,
+              points: 0,
+              post_date: new Date().toISOString(),
+              content,
+              image: data.has("image") && img ? URL.createObjectURL(img) : null
+            }
+            this.replyAdded(new_reply)
           })
           .catch(err => {
             /**/console.log(err)
-            this.replyInputValue = val
+            this.replyInputValue = content
           })
           .finally(() => this.replyInputPlaceholder = "Write a reply")
       }
@@ -240,7 +268,7 @@ export default {
       // Only add reply if it is the first or last reply
       if (!this.comment.num_replies || this.comment.num_replies === this.replies.length) this.replies.push(data)
       this.comment.num_replies++
-      num_comments_span.textContent++
+      this.$emit("increment-comment-count-event")
     },
     openImageInput() {
       this.$refs.imageInput.click()
@@ -257,8 +285,7 @@ export default {
       this.$refs.imageInput.value = null
     },
     getReply(uuid) {
-      const i = this.replies.findIndex(r => r.uuid === uuid)
-      return this.replies[i]
+      return this.replies.find(r => r.uuid === uuid)
     },
     replyEdited(uuid, val) {
       const reply = this.getReply(uuid)
@@ -267,15 +294,8 @@ export default {
     },
     replyDeleted(uuid) {
       const reply = this.getReply(uuid)
-      // this.replies.splice(i, 1)
-      // this.comment.num_replies--
-      // num_comments_span.textContent--
       reply.content = reply.image = null
     }
   }
 }
 </script>
-
-<style scoped>
-@import '~/assets/comments.css';
-</style>

@@ -16,7 +16,10 @@
           <div v-if="meme.num_comments > 3" class="my-3" id="item-mid-ad">
             <img src="~/assets/argos.jpg" style="height: 100px;width: 100%;border-radius: 5px;cursor: pointer;">
           </div>
-          <CommentSection :num-comments="meme.num_comments" @new-comment-posted-event="incrementCommentCount" />
+          <CommentSection
+            :num-comments="meme.num_comments"
+            @increment-comment-count-event="incrementCommentCount"
+          />
         </div>
 
         <div class="col-md-4 col-lg-3" id="right" style="text-align: center;">
@@ -72,7 +75,7 @@ export default {
       title: `${this.meme.caption ? `${this.meme.caption} - ` : ''}Meme Page`,
       meta: [
         {hid: "description", name: "description", content: `${this.meme.caption} ${this.meme.tags.join(' ')}`},
-        {hid: "keywords", name: "keywords", content: `Meme,Memes,Funny,Dank,${this.meme.tags.map(t => t.slice(1)).join(",")}`}
+        {hid: "keywords", name: "keywords", content: `Meme,Memes,Funny,Dank,${this.meme.tags.join(",")}`}
       ]
     }
   },
@@ -87,6 +90,7 @@ export default {
 }
 </script>
 
+<style src="~/assets/comments.css"></style>
 <style scoped>
 .item {
   background-color: #171717;
