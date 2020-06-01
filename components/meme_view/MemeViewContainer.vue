@@ -22,9 +22,6 @@
     @contextmenu.prevent
     style="cursor: zoom-in;"
   >
-  <!-- <video v-else-if="isGif" ref="vidMeme" @contextmenu.prevent class="content w-100" style="max-height: 85vh;" loop autoplay muted playsinline>
-    <source :src="meme.url">
-  </video> -->
   <video v-else ref="vidMeme" @contextmenu.prevent class="content w-100" style="max-height: 85vh;" loop :autoplay="isGif" :muted="isGif" :playsinline="isGif" :controls="!isGif" controlsList="nodownload" :preload="isGif ? 'auto' : 'metadata'">
     <source :src="meme.url">
   </video>
@@ -47,9 +44,8 @@
             <font-awesome-icon :icon="['fas', 'ellipsis-h']" />
           </button>
           <div class="dropdown-menu bg-dark">
-            <div class="dropdown-item m-dropdown"><nuxt-link :to="'/img?m='+meme.uuid" target="_blank"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link></div>
-            <div class="dropdown-item m-dropdown"><font-awesome-icon :icon="['fas', 'share']" /> Share</div>
-            <div class="dropdown-item m-dropdown"><font-awesome-icon :icon="['far', 'flag']" /> Report</div>
+            <nuxt-link class="dropdown-item m-dropdown" :to="'/img?m='+meme.uuid" target="_blank"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link>
+            <a class="dropdown-item m-dropdown" href="javascript:void(0);"><font-awesome-icon :icon="['far', 'flag']" /> Report</a>
           </div>
         </div>
       </td>
