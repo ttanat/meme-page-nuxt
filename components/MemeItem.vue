@@ -1,7 +1,12 @@
 <template>
   <div class="item">
     <div class="item-header">
-      <a :href="'/user/' + meme.username" class="header-username"><img v-if="meme.dp_url" class="rounded-circle" :src="meme.dp_url" height="18" width="18"><font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 15px;" />&nbsp;{{ meme.username }}</a><template v-if="meme.pname"><span class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<a :href="'/page/'+meme.pname" class="header-page">{{ meme.pdname || meme.pname }}</a></span></template>
+      <nuxt-link :to="'/user/'+meme.username" class="header-username" no-prefetch>
+        <img v-if="meme.dp_url" class="rounded-circle" :src="meme.dp_url" height="18" width="18">
+        <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 15px;" />
+        {{ meme.username }}
+      </nuxt-link>
+      <template v-if="meme.pname"><span class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<nuxt-link :to="'/page/'+meme.pname" class="header-page" no-prefetch>{{ meme.pdname || meme.pname }}</nuxt-link></span></template>
       <h6 class="mt-2 caption">{{ meme.caption }}</h6>
     </div>
 

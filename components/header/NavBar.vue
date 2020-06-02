@@ -31,7 +31,7 @@
               <h5 class="dropdown-header m-0" style="overflow-x: hidden;text-overflow: ellipsis;">{{ $auth.user.username }}</h5>
               <nuxt-link class="dropdown-item user-dropdown" to="/profile"><font-awesome-icon :icon="['fas', 'user']" /> Profile</nuxt-link>
               <a class="dropdown-item user-dropdown" href="javascript:night()"><font-awesome-icon id="moon-icon" :icon="['far', 'moon']" /> Night</a>
-              <nuxt-link class="dropdown-item user-dropdown" to="/settings"><font-awesome-icon :icon="['fas', 'cog']" /> Settings</nuxt-link>
+              <nuxt-link class="dropdown-item user-dropdown" to="/settings" no-prefetch><font-awesome-icon :icon="['fas', 'cog']" /> Settings</nuxt-link>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item user-dropdown" @click="$auth.logout()" href="#"><font-awesome-icon :icon="['fas', 'sign-out-alt']" /> Logout</a>
             </div>
