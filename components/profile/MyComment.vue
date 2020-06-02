@@ -1,9 +1,12 @@
 <template>
   <div class="row list-row my-4">
     <div>
-      <div class="list-content" :style="listStyle">
-        <span v-if="comment.rt && rpattern"><nuxt-link :to="'/user/'+rpattern[1]" target="_blank">{{ rpattern[0] }}</nuxt-link>{{ contentAfterMention }}</span>
-        <template v-else>{{ comment.content }}</template> {{ comment.rt ? " " : "" }}<small v-if="comment.rt" class="text-muted">replying to {{ replyingTo }}</small>
+      <div class="list-content">
+        <span v-if="comment.rt && rpattern">
+          <nuxt-link :to="'/user/'+rpattern[1]" target="_blank">{{ rpattern[0] }}</nuxt-link>{{ contentAfterMention }}
+        </span>
+        <template v-else>{{ comment.content }}</template>
+        &nbsp;<small v-if="comment.rt" class="text-muted">replying to {{ replyingTo }}</small>
       </div>
       <template v-if="comment.url">
         <nuxt-link :to="'/img?c='+comment.uuid" target="_blank">

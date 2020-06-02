@@ -8,9 +8,15 @@
       @meme-deleted-event="removeTile"
     />
     <div v-show="loading" class="loading w-100"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
-    <div v-if="no_content && !tiles.length" class="profile-empty" onclick="$('#uploadModal').modal('show')">
+    <div
+      v-if="no_content && !tiles.length"
+      class="profile-empty"
+      :class="{pointer: isProfilePage}"
+      :onclick="isProfilePage ? `$('#uploadModal').modal('show')` : ''"
+    >
       <template v-if="$route.path === '/profile/likes'">No likes yet :(</template>
-      <template v-else><font-awesome-icon :icon="['fas', 'plus']" /> Upload your first meme!</template>
+      <template v-else-if="$route.path === '/profile'"><font-awesome-icon :icon="['fas', 'plus']" /> Upload your first meme!</template>
+      <template v-else>No memes yet :(</template>
     </div>
   </div>
 </template>
@@ -36,11 +42,16 @@ export default {
       loading: false
     }
   },
+  computed: {
+    isProfilePage() {
+      return this.$route.path.startsWith("/profile")
+    }
+  },
   methods: {
     loadMore() {
       if (this.next) {
         this.loading = true
-        this.$axios.get(this.next, {progress: false})
+        this.$axios.get(this.next)
           .then(res => {
             if (res.data.results.length) {
               this.tiles.push(...res.data.results)
@@ -83,7 +94,6 @@ export default {
   background-color: #090909;
   border-radius: 10px;
   margin-bottom: 10px;
-  cursor: pointer;
   width: 100%;
 }
 </style>
