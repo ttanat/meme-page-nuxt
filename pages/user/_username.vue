@@ -2,9 +2,7 @@
   <main>
     <div class="container-fluid">
       <div class="row justify-content-center">
-
-        <ProfileSideBar />
-
+        <ProfileSideBar :sidebar-data="sidebarData" />
         <div class="col-md-8 col-xl-9">
           <TileItems />
         </div>
@@ -27,6 +25,22 @@ export default {
     this.$store.commit("setCurrentPage", this.$route.params.username)
     return {
       title: this.$route.params.username
+    }
+  },
+  async asyncData({ $axios, route }) {
+    const { data } = await $axios.get(`/api/user/${route.params.username}`)
+    return {
+      sidebarData: {
+        bio: data.bio,
+        stats: {
+          clout: data.clout,
+          num_followers: data.num_followers,
+          num_following: data.num_following
+        },
+        image: data.image,
+        isFollowing: data.is_following,
+        userPages: data.moderating
+      }
     }
   }
 }

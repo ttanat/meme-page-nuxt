@@ -3,29 +3,38 @@
     <div class="container-fluid">
       <div class="row">
         <img v-if="isProfilePage && $auth.user.image" ref="profilePic" id="profile-pic" class="rounded-circle" :src="$auth.user.image" height="55" width="55">
-        <img v-else-if="image && !isProfilePage" class="rounded-circle mt-1 ml-1 mr-2" :src="image" height="60" width="60">
+        <img v-else-if="!isProfilePage && sidebarData.image" class="rounded-circle mt-1 ml-1 mr-2" :src="sidebarData.image" height="60" width="60">
         <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 60px;margin: 5px;" />
         <div>
           <h5 id="profile-username" class="m-1">{{ isProfilePage ? $auth.user.username : $route.params.username }}</h5>
-          <template v-if="isProfilePage && pathname !== '/profile/settings'">
+          <template v-if="isProfilePage">
             <small class="text-muted pointer" @click="openInputPic">
               <template v-if="updatingPic">&nbsp;Updating <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></template>
               <template v-else>&nbsp;Edit profile picture</template>
             </small>
             <input type="file" ref="inputPic" accept="image/jpeg, image/png" class="d-none" @change="updateProfilePic">
           </template>
-          <FollowButton v-else :is-following="isFollowing" @following-changed-event="changeFollow" />
+          <FollowButton
+            v-else
+            :is-following="sidebarData.isFollowing"
+            @following-changed-event="changeFollow"
+          />
         </div>
       </div>
     </div>
 
     <div class="mt-2">
-      <BioDescription v-if="isProfilePage" :current-bio="bio" add-text="bio" @bio-change-event="changeBio" />
-      <span v-else v-html="parseBio(bio)" class="bio"></span>
+      <BioDescription
+        v-if="isProfilePage"
+        :current-bio="getBio"
+        add-text="bio"
+        @bio-change-event="changeBio"
+      />
+      <span v-else v-html="parseBio(getBio)" class="bio"></span>
     </div>
     <hr class="mb-2" style="background-color: grey;">
 
-    <UserStats v-if="pathname !== '/profile/settings'" :stats="stats" />
+    <UserStats :stats="isProfilePage ? $auth.user.stats : sidebarData.stats" />
 
     <div class="mt-4 mb-5">
       <h5>Profile</h5>
@@ -44,15 +53,9 @@
         <font-awesome-icon :icon="['fas', 'box-open']" />&ensp;Memes
       </nuxt-link>
       <br>
-      <template v-if="isProfilePage && $auth.user.moderating.length">
+      <template v-if="getPages.length">
         <h5>Meme Pages</h5>
-        <nuxt-link v-for="m in $auth.user.moderating" :key="m.name" :to="'/page/'+m.name">
-          <font-awesome-icon :icon="['fas', m.private ? 'lock' : 'star']" />&ensp;{{ m.dname || m.name }}
-        </nuxt-link>
-      </template>
-      <template v-else-if="!isProfilePage && userPages.length">
-        <h5>Meme Pages</h5>
-        <nuxt-link v-for="p in userPages" :key="p.name" :to="'/page/'+p.name">
+        <nuxt-link v-for="p in getPages" :key="p.name" :to="'/page/'+p.name">
           <font-awesome-icon :icon="['fas', p.private ? 'lock' : 'star']" />&ensp;{{ p.dname || p.name }}
         </nuxt-link>
       </template>
@@ -73,6 +76,12 @@ export default {
     FollowButton,
     BioDescription
   },
+  props: {
+    sidebarData: {
+      type: Object,
+      required: false
+    }
+  },
   mixins: [parseBioMixin],
   head() {
     return {
@@ -84,16 +93,7 @@ export default {
   },
   data() {
     return {
-      image: null,
-      isFollowing: false,
-      bio: "",
-      updatingPic: false,
-      stats: {
-        clout: 0,
-        followers: 0,
-        following: 0
-      },
-      userPages: this.isProfilePage ? this.$auth.user.moderating : [] // For user page only
+      updatingPic: false
     }
   },
   computed: {
@@ -102,21 +102,12 @@ export default {
     },
     isProfilePage() {
       return this.$auth.loggedIn && this.pathname.startsWith("/profile")
-    }
-  },
-  async created() {
-    const url = this.isProfilePage ? "/api/profile" : `/api/user/${this.$route.params.username}`
-    const { data } = await this.$axios.get(url)
-    this.bio = data.bio
-    this.stats = {
-      clout: data.clout,
-      num_followers: data.num_followers,
-      num_following: data.num_following
-    }
-    if (!this.isProfilePage) {
-      this.image = data.image
-      this.isFollowing = data.is_following
-      this.userPages.push(...data.moderating)
+    },
+    getBio() {
+      return this.isProfilePage ? this.$auth.user.bio : this.sidebarData.bio
+    },
+    getPages() {
+      return this.isProfilePage ? this.$auth.user.moderating : this.sidebarData.userPages
     }
   },
   methods: {
