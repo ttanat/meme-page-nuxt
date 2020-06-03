@@ -108,7 +108,7 @@ export default {
         formData.set("permissions", this.pagePermissions)
 
         try {
-          const { data } = await this.$axios.post("/new_page", formData)
+          const { data } = await this.$axios.post("/api/new_page", formData)
           if (data.success) {
             $("#newMemePage").modal('hide')
             await this.addPageToAuthUser(formData)

@@ -29,7 +29,7 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right" style="width: 190px;background-color: #252525;color: lightgrey;">
               <h5 class="dropdown-header m-0" style="overflow-x: hidden;text-overflow: ellipsis;">{{ $auth.user.username }}</h5>
-              <nuxt-link class="dropdown-item user-dropdown" to="/profile"><font-awesome-icon :icon="['fas', 'user']" /> Profile</nuxt-link>
+              <nuxt-link class="dropdown-item user-dropdown" to="/profile" no-prefetch><font-awesome-icon :icon="['fas', 'user']" /> Profile</nuxt-link>
               <a class="dropdown-item user-dropdown" href="javascript:night()"><font-awesome-icon id="moon-icon" :icon="['far', 'moon']" /> Night</a>
               <nuxt-link class="dropdown-item user-dropdown" to="/settings" no-prefetch><font-awesome-icon :icon="['fas', 'cog']" /> Settings</nuxt-link>
               <div class="dropdown-divider"></div>

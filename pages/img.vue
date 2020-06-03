@@ -44,8 +44,7 @@ export default {
       copy(window.location.href)
       this.$toast.success("Copied", {
         position: 'bottom-center',
-        duration: 1500,
-        keepOnHover: true
+        duration: 1000
       })
     }
   }

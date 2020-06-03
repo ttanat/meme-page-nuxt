@@ -69,10 +69,14 @@ export default {
     },
     copyLink() {
       copy(`${window.location.origin}/m/${this.tile.uuid}`)
+      this.$toast.success("Copied", {
+        position: 'bottom-center',
+        duration: 1000
+      })
     },
     deleteMeme() {
       if (confirm("Are you sure you want to delete this?")) {
-        this.$axios.delete(`/delete/m?u=${this.tile.uuid}`)
+        this.$axios.delete(`/api/delete/meme/${this.tile.uuid}`)
           .then(res => {
             if (res.status === 204) {
               this.$emit("meme-deleted-event", this.tile.uuid)

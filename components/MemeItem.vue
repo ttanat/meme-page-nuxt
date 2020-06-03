@@ -59,7 +59,7 @@
             <div class="dropdown-menu bg-dark" @contextmenu.prevent>
               <nuxt-link class="dropdown-item m-dropdown" :to="'/img?m='+meme.uuid" target="_blank"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link>
               <div class="dropdown-item m-dropdown" @click="copyLink"><font-awesome-icon :icon="['fas', 'link']" /> Copy Link</div>
-              <div class="dropdown-item m-dropdown"><font-awesome-icon :icon="['fas', 'share']" /> Share</div>
+              <!-- <div class="dropdown-item m-dropdown"><font-awesome-icon :icon="['fas', 'share']" /> Share</div> -->
               <div class="dropdown-item m-dropdown"><font-awesome-icon :icon="['far', 'flag']" /> Report</div>
             </div>
           </div>
@@ -133,13 +133,18 @@ export default {
         this.paused = !play
         play ? this.$refs.memeEl.play() : this.$refs.memeEl.pause()
     },
-    copyLink() {copy(`${window.location.origin}/m/${this.meme.uuid}`)},
+    copyLink() {
+      copy(`${window.location.origin}/m/${this.meme.uuid}`)
+      this.$toast.success("Copied", {
+        position: 'bottom-center',
+        duration: 1000
+      })
+    },
     vote(v) {this.sendVote(this.meme, v, "m")},
     restartVid() {this.$refs.memeEl.currentTime = 0},
     async openContextMenu(e) {
       // Close all other context menus first
       await this.$emit("context-menu-event")
-      console.log(e)
       this.$refs.menu.open(e)
     }
   }

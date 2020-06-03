@@ -40,7 +40,7 @@ export default {
   methods: {
     follow() {
       if (this.checkAuth()) {
-        this.$axios.get(`/${this.action}/${this.isUserPage ? this.$route.params.username : this.$route.params.name}`, {progress: false})
+        this.$axios.get(`/api/${this.action}/${this.isUserPage ? this.$route.params.username : this.$route.params.name}`)
           .then(res => this.isUserPage ? res.data.following : res.data.subscribed)
           .then(f => this.$emit("following-changed-event", f))
           .catch(this.displayError)
