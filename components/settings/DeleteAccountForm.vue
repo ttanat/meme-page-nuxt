@@ -27,8 +27,11 @@ export default {
         this.errorToast("Password incorrect")
       } else {
         if (confirm("Are you sure you want to delete your account?")) {
-          this.$axios.delete("/api/settings?f=account")
-            .then(() => {
+          const data = new FormData()
+          data.set("password", this.confirmPassword)
+          this.$axios.post("/api/delete/account", data)
+            .then(async () => {
+              await this.$auth.logout() // Using await here just to be sure that tokens are cleared before going to other pages
               this.$toast.info("Your account has now been deleted. Goodbye :(", {position: 'top-center', duration: 2000})
               this.$router.push('/')
             })
