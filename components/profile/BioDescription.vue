@@ -2,7 +2,11 @@
   <div>
     <div v-show="!editing" class="bio">
       <span v-if="updating">Updating <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></span>
-      <span v-else v-html="parseBio(currentBio)"></span><template v-if="currentBio">&ensp;</template><small v-show="!updating" @click="editBio" class="text-muted pointer"><span v-if="!currentBio" style="font-size: 13px;">Add {{ addText }}&ensp;</span><font-awesome-icon :icon="['fas', 'pen']" /></small>
+      <span v-else v-html="parseBio(currentBio)"></span>
+      <small v-show="!updating" @click="editBio" class="text-muted pointer">
+        <span v-if="!currentBio" style="font-size: 13px;">Add {{ addText }}&nbsp;</span>
+        <font-awesome-icon :icon="['fas', 'pen']" />
+      </small>
     </div>
     <textarea ref="textarea" v-show="editing" v-model.trim="newBio" placeholder="Add your page description here!" rows="9"></textarea>
     <span>
@@ -23,7 +27,7 @@ export default {
       required: false,
       default: false
     },
-    currentBio: {
+    pageDescription: {
       type: String,
       required: false,
       default: ""
@@ -40,6 +44,14 @@ export default {
       newBio: this.currentBio,
       editing: false,
       updating: false
+    }
+  },
+  computed: {
+    isProfilePage() {
+      return this.$route.path.startsWith("/profile")
+    },
+    currentBio() {
+      return this.isProfilePage ? this.$auth.user.bio : this.pageDescription
     }
   },
   methods: {
@@ -61,13 +73,13 @@ export default {
     },
     saveNew() {
       const data = new FormData()
-      data.set("nb", this.newBio)
+      data.set("new_val", this.newBio)
       this.editing = false
       if (this.bioNoChange()) return false // Don't send if bio is same
 
-      if (this.$route.path.startsWith("/page/")) {
+      if (!this.isProfilePage) {
         if (this.isPageAdmin) {
-          data.set("n", this.$route.params.name)
+          data.set("name", this.$route.params.name)
         } else {
           return false
         }
@@ -75,11 +87,15 @@ export default {
 
       this.updating = true
 
-      this.$axios.post(`/update/${data.has("n") ? "description" : "bio"}`, data, {progress: false})
-        .then(res => res.data.nb)
-        .then(new_bio => {
-          this.$emit("bio-change-event", new_bio)
-          this.newBio = new_bio
+      this.$axios.post(`/api/update/${data.has("name") ? "description" : "bio"}`, data)
+        .then(res => res.data.new_val)
+        .then(new_val => {
+          if (this.isProfilePage) {
+            this.newBio = new_val
+            this.$auth.setUser(Object.assign({}, this.$auth.user, {bio: new_val}))
+          } else {
+            this.$emit("description-change-event", new_val)
+          }
         })
         .catch(err => {
           this.editBio()

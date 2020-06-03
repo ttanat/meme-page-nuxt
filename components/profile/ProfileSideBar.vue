@@ -12,7 +12,7 @@
               <template v-if="updatingPic">&nbsp;Updating <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></template>
               <template v-else>&nbsp;Edit profile picture</template>
             </small>
-            <input type="file" ref="inputPic" accept="image/jpeg, image/png" class="d-none" @change="updateProfilePic">
+            <input v-show="false" type="file" ref="inputPic" accept="image/jpeg, image/png" @change="updateProfilePic">
           </template>
           <FollowButton
             v-else
@@ -26,13 +26,11 @@
     <div class="mt-2">
       <BioDescription
         v-if="isProfilePage"
-        :current-bio="getBio"
         add-text="bio"
-        @bio-change-event="changeBio"
       />
       <span v-else v-html="parseBio(getBio)" class="bio"></span>
     </div>
-    <hr class="mb-2" style="background-color: grey;">
+    <hr class="mb-2" style="background: grey;">
 
     <UserStats :stats="isProfilePage ? $auth.user.stats : sidebarData.stats" />
 
@@ -137,11 +135,7 @@ export default {
       }
     },
     changeFollow(is_following) {
-      this.isFollowing = is_following
-      this.stats.followers += is_following ? 1 : -1
-    },
-    changeBio(b) {
-      this.bio = b
+      this.$emit('following-changed-event', is_following)
     }
   }
 }
