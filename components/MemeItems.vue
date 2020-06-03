@@ -10,8 +10,10 @@
       @set-points-event="setPoints"
       @context-menu-event="closeAllContextMenus"
     />
-    <div v-show="loading || $fetchState.pending" class="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
-    <div v-if="noMemes" class="no-memes">
+    <div v-show="loading || $fetchState.pending" class="loading">
+      <font-awesome-icon :icon="['fas', 'circle-notch']" spin />
+    </div>
+    <div v-if="noMemes && !$fetchState.pending" class="no-memes">
       <template v-if="pathname === '/search'">No results matching query.<br><br>Return <nuxt-link to="/">home</nuxt-link></template>
       <template v-else-if="pathname === '/feed'">No new posts.<br><br>Subscribe to more pages or follow other users for more posts!</template>
       <template v-else>No memes here :(<br><br>Return <nuxt-link to="/">home</nuxt-link></template>
@@ -49,7 +51,7 @@ export default {
       scrollRoot: null,
       next: null,
       loading: false,
-      noMemes: false
+      noMemes: true
     }
   },
   computed: {
@@ -63,7 +65,7 @@ export default {
   async fetch() {
     if (!this.canLoadMore()) return false
     this.noMemes = false
-    const { data } = await this.$axios.get(this.getNewURL(), {progress: false})
+    const { data } = await this.$axios.get(this.getNewURL())
     const { results } = data
     this.memes = results
     this.$nextTick(() => {if (results.length) {
