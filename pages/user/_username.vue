@@ -2,7 +2,10 @@
   <main>
     <div class="container-fluid">
       <div class="row justify-content-center">
-        <ProfileSideBar :sidebar-data="sidebarData" />
+        <ProfileSideBar
+          :sidebar-data="sidebarData"
+          @following-changed-event="changeIsFollowing"
+        />
         <div class="col-md-8 col-xl-9">
           <TileItems />
         </div>
@@ -41,6 +44,12 @@ export default {
         isFollowing: data.is_following,
         userPages: data.moderating
       }
+    }
+  },
+  methods: {
+    changeIsFollowing(is_following) {
+      this.sidebarData.isFollowing = is_following
+      this.sidebarData.stats.num_followers += is_following ? 1 : -1
     }
   }
 }
