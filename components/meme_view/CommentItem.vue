@@ -4,16 +4,21 @@
       <div class="row">
 
         <div class="comment-left-column">
-          <a :href="'/user/'+comment.username">
+          <font-awesome-icon v-if="isDeleted" :icon="['fas', 'user-circle']" style="color: grey;" />
+          <nuxt-link v-else :to="'/user/'+comment.username" no-prefetch>
             <img v-if="comment.dp_url" class="rounded-circle" :src="comment.dp_url" height="40" width="40">
-            <font-awesome-icon v-else :icon="['fas', 'user-circle']" />
-          </a>
+            <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="color: lightgrey;" />
+          </nuxt-link>
         </div>
 
         <div class="comment-right-column" :style="{paddingTop: comment.dp_url ? '10px' : '5px'}">
 
           <div>
-            <span><a :href="'/user/'+comment.username" class="comment-username">{{ comment.username }}</a>&ensp;<span class="comment-date">{{ formatDate(comment.post_date) }}{{ comment.edited ? " (edited)" : "" }}</span></span>
+            <span>
+              <span v-if="isDeleted" class="comment-username">[REDACTED]</span>
+              <nuxt-link v-else :to="'/user/'+comment.username" class="comment-username" no-prefetch>{{ comment.username }}</nuxt-link>&nbsp;
+              <span class="comment-date">{{ formatDate(comment.post_date) }}{{ comment.edited ? " (edited)" : "" }}</span>
+            </span>
             <div v-if="isAuthenticated && !isDeleted" class="dropdown comment-dropdown-btn float-right">
               <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <font-awesome-icon :icon="['fas', 'angle-down']" />
@@ -21,8 +26,7 @@
               <div class="dropdown-menu dropdown-menu-right c-dropdown-menu">
                 <template v-if="isOwnComment">
                   <div class="dropdown-item" @click="toggleEdit" ref="toggleEditButton">
-                    <template v-if="editing"><font-awesome-icon :icon="['fas', 'times']" />&ensp;Cancel</template>
-                    <template v-else><font-awesome-icon :icon="['fas', 'pen']" />&ensp;Edit</template>
+                    <font-awesome-icon :icon="['fas', editing ? 'times' : 'pen']" />&ensp;{{ editing ? "Cancel" : "Edit" }}
                   </div>
                   <div class="dropdown-item" @click="confirmDelete">
                     <font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;Delete
@@ -35,9 +39,9 @@
 
           <span v-show="!editing" :class="{'d-block': !editing, 'comment-deleted': isDeleted}" class="comment-content mr-2">{{ isDeleted ? "Comment has been REDACTED" : comment.content }}</span>
           <input v-if="!isDeleted" v-show="editing && isAuthenticated && isOwnComment" ref="editCommentInput" @keyup.enter="editComment(comment.uuid)" class="edit-comment-field" :value="comment.content">
-          <a v-if="comment.image" :href="'/img?c='+comment.uuid" target="_blank">
+          <nuxt-link v-if="comment.image" :to="'/img?c='+comment.uuid" target="_blank" no-prefetch>
             <img ref="commentImg" class="mt-1 comment-image fade-in" :data-src="comment.image">
-          </a>
+          </nuxt-link>
 
           <div v-if="!isDeleted" class="container-fluid">
             <div class="row comment-buttons">
@@ -158,7 +162,7 @@ export default {
       return this.comment.points && !this.hidePoints ? this.formatNumber(this.comment.points) : ""
     },
     isDeleted() {
-      return !this.comment.content && !this.comment.image
+      return !this.comment.username || (!this.comment.content && !this.comment.image)
     }
   },
   methods: {

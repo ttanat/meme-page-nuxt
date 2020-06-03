@@ -3,15 +3,20 @@
     <div class="row">
 
       <div class="reply-left-column">
-        <a :href="'/user/'+reply.username">
+        <font-awesome-icon v-if="isDeleted" :icon="['fas', 'user-circle']" class="mt-2" style="color: grey;" />
+        <nuxt-link v-else :to="'/user/'+reply.username" no-prefetch>
           <img v-if="reply.dp_url" class="rounded-circle" :src="reply.dp_url" height="25" width="25">
-          <font-awesome-icon v-else :icon="['fas', 'user-circle']" />
-        </a>
+          <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="color: lightgrey;" />
+        </nuxt-link>
       </div>
 
       <div class="reply-right-column" :style="{paddingTop: reply.dp_url ? '3px' : ''}">
 
-        <span><a :href="'/user/'+reply.username" class="comment-username">{{ reply.username }}</a>&ensp;<span class="comment-date">{{ formatDate(reply.post_date) }}{{ reply.edited ? " (edited)" : "" }}</span></span>
+        <span>
+          <span v-if="isDeleted" class="comment-username">[REDACTED]</span>
+          <nuxt-link v-else :to="'/user/'+reply.username" class="comment-username" no-prefetch>{{ reply.username }}</nuxt-link>&nbsp;
+          <span class="comment-date">{{ formatDate(reply.post_date) }}{{ reply.edited ? " (edited)" : "" }}</span>
+        </span>
 
         <div v-if="isAuthenticated && !isDeleted" class="dropdown comment-dropdown-btn float-right">
           <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -32,14 +37,14 @@
 
         <span v-if="isDeleted" class="comment-deleted">Comment has been REDACTED</span>
         <span v-else v-show="!editing" :class="{'d-block': !editing}" class="comment-content reply-content">
-          <span v-if="rpattern"><a :href="'/user/'+rpattern[1]">{{ rpattern[0] }}</a>{{ replyAfterMention }}</span>
+          <span v-if="rpattern"><nuxt-link :to="'/user/'+rpattern[1]">{{ rpattern[0] }}</nuxt-link>{{ replyAfterMention }}</span>
           <template v-else>{{ reply.content }}</template>
         </span>
 
         <input v-if="!isDeleted" v-show="editing && isAuthenticated && isOwnReply" ref="editReplyInput" @keyup.enter="editReply(reply.uuid)" class="edit-comment-field" :value="reply.content">
-        <a v-if="reply.image" :href="'/img?c='+reply.uuid" target="_blank">
+        <nuxt-link v-if="reply.image" :to="'/img?c='+reply.uuid" target="_blank">
           <img ref="replyImg" class="mt-1 reply-image fade-in" :data-src="reply.image">
-        </a>
+        </nuxt-link>
 
         <div v-if="!isDeleted" class="container-fluid">
           <div class="row comment-buttons">
@@ -134,7 +139,7 @@ export default {
       return this.reply.points && !this.hidePoints ? this.formatNumber(this.reply.points) : ""
     },
     isDeleted() {
-      return !this.reply.content && !this.reply.image
+      return !this.reply.username || (!this.reply.content && !this.reply.image)
     }
   },
   methods: {
