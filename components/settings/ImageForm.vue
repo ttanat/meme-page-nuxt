@@ -66,7 +66,11 @@ export default {
     deleteImage() {
       if (confirm("Are you sure you want to delete your profile picture?")) {
         this.$axios.delete(`/api/settings?f=image`)
-          .then(res => {if (res.status === 204) this.url = ""})
+          .then(res => {
+            if (res.status === 204) {
+              this.$auth.setUser(Object.assign({}, this.$auth.user, {image: null}))
+            }
+          })
           .catch(this.displayError)
       }
     }
