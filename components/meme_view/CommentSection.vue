@@ -1,26 +1,38 @@
 <template>
   <div id="comment-section">
     <h6>Comments ({{ numComments }})</h6>
+    <PostComment
+      :num-comments="numComments"
+      @new-comment-posted-event="newCommentPosted"
+      @increment-comment-count-event="incrementCommentCount"
+    />
     <CommentItems
       :num-comments="numComments"
-      @increment-comment-count-event="$emit('increment-comment-count-event')"
+      @increment-comment-count-event="incrementCommentCount"
     />
   </div>
 </template>
 
 <script>
+import PostComment from './PostComment'
 import CommentItems from './CommentItems'
 
 export default {
   name: 'CommentSection',
   components: {
-    CommentItems,
+    PostComment,
+    CommentItems
   },
   props: {
     numComments: {
       type: Number,
       required: true,
       default: 0
+    }
+  },
+  methods: {
+    incrementCommentCount() {
+      this.$emit('increment-comment-count-event')
     }
   }
 }
