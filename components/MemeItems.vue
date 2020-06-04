@@ -138,7 +138,7 @@ export default {
       this.$children.forEach(c => c.$refs.menu.close())
     }
   },
-  destroyed() {
+  beforeDestroy() {
     window.removeEventListener("blur", this.pauseAll)
   }
 }
