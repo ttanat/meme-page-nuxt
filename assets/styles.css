@@ -135,39 +135,6 @@ a {
   border: 2px solid #dc3545 !important;
 }
 
-/* Notifications */
-#notif-dropdown > .dropdown-menu {
-  width: 335px;
-  background-color: #252525;
-  color: lightgrey;
-}
-.notification {
-  width: 100%;
-  font-size: 14px;
-  padding: 5px 14px;
-  margin: 0 !important;
-  cursor: pointer;
-}
-.notification:hover {
-  background-color: #303030;
-}
-.notification:active {
-  background-color: #007bff;
-  color: white;
-}
-.notif-left-column {
-  width: 70px;
-  text-align: center;
-}
-.notif-right-column {
-  width: 235px;
-}
-.notif-right-column > a {
-  height: 80px;
-  text-align: left;
-}
-/* End notifications */
-
 .user-dropdown, .dropdown-item > a {
   color: inherit;
 }
