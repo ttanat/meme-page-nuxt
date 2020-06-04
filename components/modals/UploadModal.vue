@@ -53,13 +53,14 @@
                 <br>
                 <label>Caption</label>
                 <br>
-                <input v-model.trim="caption" @keyup="adjustCaptionPreviewWidth" type="text" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off">
+                <input v-model.trim="caption" @keyup="adjustCaptionPreviewWidth" type="text" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off" style="outline: none;">
                 <br>
-                <small id="uploadCaptionSmall">{{ 100 - caption.length }} characters left</small>
+                <small>{{ 100 - caption.length }} characters left</small>
                 <div v-show="caption && canSubmit" class="custom-control custom-checkbox custom-checkbox-sm mt-2 mb-3">
                   <input v-model="embedCaption" :disabled="embedCaptionDisabled" type="checkbox" id="embedCaptionInput" class="custom-control-input custom-control-input-sm" autocomplete="off">
                   <label for="embedCaptionInput" class="custom-control-label" style="font-size: 15px;">
                     Embed caption <font-awesome-icon class="text-muted" style="font-size: 13px;" :icon="['far', 'question-circle']" data-toggle="tooltip" title="Image will be captured from the preview shown and may look worse on smaller screens. Available only for JPG and PNG images." />
+                    <small v-if="embedCaption" style="color: grey;"><br>If prompted, please allow this site to extract canvas data.</small>
                   </label>
                 </div>
                 <div :class="{'mt-3': !(caption && canSubmit)}" class="custom-file mb-3">
@@ -243,7 +244,7 @@ export default {
         this.canSubmit = false
         this.$refs.submitButton.style.cursor = "progress"
         this.uploading = true
-        this.$axios.post("/upload", data)
+        this.$axios.post("/api/upload", data)
           .then(res => res.data)
           .then(response => {
             if (response.success) {
