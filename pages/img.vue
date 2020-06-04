@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     copyLink() {
-      copy(window.location.href)
+      copy(`${window.location.origin}/m/${this.$route.query.m || this.$route.query.c}`)
       this.$toast.success("Copied", {
         position: 'bottom-center',
         duration: 1000
