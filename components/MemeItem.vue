@@ -82,7 +82,7 @@
           <font-awesome-icon :icon="['fas', 'download']" />&ensp;Download
         </a>
       </li>
-      <li v-if="$auth.loggedIn">
+      <li v-if="$auth.loggedIn && meme.username !== $auth.user.username">
         <a href="javascript:void(0);">
           <font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report
         </a>
