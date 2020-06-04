@@ -50,7 +50,8 @@
   overflow-wrap: break-word;
 }
 .comment-image {
-  height: 15rem;
+  object-fit: contain;
+  max-height: 15rem;
   border-radius: .5rem;
 }
 .reply-image {
