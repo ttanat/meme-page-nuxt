@@ -1,9 +1,5 @@
 <template>
   <div>
-    <PostComment
-      :num-comments="numComments"
-      @new-comment-posted-event="newCommentPosted"
-    />
     <CommentItem
       v-for="comment in comments"
       :key="comment.uuid"
@@ -12,26 +8,25 @@
       @comment-edited-event="commentEdited"
       @comment-deleted-event="commentDeleted"
       @set-points-event="setPoints"
-      @increment-comment-count-event="incrementCommentCount"
+      @increment-comment-count-event="$emit('increment-comment-count-event')"
     />
     <div v-show="loading" class="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
   </div>
 </template>
 
 <script>
-import PostComment from './PostComment'
 import CommentItem from './CommentItem'
 import infiniteScrollMixin from '~/mixins/infiniteScrollMixin'
 import lazyLoadMixin from '~/mixins/lazyLoadMixin'
 import loadLikesMixin from '~/mixins/loadLikesMixin'
+import paginationOffsetMixin from '~/mixins/paginationOffsetMixin'
 
 export default {
   name: 'CommentItems',
   components: {
-    PostComment,
     CommentItem
   },
-  mixins: [infiniteScrollMixin, lazyLoadMixin, loadLikesMixin],
+  mixins: [infiniteScrollMixin, lazyLoadMixin, loadLikesMixin, paginationOffsetMixin],
   props: {
     numComments: {
       type: Number,
@@ -49,14 +44,13 @@ export default {
   },
   created() {
     this.loadMore()
+    if (this.$auth.loggedIn) {
+      this.$parent.$on("new-comment-posted-event", this.showNewComment)
+    }
   },
   methods: {
-    incrementCommentCount() {
-      this.$emit('increment-comment-count-event')
-    },
-    newCommentPosted(comment) {
-      this.incrementCommentCount()
-      this.comments.unshift(comment)
+    showNewComment(new_comment_obj) {
+      this.comments.unshift(new_comment_obj)
     },
     observeNewComment(comment) {
       this.lazyObjectObserver.observe(comment)
@@ -83,12 +77,7 @@ export default {
           }
           if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids, "c")
           this.next = data.next
-          if (offset) {
-            const url = new URL(this.next)
-            const old_offset = url.searchParams.get("offset")
-            url.searchParams.set("offset", offset + (parseInt(old_offset) || 0))
-            this.next = url.href
-          }
+          if (offset) this.increaseOffset(offset)
         })
         .catch(console.log)
         .finally(() => this.loading = false)
@@ -105,6 +94,9 @@ export default {
       const comment = this.getComment(uuid)
       comment.content = comment.image = null
     }
+  },
+  beforeDestroy() {
+    this.$parent.$off("new-comment-posted-event", this.showNewComment)
   }
 }
 </script>
