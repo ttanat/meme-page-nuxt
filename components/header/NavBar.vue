@@ -14,18 +14,20 @@
 
       <div class="navbar-nav ml-auto mr-lg-0 mr-xl-3">
         <template v-if="$auth.loggedIn">
-          <nuxt-link class="nav-item nav-link text-light mr-3" to="/" title="Home"><font-awesome-icon :icon="['fas', 'home']" /></nuxt-link>
+          <nuxt-link class="nav-item nav-link text-light mr-3" to="/" title="Home">
+            <font-awesome-icon :icon="['fas', 'home']" fixed-width /><span class="d-lg-none"> Home</span>
+          </nuxt-link>
           <a v-if="$route.path.startsWith('/profile')" type="button" class="nav-item nav-link text-light mr-3" data-toggle="modal" data-target="#newMemePage" title="New meme page">
-            <font-awesome-icon :icon="['fas', 'plus']" />
+            <font-awesome-icon :icon="['fas', 'plus']" fixed-width /><span class="d-lg-none"> New meme page</span>
           </a>
           <a type="button" class="nav-item nav-link text-light mr-3" data-toggle="modal" data-target="#uploadModal" title="Upload">
-            <font-awesome-icon :icon="['fas', 'file-upload']" />
+            <font-awesome-icon :icon="['fas', 'file-upload']" fixed-width /><span class="d-lg-none"> Upload</span>
           </a>
           <NotificationsDropdown title="Notifications" />
           <div class="dropdown">
             <a type="button" class="nav-item nav-link text-light mr-2" data-toggle="dropdown">
               <img v-if="$auth.user.image" class="rounded-circle" :src="$auth.user.image" height="21" width="21">
-              <font-awesome-icon v-else :icon="['fas', 'user-circle']" />&nbsp;&nbsp;<font-awesome-icon :icon="['fas', 'caret-down']" />
+              <font-awesome-icon v-else :icon="['fas', 'user-circle']" class="ml-1" />&ensp;<font-awesome-icon :icon="['fas', 'caret-down']" />
             </a>
             <div class="dropdown-menu dropdown-menu-right">
               <h5 class="dropdown-header m-0">
@@ -49,7 +51,7 @@
         </template>
         <template v-else>
           <button class="btn btn-sm mr-3" style="width: 100px;visibility: hidden;"></button>
-          <button type="button" class="btn btn-sm btn-outline-success mr-3" data-toggle="modal" data-target="#loginModal" style="width: 80px;">Log in</button>
+          <button type="button" class="btn btn-sm btn-outline-success mr-3 mb-2 mb-lg-0" data-toggle="modal" data-target="#loginModal" style="width: 80px;">Log in</button>
           <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#signUpModal" style="width: 80px;">Sign up</button>
         </template>
       </div>
