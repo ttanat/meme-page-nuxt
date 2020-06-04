@@ -31,8 +31,11 @@ export default {
     TileItem
   },
   mixins: [infiniteScrollMixin],
-  mounted() {
+  created() {
     this.loadMore()
+    this.$root.$on("newMemeUploaded", payload => {
+      this.tiles.unshift(payload)
+    })
   },
   data() {
     return {
@@ -73,6 +76,9 @@ export default {
       const i = this.tiles.findIndex(tile => tile.uuid === uuid)
       this.tiles.splice(i, 1)
     }
+  },
+  beforeDestroy() {
+    this.$root.$off("newMemeUploaded")
   }
 }
 </script>

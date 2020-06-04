@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div :class="{'modal-xl': canSubmit}" class="modal-dialog modal-dialog-centered">
+    <div :class="{'modal-xl': uploading || canSubmit}" class="modal-dialog modal-dialog-centered">
       <div class="modal-content text-light">
         <div class="modal-header">
           <h5 class="modal-title">Upload Meme</h5>
@@ -8,14 +8,14 @@
         <div class="modal-body">
           <div class="container-fluid px-0">
             <div class="row">
-              <div v-show="canSubmit" class="col-6">
+              <div v-show="uploading || canSubmit" class="col-6">
                 <div ref="fullPreview">
                   <h5 ref="captionPreview" class="caption-preview" :style="{width: captionPreviewWidth + 'px'}">{{ caption }}</h5>
                   <img v-show="showImgPreview" ref="imgPreview" class="preview w-100">
                   <video v-show="showVidPreview" ref="vidPreview" class="preview" controls></video>
                 </div>
               </div>
-              <div :class="[canSubmit ? 'col-6' : 'col-12']">
+              <div :class="[uploading || canSubmit ? 'col-6' : 'col-12']">
                 <div class="form-row">
                   <div class="col-sm-6">
                     <label>Upload to</label>
@@ -226,7 +226,6 @@ export default {
       data.set("tags", tags ? tags.slice(0, 20).join("") : "")
       data.set("nsfw", this.nsfw)
       if (this.pathname === "/profile") data.set("is_profile_page", true)
-      if (this.pathname.startsWith("/page/")) data.set("is_meme_page", true)
       // Add file to data
       if (JSON.parse(data.get("embed_caption"))) {
         // Generate captioned image if "Embed caption" is selected
@@ -248,24 +247,35 @@ export default {
           .then(res => res.data)
           .then(response => {
             if (response.success) {
+              if (response.uuid && this.$route.path === "/profile") {
+                this.$root.$emit("newMemeUploaded", {
+                  uuid: response.uuid,
+                  url: URL.createObjectURL(data.get("file")),
+                  points: 0,
+                  content_type: data.get("file").type
+                })
+              }
               $("#uploadModal").modal("hide")
               this.successToast("Meme successfully uploaded")
               this.clearForm()
             } else {
+              this.canSubmit = true
               this.errorToast(response.message)
             }
           })
-          .catch(this.displayError)
+          .catch(err => {
+            this.canSubmit = true
+            this.displayError(err)
+          })
           .finally(() => {
             this.uploading = false
             this.$refs.submitButton.style.cursor = null
-            this.canSubmit = true
           })
       })
     },
     clearForm() {
       this.page = this.category = this.caption = this.tags = ""
-      this.nsfw = this.embedCaption = false
+      this.nsfw = this.embedCaption = this.showImgPreview = this.showVidPreview = false
       this.$refs.inputFile.value = null
       this.fname = "Choose File"
       this.canSubmit = false
