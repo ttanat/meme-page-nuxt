@@ -51,7 +51,7 @@ export default {
         this.commentContent = ""
         this.placeholder = "Sending..."
 
-        this.$axios.post("/comment/post", data)
+        this.$axios.post("/api/comment/post", data)
           .then(res => res.data)
           .then(response => {
             this.removeFile()
@@ -68,7 +68,8 @@ export default {
               content: val,
               image: data.has("image") ? URL.createObjectURL(data.get("image")) : null
             }
-            this.$emit("new-comment-posted-event", new_comment)
+            this.$parent.$emit("new-comment-posted-event", new_comment)
+            this.$emit("increment-comment-count-event")
           })
           .catch(err => {
             this.displayError(err)
