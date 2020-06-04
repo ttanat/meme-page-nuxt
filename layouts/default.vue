@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :style="{opacity: $store.state.nightMode ? '.65' : ''}">
     <NavBar />
     <ModalManager />
     <nuxt />
