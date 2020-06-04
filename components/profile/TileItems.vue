@@ -24,18 +24,17 @@
 <script>
 import TileItem from './TileItem'
 import infiniteScrollMixin from '~/mixins/infiniteScrollMixin'
+import paginationOffsetMixin from '~/mixins/paginationOffsetMixin'
 
 export default {
   name: 'TileItems',
   components: {
     TileItem
   },
-  mixins: [infiniteScrollMixin],
+  mixins: [infiniteScrollMixin, paginationOffsetMixin],
   created() {
     this.loadMore()
-    this.$root.$on("newMemeUploaded", payload => {
-      this.tiles.unshift(payload)
-    })
+    this.$root.$on("newMemeUploaded", this.showNewTile)
   },
   data() {
     return {
@@ -51,6 +50,10 @@ export default {
     }
   },
   methods: {
+    showNewTile(tile) {
+      this.tiles.unshift(tile)
+      this.increaseOffset(1)
+    },
     loadMore() {
       if (this.next) {
         this.loading = true
@@ -78,7 +81,7 @@ export default {
     }
   },
   beforeDestroy() {
-    this.$root.$off("newMemeUploaded")
+    this.$root.$off("newMemeUploaded", this.showNewTile)
   }
 }
 </script>
