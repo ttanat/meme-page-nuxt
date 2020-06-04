@@ -28,7 +28,7 @@ export default {
 
         this.$axios({
           method: btn ? "PUT" : "DELETE",
-          url: "/like",
+          url: "/api/like",
           params: {u: item.uuid, t, v},
           progress: false
         })

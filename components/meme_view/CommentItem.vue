@@ -180,7 +180,7 @@ export default {
       $("#deleteModal").modal('show')
     },
     deleteComment() {
-      this.$axios.delete(`/comment/delete?u=${this.comment.uuid}`)
+      this.$axios.delete(`/api/comment/delete?u=${this.comment.uuid}`)
         .then(res => {
           if (res.status === 204) this.$emit("comment-deleted-event", this.comment.uuid)
         })
@@ -193,7 +193,7 @@ export default {
       const data = new FormData()
       data.set("content", val)
       data.set("uuid", uuid)
-      this.$axios.post("/comment/edit", data)
+      this.$axios.post("/api/comment/edit", data)
         .then(res => this.$emit("comment-edited-event", uuid, val))
         .catch(console.log)
     },
@@ -243,7 +243,7 @@ export default {
         this.replyInputValue = ""
         this.replyInputPlaceholder = "Sending..."
 
-        this.$axios.post("/reply", data)
+        this.$axios.post("/api/reply", data)
           .then(res => res.data)
           .then(response => {
             this.typingReply = false
