@@ -3,7 +3,6 @@
     <h6>Comments ({{ numComments }})</h6>
     <PostComment
       :num-comments="numComments"
-      @new-comment-posted-event="newCommentPosted"
       @increment-comment-count-event="incrementCommentCount"
     />
     <CommentItems

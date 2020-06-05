@@ -90,12 +90,12 @@ export default {
     FollowButton,
     BioDescription
   },
-  async asyncData({ $axios, params }) {
+  async asyncData({ $axios, $auth, params }) {
     const { data } = await $axios.get(`/api/page/${params.name}`)
     return {
       page: data.page,
       is_subscribed: data.is_subscribed || false,
-      is_page_admin: data.is_page_admin || false,
+      is_page_admin: $auth.loggedIn && $auth.user.username === data.page.admin,
       show: data.show,
       page_config: {
         num_posts: data.page.num_posts,

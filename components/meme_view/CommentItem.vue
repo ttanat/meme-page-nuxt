@@ -17,7 +17,7 @@
             <span>
               <span v-if="isDeleted" class="comment-username">[REDACTED]</span>
               <nuxt-link v-else :to="'/user/'+comment.username" class="comment-username" no-prefetch>{{ comment.username }}</nuxt-link>&nbsp;
-              <span class="comment-date">{{ formatDate(comment.post_date) }}{{ comment.edited ? " (edited)" : "" }}</span>
+              <span class="comment-date">{{ formatDate(comment.post_date) }}{{ comment.edited && !isDeleted ? " (edited)" : "" }}</span>
             </span>
             <div v-if="isAuthenticated && !isDeleted" class="dropdown comment-dropdown-btn float-right">
               <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
