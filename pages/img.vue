@@ -2,14 +2,14 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-9 col-sm-12" id="left-col">
-        <a href="/" id="back">Back to meme page</a><br>
+        <nuxt-link :to="'/m/'+meme" id="back">Back to meme</nuxt-link><br>
         <video v-if="isVid" :src="url" controls id="meme"></video>
         <img v-else :src="url" id="meme">
         <img src="~/assets/banner_light.png" id="adm">
         <img src="~/assets/banner_dark.png" id="adm2">
       </div>
       <div class="col-md-3" id="right-col">
-        <h3 class="m-3">Meme Page</h3>
+        <h3 class="m-3"><nuxt-link to="/">Meme Page</nuxt-link></h3>
         <div class="m-3">Drag and drop item to save</div>
         <a @click="copyLink" href="javascript:void(0);" class="m-3">Copy link</a>
         <img src="~/assets/banner_light.png" id="ad">
@@ -29,7 +29,11 @@ export default {
     if (!obj) throw "Invalid URL"
     try {
       const { data } = await $axios.get(`/api/full_res/${obj}/${route.query[obj]}`)
-      return { url: data.url, isVid: data.isVid || data.url.endsWith(".mp4") || false }
+      return {
+        url: data.url,
+        isVid: data.isVid || data.url.endsWith(".mp4") || false,
+        meme: data.m_uuid || route.query.m
+      }
     } catch(err) {
       throw "404 Not found"
     }
@@ -37,6 +41,11 @@ export default {
   head() {
     return {
       title: "Full resolution"
+    }
+  },
+  computed: {
+    imgIsComment() {
+      return 'c' in this.$route.query && data.meme
     }
   },
   methods: {
@@ -56,6 +65,10 @@ export default {
   text-decoration: none;
   color: unset;
   margin-left: 5px;
+  font-size: 1.2rem;
+}
+h3 > a {
+  color: lightgray !important;
 }
 #left-col {
   left: 0;
