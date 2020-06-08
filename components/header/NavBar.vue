@@ -23,7 +23,7 @@
           <a type="button" class="nav-item nav-link text-light mr-3" data-toggle="modal" data-target="#uploadModal" title="Upload">
             <font-awesome-icon :icon="['fas', 'file-upload']" fixed-width /><span class="d-lg-none"> Upload</span>
           </a>
-          <NotificationsDropdown title="Notifications" />
+          <NotificationsDropdown />
           <div class="dropdown">
             <a type="button" class="nav-item nav-link text-light mr-2" data-toggle="dropdown">
               <img v-if="$auth.user.image" class="rounded-circle" :src="$auth.user.image" height="21" width="21">
