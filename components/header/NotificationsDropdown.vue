@@ -1,19 +1,30 @@
 <template>
   <div class="dropdown">
-    <a type="button" @click="seen=true" class="nav-item nav-link text-light mr-3" data-toggle="dropdown">
+    <a type="button" @click="seen=true" class="nav-item nav-link text-light mr-3" data-toggle="dropdown" title="Notifications">
       <font-awesome-icon :icon="['fas', 'bell']" fixed-width /><span class="d-lg-none"> Notifications</span><!-- Comment here to remove whitespace
    --><small v-if="count && !seen"><small><small class="badge badge-pill badge-danger align-top">{{ count }}</small></small></small>
     </a>
     <div class="dropdown-menu dropdown-menu-right">
       <h5 class="dropdown-header m-0">Notifications</h5>
       <div v-if="notifications" id="notifications" class="w-100">
-        <div v-for="(notification, index) in notifications" :key="index" class="notification row">
+        <nuxt-link v-for="(notification, index) in notifications" :key="index" :to="notification.link" class="notification row">
           <div class="notif-left-column">
-            <img v-if="notification.image" class="rounded-circle" :src="notification.image" height="50" width="50">
-            <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 50px;" />
+            <img
+              v-if="notification.image"
+              :src="$axios.defaults.baseURL+notification.image"
+              height="50"
+              width="50"
+              style="border-radius: 3px;"
+            >
+            <font-awesome-icon
+              v-else-if="notification.message.includes('your comment')"
+              :icon="['fas', 'comment']"
+              style="font-size: 25px;"
+            />
+            <font-awesome-icon v-else :icon="['fas', 'user-circle']" class="notif-icon" />
           </div>
           <div class="notif-right-column">{{ notification.message }}</div>
-        </div>
+        </nuxt-link>
       </div>
       <div v-else>None</div>
       <div class="dropdown-divider"></div>
@@ -33,14 +44,13 @@ export default {
       }
   },
   mounted() {
-    setTimeout(async () => {
-      // this.$axios.get("/api/notifications")
-      //   .then(res => this.notifications.push(...res.data))
-      //   .catch(console.log)
-      const { data } = await this.$axios.get(`/api/unread_list/`)
-      this.notifications.push(...data.unread_list)
-      this.count = data.unread_count
-    }, 1500)
+    if (this.$route.name !== "notifications") {
+      setTimeout(async () => {
+        const { data } = await this.$axios.get(`/api/notifications/nav`)
+        this.notifications.push(...data.list)
+        this.count = data.count
+      }, /*150*/0)
+    }
   }
 }
 </script>
@@ -57,6 +67,7 @@ export default {
   padding: 5px 14px;
   margin: 0 !important;
   cursor: pointer;
+  color: lightgrey;
 }
 .notification:hover {
   background-color: #303030;
@@ -68,6 +79,9 @@ export default {
 .notif-left-column {
   width: 70px;
   text-align: center;
+}
+.notif-icon {
+  font-size: 50px;
 }
 .notif-right-column {
   width: 235px;
