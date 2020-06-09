@@ -7,7 +7,7 @@
       &ensp;<nuxt-link :to="notif.link" class="ext-link"><font-awesome-icon :icon="['fas', 'external-link-alt']" /></nuxt-link>
     </div>
     <div v-if="loading" id="spinner" class="mt-3"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
-    <div v-else-if="nextLink"><small class="pointer ml-2" @click="loadMore">Load more</small></div>
+    <div v-else-if="next"><small class="pointer ml-2" @click="loadMore">Load more</small></div>
   </main>
 </template>
 
@@ -17,7 +17,7 @@ export default {
   data() {
     return {
       notifications: [],
-      nextLink: "/api/notifications/",
+      next: `${this.$axios.defaults.baseURL}/api/notifications?page=1`, // Need baseURL to parse URL in loadMore
       loading: false
     }
   },
@@ -26,11 +26,18 @@ export default {
   },
   methods: {
     async loadMore() {
+      if (this.next === null) return false
       this.loading = true
       try {
-        const { data } = await this.$axios.get(this.nextLink)
+        const { data } = await this.$axios.get(this.next)
         this.notifications.push(...data.results)
-        this.nextLink = data.next
+        if (data.next) {
+          const url = new URL(this.next)
+          url.searchParams.set("page", data.next)
+          this.next = url.href
+        } else {
+          this.next = null
+        }
       } catch (err) {
         console.log(err)
       } finally {
