@@ -34,19 +34,9 @@
             </tr>
           </table>
 
-          <div class="my-3">
-            <BioDescription
-              v-if="is_page_admin"
-              :is-page-admin="is_page_admin"
-              :page-description="page.description"
-              add-text="page description"
-              @description-change-event="changeDescription"
-            />
-            <span v-else id="bio">{{ page.description }}</span>
-          </div>
-
           <div v-if="is_page_admin" style="bottom: 0;position: absolute;">
-            <nuxt-link :to="page.name+'/settings'" style="color: grey;font-size: 14px;"><font-awesome-icon :icon="['fas', 'cog']" /> Settings</nuxt-link>
+            <nuxt-link v-if="page.private" :to="page.name+'/requests'" class="left-lower-btn"><font-awesome-icon :icon="['far', 'bell']" /> Requests</nuxt-link><br>
+            <nuxt-link :to="page.name+'/settings'" class="left-lower-btn"><font-awesome-icon :icon="['fas', 'cog']" /> Settings</nuxt-link>
           </div>
         </div>
 
@@ -56,24 +46,37 @@
         </div>
 
         <div class="col-sm-4 col-lg-3 col-xl-3 mt-4" id="right">
-          <img v-if="page.num_posts && show" class="ad" src="~/assets/ad.png" alt="Advertisement">
-          <div class="list-group mt-4 mb-5">
-            <div class="list-group-item list-group-item-action py-2" style="background: darkgreen;color: white;">Moderators</div>
-            <nuxt-link :to="'/user/'+page.admin" class="list-group-item list-group-item-action py-2">{{ page.admin }} (admin)</nuxt-link>
-            <nuxt-link
-              v-for="mod in page.moderators"
-              :key="mod"
-              :to="'/user/'+mod"
-              class="list-group-item list-group-item-action py-2"
-            >
-              {{ mod }}
-            </nuxt-link>
-          </div>
-          <div class="right-fixed" v-if="page.num_posts > 1 && show">
-            <img class="ad" src="~/assets/got_ad.png" alt="Advertisement">
-            <img class="ad" src="~/assets/ad_two.png" alt="Advertisement">
+          <div v-if="show" style="width: 260px;">
+            <div class="mb-4 p-2 bg-dark" style="border-radius: 3px;">
+              <BioDescription
+                v-if="is_page_admin"
+                :is-page-admin="is_page_admin"
+                :page-description="page.description"
+                add-text="page description"
+                @description-change-event="changeDescription"
+              />
+              <span v-else id="bio">{{ page.description }}</span>
+            </div>
+            <img v-if="page.num_posts && show" class="ad" src="~/assets/ad.png" alt="Advertisement">
+            <div v-if="show" class="list-group mt-4 mb-5">
+              <div class="list-group-item list-group-item-action py-2" style="background: darkgreen;color: white;">Moderators</div>
+              <nuxt-link :to="'/user/'+page.admin" class="list-group-item list-group-item-action py-2">{{ page.admin }} (admin)</nuxt-link>
+              <nuxt-link
+                v-for="mod in page.moderators"
+                :key="mod"
+                :to="'/user/'+mod"
+                class="list-group-item list-group-item-action py-2"
+              >
+                {{ mod }}
+              </nuxt-link>
+            </div>
+            <div class="right-fixed" v-if="page.num_posts > 1 && show">
+              <img class="ad" src="~/assets/got_ad.png" alt="Advertisement">
+              <img class="ad" src="~/assets/ad_two.png" alt="Advertisement">
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   </main>
@@ -136,6 +139,10 @@ main {
 /* #page-left {
   min-height: calc(100vh - 5rem);
 } */
+.left-lower-btn {
+  color: grey;
+  font-size: 14px;
+}
 #bio {
   font-size: 14px;
 }
