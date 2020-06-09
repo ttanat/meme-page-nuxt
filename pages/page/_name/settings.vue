@@ -48,7 +48,7 @@ export default {
     AddMods
   },
   async asyncData({ $axios, route }) {
-    const { data } = await $axios.get(`/api/page/settings/${route.params.name}`)
+    const { data } = await $axios.get(`/api/page/${route.params.name}/settings`)
     return { page: data }
   },
   mounted() {
