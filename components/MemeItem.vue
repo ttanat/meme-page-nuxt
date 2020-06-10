@@ -78,7 +78,7 @@
         </a>
       </li>
       <li>
-        <a :href="'img?m='+meme.uuid" target="_blank">
+        <a :href="'/img?m='+meme.uuid" target="_blank">
           <font-awesome-icon :icon="['fas', 'download']" />&ensp;Download
         </a>
       </li>
