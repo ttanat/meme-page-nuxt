@@ -17,7 +17,13 @@
               </div>
               <div class="col mt-1 px-0">
                 <span v-if="!is_page_admin" id="follow-btn" class="float-right float-lg-none">
-                  <FollowButton :is-following="is_subscribed" @following-changed-event="changeSubscribe" />
+                  <SubscribeButton
+                    :is-subscribed="is_subscribed"
+                    :is-requested="is_requested"
+                    :is-private="page.private"
+                    @subscribe-changed-event="changeSubscribe"
+                    @subscribe-requested-event="changeSubscribeRequest"
+                  />
                 </span>
               </div>
             </div>
@@ -84,13 +90,13 @@
 
 <script>
 import MemeItems from '~/components/MemeItems'
-import FollowButton from '~/components/profile/FollowButton'
+import SubscribeButton from '~/components/page/SubscribeButton'
 import BioDescription from '~/components/profile/BioDescription'
 
 export default {
   components: {
     MemeItems,
-    FollowButton,
+    SubscribeButton,
     BioDescription
   },
   async asyncData({ $axios, $auth, params }) {
@@ -98,6 +104,7 @@ export default {
     return {
       page: data.page,
       is_subscribed: data.is_subscribed || false,
+      is_requested: data.is_requested || false,
       is_page_admin: $auth.loggedIn && $auth.user.username === data.page.admin,
       show: data.show,
       page_config: {
@@ -124,6 +131,9 @@ export default {
     changeSubscribe(f) {
       this.is_subscribed = f
       this.page.subs += f ? 1 : -1
+    },
+    changeSubscribeRequest(r) {
+      this.is_requested = r
     }
   }
 }
