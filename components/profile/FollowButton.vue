@@ -1,12 +1,12 @@
 <template>
   <button
     @click="follow"
-    :class="[isFollowing ? 'btn-outline-success' : 'btn-success', isUserPage ? 'm-1' : 'm-0']"
+    :class="[isFollowing ? 'btn-outline-success' : 'btn-success', 'm-1']"
     class="btn btn-sm follow-btn"
-    :title="btnTitle"
-    >
-      {{ btnText }}
-    </button>
+    :title="isFollowing ? 'Unfollow' : ''"
+  >
+    {{ isFollowing ? "Following" : "Follow" }}
+  </button>
 </template>
 
 <script>
@@ -21,28 +21,11 @@ export default {
     }
   },
   mixins: [checkAuthMixin],
-  data() {
-    return {
-      isUserPage: this.$route.path.startsWith("/user/")
-    }
-  },
-  computed: {
-    action() {
-      return this.isUserPage ? "follow" : "subscribe"
-    },
-    btnText() {
-      return this.isUserPage ? `Follow${this.isFollowing ? "ing" : ""}` : `Subscribe${this.isFollowing ? "d" : ""}`
-    },
-    btnTitle() {
-      return this.isFollowing ? `Un${this.action}` : ""
-    }
-  },
   methods: {
     follow() {
       if (this.checkAuth()) {
-        this.$axios.get(`/api/${this.action}/${this.isUserPage ? this.$route.params.username : this.$route.params.name}`)
-          .then(res => this.isUserPage ? res.data.following : res.data.subscribed)
-          .then(f => this.$emit("following-changed-event", f))
+        this.$axios.get(`/api/follow/${this.$route.params.username}`)
+          .then(res => this.$emit("following-changed-event", res.data.following))
           .catch(this.displayError)
       }
     }
