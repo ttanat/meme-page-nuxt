@@ -1,21 +1,36 @@
 <template>
   <main class="px-3 px-md-4 px-xl-5">
     <nuxt-link :to="'/page/'+$route.params.name" class="btn btn-secondary btn-sm mb-4" no-prefetch>Back</nuxt-link>
-    <h5>Requests</h5>
-    <div v-for="req in requests" :key="req.id" :req="req" class="request py-2 pl-2">
-      <nuxt-link :to="'/user/'+req.username" target="_blank" no-prefetch>{{ req.username }}</nuxt-link> wants to subscribe
-      &ensp;<small class="text-muted">{{ new Date(req.timestamp).toString() }}</small>
-      <button @click="acceptRequest(req.id)" class="btn btn-sm btn-primary buttons ml-2">Accept</button>
-      <button @click="deleteRequest(req.id)" class="btn btn-sm btn-secondary buttons ml-2">Delete</button>
+    <div class="container-fluid px-0">
+      <div class="row">
+        <!-- Requests to subscribe to page -->
+        <div class="col-lg-7 mb-5">
+          <h5>Requests</h5>
+          <div v-for="req in requests" :key="req.id" :req="req" class="request py-2 pl-2">
+            <nuxt-link :to="'/user/'+req.username" target="_blank" no-prefetch>{{ req.username }}</nuxt-link> wants to subscribe
+            &ensp;<small class="text-muted mr-2">{{ new Date(req.timestamp).toUTCString() }}</small>
+            <button @click="acceptRequest(req.id)" class="btn btn-sm btn-primary buttons mr-2">Accept</button>
+            <button @click="deleteRequest(req.id)" class="btn btn-sm btn-secondary buttons">Delete</button>
+          </div>
+          <div v-if="loading" class="mt-3 spinner"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
+          <div v-else-if="next"><small class="pointer ml-2" @click="loadMore">Load more</small></div>
+          <div v-if="noRequests" class="mt-3">No requests pending</div>
+        </div>
+        <!-- Links to join page -->
+        <InviteLinks />
+      </div>
     </div>
-    <div v-if="loading" id="spinner" class="mt-3"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
-    <div v-else-if="next"><small class="pointer ml-2" @click="loadMore">Load more</small></div>
-    <div v-if="noRequests" class="mt-3">No requests pending</div>
   </main>
 </template>
 
 <script>
+import InviteLinks from '~/components/page/InviteLinks'
+
 export default {
+  middleware: 'custom-auth',
+  components: {
+    InviteLinks
+  },
   data() {
     return {
       requests: [],
@@ -25,6 +40,7 @@ export default {
     }
   },
   created() {
+    this.$store.commit("setCurrentPage", this.$route.params.name)
     this.loadMore()
   },
   methods: {
@@ -91,7 +107,7 @@ a:not(.btn) {
   padding: 1px 5px;
   font-size: 13px;
 }
-#spinner {
+.spinner {
   font-size: large;
 }
 small {
