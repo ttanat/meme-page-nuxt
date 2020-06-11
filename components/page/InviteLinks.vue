@@ -1,6 +1,6 @@
 <template>
   <div class="col-lg-5">
-    <h5 title="Maximum 100">Invite Links ({{ links.length }})</h5>
+    <h5 title="Maximum 100">Invite Links<span v-if="!$fetchState.pending"> ({{ links.length }})</span></h5>
     <div class="my-3">
       <input v-model.number="newLinkUses" class="form-control-sm" type="number" min="1" max="100" placeholder="Number of uses" title="Min 1, Max 100">
       <button @click="newLink" :disabled="disableBtn" :class="{'not-allowed': disableBtn}" class="btn btn-sm btn-success float-right">
@@ -8,6 +8,7 @@
         <template v-else>Generate new link</template>
       </button>
     </div>
+    <div v-if="$fetchState.pending" class="mt-3 spinner"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     <div v-for="link in links" :key="link.uuid" class="link py-2 px-1">
       {{ getOrigin }}/invite/{{ link.uuid }}
       <a @click="copyLink(link.uuid)" class="mx-2" href="javascript:void(0);">Copy</a>
@@ -42,7 +43,7 @@ export default {
     }
   },
   async fetch() {
-    const { data } = await this.$axios.get(`/api/invite/${this.$route.params.name}`)
+    const { data } = await this.$axios.get(`/api/invite/admin/${this.$route.params.name}`)
     this.links.push(...data)
   },
   methods: {
@@ -58,7 +59,7 @@ export default {
       this.generating = true
       const data = new FormData()
       data.set("uses", this.newLinkUses)
-      this.$axios.post(`/api/invite/${this.$route.params.name}`, data)
+      this.$axios.post(`/api/invite/admin/${this.$route.params.name}`, data)
         .then(res => res.data)
         .then(data => {
           this.links.push(data)
@@ -69,7 +70,7 @@ export default {
     },
     async deleteLink(uuid) {
       if (confirm("Are you sure you want to delete this link?")) {
-        const res = await this.$axios.delete(`/api/invite/${uuid}`)
+        const res = await this.$axios.delete(`/api/invite/admin/${uuid}`)
         if (res.status === 204) {
           const i = this.links.findIndex(link => link.uuid === uuid)
           this.links.splice(i, 1)
@@ -88,5 +89,8 @@ export default {
 input {
   border: none;
   outline: none;
+}
+.spinner {
+  font-size: large;
 }
 </style>
