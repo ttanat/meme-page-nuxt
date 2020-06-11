@@ -78,11 +78,10 @@ export default {
     },
     objectsAreEqual() {
       // Compare this.page with this.initialInfo
-      let same = true
       for (const [k, v] of Object.entries(this.initialInfo)) {
-        if (v !== this.page[k]) same = false
+        if (v !== this.page[k]) return false
       }
-      return same
+      return true
     }
   },
   methods: {
