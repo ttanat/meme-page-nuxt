@@ -141,8 +141,8 @@ export default {
 }
 </script>
 
+<style src="~/assets/sidebar.css" scoped></style>
 <style scoped>
-@import '~/assets/sidebar.css';
 #profile-col {
   scrollbar-width: none;
 }
