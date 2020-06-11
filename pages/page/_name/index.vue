@@ -116,7 +116,7 @@ export default {
   },
   head() {
     const p = this.page
-    this.$store.commit("setCurrentPage", p.dname.length <= 20 ? p.dname : p.name.length <= 20 ? p.name : "")
+    this.$store.commit("setCurrentPage", p.dname && p.dname.length <= 20 ? p.dname : p.name.length <= 20 ? p.name : "")
     return {
       title: `${p.dname || p.name} - Meme Page`,
       meta: [

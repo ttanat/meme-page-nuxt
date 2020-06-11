@@ -14,6 +14,12 @@
 <script>
 export default {
   middleware: 'custom-auth',
+  head() {
+    this.$store.commit("setCurrentPage", "")
+    return {
+      title: "Notifications - Meme Page"
+    }
+  },
   data() {
     return {
       notifications: [],

@@ -57,6 +57,7 @@ export default {
     this.page.pending = ["max", "moseby", "jane", "kevin"]
   },
   head() {
+    this.$store.commit("setCurrentPage", "")
     return {
       title: `${this.page.dname || this.page.name} - Settings`
     }

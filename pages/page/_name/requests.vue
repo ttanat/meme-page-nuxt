@@ -31,6 +31,12 @@ export default {
   components: {
     InviteLinks
   },
+  head() {
+    this.$store.commit("setCurrentPage", "")
+    return {
+      title: `${this.$route.params.name} - Requests`
+    }
+  },
   data() {
     return {
       requests: [],
@@ -47,6 +53,7 @@ export default {
     async loadMore() {
       if (this.next === null) return false
       this.loading = true
+
       try {
         const { data } = await this.$axios.get(this.next)
         this.requests.push(...data.results)
@@ -59,9 +66,9 @@ export default {
         }
       } catch (err) {
         console.log(err)
-      } finally {
-        this.loading = false
       }
+
+      this.loading = false
       if (!this.requests.length) this.noRequests = true
     },
     spliceRequests(id) {
