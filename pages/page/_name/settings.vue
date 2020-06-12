@@ -5,7 +5,7 @@
 
         <div class="col-md-11 mb-2">
           <h4 class="mb-3">
-            Settings - <nuxt-link :to="'/page/'+page.name" style="color: inherit;">{{ page.dname || page.name }}</nuxt-link>
+            Settings - <nuxt-link :to="'/page/'+page.name" style="color: inherit;">{{ page.display_name || page.name }}</nuxt-link>
             <nuxt-link class="btn btn-sm btn-secondary float-right" :to="'/page/'+page.name">Go back</nuxt-link>
           </h4>
         </div>
@@ -59,7 +59,7 @@ export default {
   head() {
     this.$store.commit("setCurrentPage", "")
     return {
-      title: `${this.page.dname || this.page.name} - Settings`
+      title: `${this.page.display_name || this.page.name} - Settings`
     }
   },
   methods: {

@@ -1,7 +1,7 @@
 <template>
   <form>
     <label>Display name</label>
-    <input v-model.trim="page.dname" class="form-control form-control-sm mb-2" type="text" maxlength="32">
+    <input v-model.trim="page.display_name" class="form-control form-control-sm mb-2" type="text" maxlength="32">
 
     <label>Name</label>
     <input class="form-control form-control-sm mb-2" type="text" :value="$route.params.name" disabled style="cursor: not-allowed;">
@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       page: {
-        dname: this.pageInfo.dname,
+        display_name: this.pageInfo.display_name,
         description: this.pageInfo.description,
         private: this.pageInfo.private,
         permissions: this.pageInfo.permissions
@@ -70,7 +70,7 @@ export default {
   computed: {
     initialInfo() {
       return {
-        dname: this.pageInfo.dname,
+        display_name: this.pageInfo.display_name,
         description: this.pageInfo.description,
         private: this.pageInfo.private,
         permissions: this.pageInfo.permissions
@@ -87,8 +87,19 @@ export default {
   methods: {
     saveForm() {
       const data = new FormData()
-      Object.entries(this.page).forEach(([k, v]) => data.set(k, v))
-      this.$axios.post(`/api/page/settings/${this.$route.params.name}`, data)
+      // Check fields that have changed and add them to data
+      Object.entries(this.page).forEach(([k, v]) => {
+        if (v !== this.initialInfo[k]) {
+          // Add field and its value to data
+          data.set(k, v)
+          // Add field name to list to tell server what to update
+          data.append("update_fields", k)
+        }
+      })
+      if (!data.has("update_fields")) {
+        return false
+      }
+      this.$axios.post(`/api/page/${this.$route.params.name}/settings`, data)
         .then(() => {
           this.$emit("change-info-event", {...this.page})
           this.successToast("Preferences saved")
@@ -97,11 +108,11 @@ export default {
     },
     deletePage() {
       if (confirm('Are you sure you want to delete this page?')) {
-        this.$axios.delete(`/api/page/settings/${this.$route.params.name}?d=page`)
+        this.$axios.delete(`/api/page/${this.$route.params.name}/settings?d=page`)
           .then(res => {
             if (res.status === 204) {
               this.removeFromAuthUser()
-              this.errorToast(`${this.pageInfo.dname || this.pageInfo.name} has been deleted :(`)
+              this.errorToast(`${this.pageInfo.display_name || this.pageInfo.name} has been deleted :(`)
               this.$router.push('/')
             } else {
               throw "Unexpected error occurred"
