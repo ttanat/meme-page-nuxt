@@ -41,7 +41,7 @@ export default {
       const to_remove = this.$children.filter(m => m.isActive).map(m => m.username)
 
       if (to_remove.length && confirm(`Are you sure you want to remove ${to_remove.length > 1 ? "these moderators" : to_remove[0]}?`)) {
-        this.$axios.delete(`/api/page/settings/${this.$route.params.name}?d=mods&${to_remove.map(m => `u=${m}`).join("&")}`)
+        this.$axios.delete(`/api/page/${this.$route.params.name}/settings?d=mods&${to_remove.map(m => `u=${m}`).join("&")}`)
           .then(async res => {
             await this.$emit("remove-mods-event", to_remove)
             this.checkCanClickRemove()

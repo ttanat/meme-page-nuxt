@@ -52,7 +52,7 @@ export default {
       if (this.checkInput()) {
         const data = new FormData()
         data.set("cover", this.$refs.imgInput.files[0])
-        this.$axios.post(`/api/page/settings/${this.$route.params.name}`, data)
+        this.$axios.post(`/api/page/${this.$route.params.name}/settings`, data)
           .then(() => {
             this.$refs.oldImage.onload = this.removeInputImage
             this.url = this.$refs.newImage.src
@@ -69,7 +69,7 @@ export default {
     },
     deleteImage() {
       if (confirm("Are you sure you want to delete this page's cover photo?")) {
-        this.$axios.delete(`/api/page/settings/${this.$route.params.name}?d=cover`)
+        this.$axios.delete(`/api/page/${this.$route.params.name}/settings?d=cover`)
           .then(res => {if (res.status === 204) this.url = ""})
           .catch(this.displayError)
       }
