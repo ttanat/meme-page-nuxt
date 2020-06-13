@@ -58,12 +58,13 @@ export default {
       if (this.next) {
         this.loading = true
         this.$axios.get(this.next)
-          .then(res => {
-            if (res.data.results.length) {
-              this.tiles.push(...res.data.results)
-              this.next = res.data.next
+          .then(({ data }) => {
+            if (data.results.length) {
+              this.tiles.push(...data.results)
+              this.next = data.next
             } else if (!this.tiles.length) {
               this.no_content = true
+              this.next = null
             }
           })
           .catch(console.log)
