@@ -21,6 +21,7 @@
                     :is-subscribed="is_subscribed"
                     :is-requested="is_requested"
                     :is-private="page.private"
+                    :display-name="page.dname"
                     @subscribe-changed-event="changeSubscribe"
                     @subscribe-requested-event="changeSubscribeRequest"
                   />
