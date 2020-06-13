@@ -4,7 +4,7 @@
       <div id="innerDiv">
         <template v-if="valid">
           <img v-if="image" :src="image" height="75" width="75" class="rounded-circle mb-4"><br>
-          <div class="mb-4">Do you want to subscribe to {{ name }}?</div>
+          <div class="mb-4">Do you want to subscribe to {{ dname || name }}?</div>
           <nuxt-link to="/" type="button" class="btn btn-sm btn-outline-success mr-3" style="width: 90px;" no-prefetch>Back</nuxt-link>
           <button @click="subscribe" type="button" class="btn btn-sm btn-success" style="width: 90px;">Subscribe</button>
         </template>
@@ -36,11 +36,21 @@ export default {
         .then(res => {
           this.$router.push(`/page/${res.data.name}`)
           this.successToast("You are now subscribed")
+          this.addNewPage()
         })
         .catch(err => {
           this.errorToast(err.response.data || err.message)
           if (err.response.data === "Link is no longer valid") this.valid = false
         })
+    },
+    addNewPage() {
+      const current_page = {
+        dname: this.dname || "",
+        name: this.name,
+        private: true
+      }
+      const new_subscriptions = [...this.$auth.user.subscriptions, current_page]
+      this.$auth.setUser(Object.assign({}, this.$auth.user, {subscriptions: new_subscriptions}))
     }
   }
 }
