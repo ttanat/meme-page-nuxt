@@ -3,9 +3,17 @@
 
   scrollObserver: Intersection observer object, tracks scrollRoot for loading more content
   scrollRoot: Element near bottom of page being tracked by scrollObserver
+
+  Still works without the data method
 */
 
 export default {
+  data() {
+    return {
+      scrollObserver: null,
+      scrollRoot: null
+    }
+  },
   mounted() {
     this.scrollObserver = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && this.next !== null) {

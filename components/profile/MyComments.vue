@@ -20,8 +20,6 @@ export default {
     return {
       comments: [],
       next: "/api/profile/comments",
-      scrollObserver: null,
-      scrollRoot: null,
       loading: false,
       no_content: false
     }

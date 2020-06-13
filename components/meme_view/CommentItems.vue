@@ -36,8 +36,6 @@ export default {
   data() {
     return {
       comments: [],
-      scrollObserver: null,
-      scrollRoot: null,
       next: "",
       loading: false
     }

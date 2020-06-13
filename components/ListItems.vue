@@ -21,8 +21,6 @@ export default {
       results: [],
       loading: false,
       next: null,
-      scrollObserver: null,
-      scrollRoot: null,
       noResults: false,
     }
   },

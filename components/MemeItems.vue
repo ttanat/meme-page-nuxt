@@ -47,8 +47,6 @@ export default {
     return {
       memes: [],
       muted: true,
-      scrollObserver: null,
-      scrollRoot: null,
       next: null,
       loading: false,
       noMemes: true
