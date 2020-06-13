@@ -241,20 +241,20 @@ export default {
     },
     upload() {
       if (!this.$auth.loggedIn || !this.check() || !this.canSubmit) return false
-      this.setData().then(data => {
-        if (!data || !data.has("file")) return false
+      this.setData().then(formData => {
+        if (!formData || !formData.has("file")) return false
         this.canSubmit = false
         this.$refs.submitButton.style.cursor = "progress"
         this.uploading = true
-        this.$axios.post("/api/upload", data)
+        this.$axios.post("/api/upload", formData)
           .then(({ data }) => {
             if (data.success) {
               if (data.uuid && this.$route.path === "/profile") {
                 this.$root.$emit("newMemeUploaded", {
                   uuid: data.uuid,
-                  url: URL.createObjectURL(data.get("file")),
+                  url: URL.createObjectURL(formData.get("file")),
                   points: 0,
-                  content_type: data.get("file").type
+                  content_type: formData.get("file").type
                 })
               }
               $("#uploadModal").modal("hide")
