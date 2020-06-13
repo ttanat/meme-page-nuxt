@@ -23,7 +23,9 @@
                       <option value="" selected>Your memes</option>
                       <template v-if="$auth.loggedIn">
                         <option v-for="m in $auth.user.moderating" :key="m.name" :value="m.name">{{ m.dname || m.name }}</option>
-                        <option v-for="s in $auth.user.subscriptions" :key="s.name" :value="s.name">{{ s.dname || s.name }}</option>
+                        <template v-for="s in $auth.user.subscriptions">
+                          <option v-if="s.permissions" :key="s.name" :value="s.name">{{ s.dname || s.name }}</option>
+                        </template>
                       </template>
                     </select>
                   </div>
@@ -245,12 +247,11 @@ export default {
         this.$refs.submitButton.style.cursor = "progress"
         this.uploading = true
         this.$axios.post("/api/upload", data)
-          .then(res => res.data)
-          .then(response => {
-            if (response.success) {
-              if (response.uuid && this.$route.path === "/profile") {
+          .then(({ data }) => {
+            if (data.success) {
+              if (data.uuid && this.$route.path === "/profile") {
                 this.$root.$emit("newMemeUploaded", {
-                  uuid: response.uuid,
+                  uuid: data.uuid,
                   url: URL.createObjectURL(data.get("file")),
                   points: 0,
                   content_type: data.get("file").type
@@ -261,7 +262,7 @@ export default {
               this.clearForm()
             } else {
               this.canSubmit = true
-              this.errorToast(response.message)
+              this.errorToast(data.message)
             }
           })
           .catch(err => {
