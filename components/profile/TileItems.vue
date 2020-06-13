@@ -52,6 +52,7 @@ export default {
   methods: {
     showNewTile(tile) {
       this.tiles.unshift(tile)
+      this.no_content = false
       this.increaseOffset(1)
     },
     loadMore() {
@@ -79,6 +80,7 @@ export default {
     removeTile(uuid) {
       const i = this.tiles.findIndex(tile => tile.uuid === uuid)
       this.tiles.splice(i, 1)
+      if (!this.tiles.length && this.next === null) this.no_content = true
     }
   },
   beforeDestroy() {
