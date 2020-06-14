@@ -24,30 +24,7 @@
             <font-awesome-icon :icon="['fas', 'file-upload']" fixed-width /><span class="d-lg-none"> Upload</span>
           </a>
           <NotificationsDropdown />
-          <div class="dropdown">
-            <a type="button" class="nav-item nav-link text-light mr-2" data-toggle="dropdown">
-              <img v-if="$auth.user.image" class="rounded-circle" :src="$auth.user.image" height="21" width="21">
-              <font-awesome-icon v-else :icon="['fas', 'user-circle']" class="ml-1" />&ensp;<font-awesome-icon :icon="['fas', 'caret-down']" />
-            </a>
-            <div class="dropdown-menu dropdown-menu-right">
-              <h5 class="dropdown-header m-0">
-                {{ $auth.user.username }}
-              </h5>
-              <nuxt-link class="dropdown-item user-dropdown" to="/profile" no-prefetch>
-                <font-awesome-icon :icon="['fas', 'user']" /> Profile
-              </nuxt-link>
-              <div @click="toggleNightMode" class="dropdown-item user-dropdown pointer">
-                <font-awesome-icon :icon="[$store.state.nightMode ? 'fas' : 'far', 'moon']" /> Night
-              </div>
-              <nuxt-link class="dropdown-item user-dropdown" to="/settings" no-prefetch>
-                <font-awesome-icon :icon="['fas', 'cog']" /> Settings
-              </nuxt-link>
-              <div class="dropdown-divider"></div>
-              <div class="dropdown-item user-dropdown pointer" @click="$auth.logout()">
-                <font-awesome-icon :icon="['fas', 'sign-out-alt']" /> Logout
-              </div>
-            </div>
-          </div>
+          <UserDropdown />
         </template>
         <template v-else>
           <button class="btn btn-sm mr-3" style="width: 100px;visibility: hidden;"></button>
@@ -62,17 +39,14 @@
 <script>
 import SearchBar from './SearchBar.vue'
 import NotificationsDropdown from './NotificationsDropdown.vue'
+import UserDropdown from './UserDropdown.vue'
 
 export default {
   name: 'NavBar',
   components: {
     SearchBar,
-    NotificationsDropdown
-  },
-  methods: {
-    toggleNightMode() {
-      this.$store.commit("toggleNightMode")
-    }
+    NotificationsDropdown,
+    UserDropdown
   }
 }
 </script>
@@ -81,21 +55,6 @@ export default {
 <style scoped>
 nav {
   background-color: #252525 !important;
-}
-.dropdown-menu-right {
-  width: 190px;
-  background: #252525;
-  color: lightgrey;
-}
-.dropdown-menu-right > .dropdown-header {
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-}
-.user-dropdown {
-  color: lightgrey;
-}
-.user-dropdown:hover {
-  color: black;
 }
 @media (min-width: 992px) {
   nav {
