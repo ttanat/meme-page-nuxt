@@ -57,10 +57,10 @@
               <font-awesome-icon :icon="['fas', 'ellipsis-h']" />
             </button>
             <div class="dropdown-menu bg-dark" @contextmenu.prevent>
-              <nuxt-link class="dropdown-item m-dropdown" :to="'/img?m='+meme.uuid" target="_blank"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link>
-              <div class="dropdown-item m-dropdown" @click="copyLink"><font-awesome-icon :icon="['fas', 'link']" /> Copy Link</div>
-              <!-- <div class="dropdown-item m-dropdown"><font-awesome-icon :icon="['fas', 'share']" /> Share</div> -->
-              <div class="dropdown-item m-dropdown"><font-awesome-icon :icon="['far', 'flag']" /> Report</div>
+              <nuxt-link class="dropdown-item" :to="'/img?m='+meme.uuid" target="_blank"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link>
+              <div class="dropdown-item" @click="copyLink"><font-awesome-icon :icon="['fas', 'link']" /> Copy Link</div>
+              <!-- <div class="dropdown-item"><font-awesome-icon :icon="['fas', 'share']" /> Share</div> -->
+              <div class="dropdown-item"><font-awesome-icon :icon="['far', 'flag']" /> Report</div>
             </div>
           </div>
         </td>
@@ -240,5 +240,10 @@ export default {
 }
 .v-context {
   font-size: 14.5px;
+}
+.dropdown-item {
+  color: lightgrey;
+  cursor: pointer;
+  font-size: 14px;
 }
 </style>

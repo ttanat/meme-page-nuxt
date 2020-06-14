@@ -176,4 +176,7 @@ input {
   background-color: inherit;
   color: inherit;
 }
+small {
+  color: #dc3545;
+}
 </style>

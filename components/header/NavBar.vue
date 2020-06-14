@@ -91,6 +91,12 @@ nav {
   overflow-x: hidden;
   text-overflow: ellipsis;
 }
+.user-dropdown {
+  color: lightgrey;
+}
+.user-dropdown:hover {
+  color: black;
+}
 @media (min-width: 992px) {
   nav {
     height: 45px;

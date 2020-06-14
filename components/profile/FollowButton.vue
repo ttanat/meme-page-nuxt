@@ -2,7 +2,7 @@
   <button
     @click="follow"
     :class="[isFollowing ? 'btn-outline-success' : 'btn-success', 'm-1']"
-    class="btn btn-sm follow-btn"
+    class="btn btn-sm"
     :title="isFollowing ? 'Unfollow' : ''"
   >
     {{ isFollowing ? "Following" : "Follow" }}
@@ -32,3 +32,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+button {
+  padding: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+</style>

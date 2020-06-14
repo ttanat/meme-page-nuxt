@@ -94,4 +94,12 @@ export default {
   text-align: center;
   font-size: small;
 }
+@media (max-width: 575.98px) {
+  .dropdown-menu {
+    width: 300px;
+  }
+  .notif-right-column {
+    width: 200px;
+  }
+}
 </style>

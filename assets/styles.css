@@ -70,10 +70,6 @@ a {
   line-height: 1.9;
 }
 
-#signUpModal small {
-  color: #dc3545;
-}
-
 #left {
   position: sticky;
   position: -webkit-sticky;
@@ -95,21 +91,9 @@ a {
   cursor: help;
 }
 
-.index-loading {
-  text-align: center;
-  font-size: x-large;
-  padding: 20px;
-}
-
 .item {
   margin: 0 auto;
   margin-bottom: 10px;
-}
-
-.follow-btn {
-  padding: 5px;
-  padding-top: 2px;
-  padding-bottom: 2px;
 }
 
 .ad {
@@ -135,16 +119,6 @@ a {
   border: 2px solid #dc3545 !important;
 }
 
-.user-dropdown, .dropdown-item > a {
-  color: inherit;
-}
-
-.m-dropdown {
-  color: lightgrey;
-  cursor: pointer;
-  font-size: 14px;
-}
-
 .thumbs, .lower-btn {
   color: grey;
   font-size: 14px;
@@ -166,25 +140,16 @@ a {
   color: red !important;
 }
 
-/* Extra small devices (portrait phones, less than 576px) */
-@media (max-width: 575.98px) {
-  .list-img, #item-page-dropdown, #right {
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) {
+  .list-img, #right {
     display: none;
-  }
-  #notif-dropdown > .dropdown-menu {
-    width: 300px;
-  }
-  .notif-right-column {
-    width: 200px;
-  }
-  .comment-image, .reply-image {
-    max-width: 100%;
   }
 }
 
 /* Medium devices (tablets, less than 992px) */
 @media (max-width: 991.98px) {
-  #left, #sort-dropdown, #sort-dropdown-menu {
+  #left {
     display: none;
   }
   .ad {

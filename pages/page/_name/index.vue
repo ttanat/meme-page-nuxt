@@ -43,20 +43,20 @@
             </tr>
           </table>
           <!-- Requests and settings buttons for admin -->
-          <div v-if="is_page_admin" id="left-lower-btns">
+          <div v-if="is_page_admin" id="left-lower-btns" class="mb-2 mb-lg-0">
             <nuxt-link v-if="page.private" :to="page.name+'/requests'" class="left-lower-btn"><font-awesome-icon :icon="['far', 'bell']" /> Requests</nuxt-link><br>
             <nuxt-link :to="page.name+'/settings'" class="left-lower-btn"><font-awesome-icon :icon="['fas', 'cog']" /> Settings</nuxt-link>
           </div>
         </div>
 
         <!-- Middle column -->
-        <div class="col-sm-8 col-lg-6 col-xl-6" id="mid">
+        <div class="col-sm-12 col-md-8 col-lg-6 col-xl-6" id="mid">
           <MemeItems v-if="show" :page-config="page_config" />
           <div v-else-if="page.private && !show" class="no-memes">This meme page is private.<br><br>Subscribe to view memes posted here.</div>
         </div>
 
         <!-- Right column -->
-        <div class="col-sm-4 col-lg-3 col-xl-3" id="right">
+        <div class="col-md-4 col-lg-3 col-xl-3" id="right">
           <div v-if="show" style="width: 260px;">
             <div class="mb-4 p-2 bg-dark" style="border-radius: 3px;">
               <BioDescription

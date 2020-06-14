@@ -2,7 +2,7 @@
   <button
     @click="subscribe"
     :class="[isSubscribed || isRequested ? 'btn-outline-success' : 'btn-success', 'm-0']"
-    class="btn btn-sm follow-btn"
+    class="btn btn-sm"
     :title="isSubscribed ? 'Unsubscribe' : isPrivate ? 'Request to subscribe' : ''"
   >
     {{ btnText }}
@@ -87,3 +87,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+button {
+  padding: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+</style>

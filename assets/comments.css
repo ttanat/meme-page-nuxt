@@ -126,7 +126,7 @@
 .comment-dropdown-btn:hover {
   color: lightgrey;
 }
-.c-dropdown-menu, .item-dropdown-menu {
+.c-dropdown-menu/*, .item-dropdown-menu*/ {
   font-size: 14px;
   min-width: 0;
 }
@@ -139,4 +139,9 @@
   color: grey;
   font-size: 13px;
   font-family: Lucida Sans Typewriter, Lucida Console, monaco, Bitstream Vera Sans Mono, monospace;
+}
+@media (max-width: 575.98px) {
+  .comment-image, .reply-image {
+    max-width: 100%;
+  }
 }
