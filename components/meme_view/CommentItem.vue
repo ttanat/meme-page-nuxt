@@ -99,15 +99,15 @@
               <input
                 ref="replyInput"
                 v-model.trim="replyInputValue"
-                :placeholder="replyInputPlaceholder"
+                :placeholder="submittingReply ? 'Sending...' : 'Write a reply'"
                 class="reply-field"
                 type="text"
                 maxlength="150"
                 name="reply"
               >
               <!-- Choose image and submit button -->
-              <a href="javascript:void(0);" @click="openImageInput" class="rf-img"><font-awesome-icon :icon="['far', 'image']" /></a>
-              <button @click="submitReply" class="btn btn-primary post-reply-btn">Post</button>
+              <a href="javascript:void(0);" @click="$refs.imageInput.click()" class="rf-img"><font-awesome-icon :icon="['far', 'image']" /></a>
+              <button @click="submitReply" :disabled="submittingReply" :class="{'not-allowed': submittingReply}" class="btn btn-primary post-reply-btn">Post</button>
               <!-- File input -->
               <input v-show="false" ref="imageInput" @change="addReplyImage" type="file" accept="image/jpeg, image/png">
               <!-- Show filename if a file is selected -->
@@ -158,7 +158,7 @@ export default {
       repliesAPILink: `/api/replies/?u=${this.comment.uuid}`,
       typingReply: false,
       replyInputValue: "",
-      replyInputPlaceholder: "Write a reply",
+      submittingReply: false,
       imageFilename: "",
       editCommentValue: this.comment.content
     }
@@ -235,41 +235,40 @@ export default {
       this.loadSpinnerShowing = true
       this.$axios.get(this.repliesAPILink)
         .then(res => res.data)
-        .then(response => {
+        .then(({ results, next }) => {
           const l_uuids = []
-          for (const r of response.results) {
+          for (const r of results) {
             if (this.replies.findIndex(r2 => r2.uuid === r.uuid) === -1) {
               this.replies.push(r)
               if (r.points !== null) l_uuids.push(r.uuid)
             }
           }
-          this.loadMoreBtnShowing = !!response.next
-          this.repliesAPILink = response.next
+          this.loadMoreBtnShowing = !!next
+          this.repliesAPILink = next
           if (this.isAuthenticated && l_uuids.length) this.loadLikes(l_uuids, "r")
         })
         .catch(console.log)
         .finally(() => this.loadSpinnerShowing = false)
     },
     submitReply() {
-      const r_input = this.$refs.replyInput
       const data = new FormData()
       const content = this.replyInputValue.slice(0, 150).trim()
       if (content && content.length > 0 && content.match(/\S+/)) data.set("content", content)
       const img = this.imageInputValid() ? this.$refs.imageInput.files[0] : null
       if (img) data.set("image", img)
       if (this.isAuthenticated && (data.has("content") || data.has("image"))) {
+        this.submittingReply = true
         data.set("c_uuid", this.comment.uuid)
         this.replyInputValue = ""
-        this.replyInputPlaceholder = "Sending..."
 
         this.$axios.post("/api/reply", data)
           .then(res => res.data)
-          .then(response => {
+          .then(({ uuid }) => {
             this.typingReply = false
             this.removeReplyImage()
 
             const new_reply = {
-              uuid: response.uuid,
+              uuid,
               c_uuid: this.comment.uuid,
               username: this.$auth.user.username,
               dp_url: this.$auth.user.image,
@@ -284,7 +283,7 @@ export default {
             /**/console.log(err)
             this.replyInputValue = content
           })
-          .finally(() => this.replyInputPlaceholder = "Write a reply")
+          .finally(() => this.submittingReply = false)
       }
     },
     replyAdded(data) {
@@ -292,9 +291,6 @@ export default {
       if (!this.comment.num_replies || this.comment.num_replies === this.replies.length) this.replies.push(data)
       this.comment.num_replies++
       this.$emit("increment-comment-count-event")
-    },
-    openImageInput() {
-      this.$refs.imageInput.click()
     },
     imageInputValid() {
       const input = this.$refs.imageInput

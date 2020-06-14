@@ -77,7 +77,7 @@
             <input
               ref="replyInput"
               v-model.trim="replyInputValue"
-              :placeholder="replyInputPlaceholder"
+              :placeholder="submittingReply ? 'Sending...' : 'Write a reply'"
               :class="{'mb-2': !imageFilename}"
               class="reply-field reply-reply-field"
               type="text"
@@ -85,8 +85,8 @@
               name="reply"
             >
             <!-- Choose image and submit button -->
-            <a href="javascript:void(0);" @click="openImageInput" class="rf-img"><font-awesome-icon :icon="['far', 'image']" /></a>
-            <button @click="submitReply" class="btn btn-primary post-reply-btn" style="height: 27px;">Post</button>
+            <a href="javascript:void(0);" @click="$refs.imageInput.click()" class="rf-img"><font-awesome-icon :icon="['far', 'image']" /></a>
+            <button @click="submitReply" :disabled="submittingReply" :class="{'not-allowed': submittingReply}" class="btn btn-primary post-reply-btn" style="height: 27px;">Post</button>
             <!-- File input -->
             <input v-show="false" ref="imageInput" @change="addReplyImage" type="file" accept="image/jpeg, image/png">
             <!-- Show filename if a file is selected -->
@@ -128,9 +128,9 @@ export default {
       hidePoints: this.reply.points === null,
       typingReply: false,
       replyInputValue: "",
-      replyInputPlaceholder: "Write a reply",
+      submittingReply: false,
       imageFilename: "",
-      editReplyValue: this.reply.content
+      editReplyValue: this.reply.content,
     }
   },
   computed: {
@@ -201,7 +201,6 @@ export default {
     },
     submitReply() {
       if (!this.replyInputValue || !this.isAuthenticated) return false
-      const r_input = this.$refs.replyInput
       const data = new FormData()
       const content = this.replyInputValue.slice(0, 150).trim()
       if (content && content.length > 0 && content.match(/\S+/)) data.set("content", content)
@@ -209,19 +208,19 @@ export default {
       if (img) data.set("image", img)
 
       if (data.has("content") || data.has("image")) {
+        this.submittingReply = true
         const c_uuid = this.$parent.comment.uuid
         data.set("c_uuid", c_uuid)
         this.replyInputValue = ""
-        this.replyInputPlaceholder = "Sending..."
 
         this.$axios.post("/api/reply", data)
           .then(res => res.data)
-          .then(response => {
+          .then(({ uuid }) => {
             this.typingReply = false
             this.removeReplyImage()
 
             const new_reply = {
-              uuid: response.uuid,
+              uuid,
               c_uuid,
               username: this.$auth.user.username,
               dp_url: this.$auth.user.image,
@@ -236,11 +235,8 @@ export default {
             this.displayError(err)
             this.replyInputValue = content
           })
-          .finally(() => this.replyInputPlaceholder = "Write a reply")
+          .finally(() => this.submittingReply = false)
       }
-    },
-    openImageInput() {
-      this.$refs.imageInput.click()
     },
     imageInputValid() {
       const input = this.$refs.imageInput
