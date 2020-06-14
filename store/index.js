@@ -1,7 +1,7 @@
 export const state = () => ({
   currentPage: "", // Display next to search bar
   nightMode: false,
-  showOverlay: false
+  showOverlay: false // For meme view
 })
 
 export const getters = {}
@@ -15,5 +15,6 @@ export const mutations = {
   },
   setShowOverlay (state, show) {
     state.showOverlay = show
+    document.querySelector("body").style.overflow = show ? "hidden" : ""
   }
 }
