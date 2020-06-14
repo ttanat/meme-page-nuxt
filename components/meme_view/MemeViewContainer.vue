@@ -39,7 +39,7 @@
         </button>
       </td>
       <td>
-        <div class="dropdown float-right" id="item-page-dropdown">
+        <div class="dropdown float-right">
           <button class="btn lower-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <font-awesome-icon :icon="['fas', 'ellipsis-h']" />
           </button>
@@ -114,5 +114,10 @@ export default {
 .dropdown-item {
   cursor: pointer;
   font-size: 14px;
+}
+@media (max-width: 767.98px) {
+  .dropdown {
+    display: none;
+  }
 }
 </style>
