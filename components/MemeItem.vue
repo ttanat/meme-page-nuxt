@@ -56,7 +56,7 @@
             <button class="btn lower-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <font-awesome-icon :icon="['fas', 'ellipsis-h']" />
             </button>
-            <div class="dropdown-menu bg-dark" @contextmenu.prevent>
+            <div class="dropdown-menu bg-dark dropdown-dark" @contextmenu.prevent>
               <nuxt-link class="dropdown-item" :to="'/img?m='+meme.uuid" target="_blank"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link>
               <div class="dropdown-item" @click="copyLink"><font-awesome-icon :icon="['fas', 'link']" /> Copy Link</div>
               <!-- <div class="dropdown-item"><font-awesome-icon :icon="['fas', 'share']" /> Share</div> -->
@@ -242,7 +242,6 @@ export default {
   font-size: 14.5px;
 }
 .dropdown-item {
-  color: lightgrey;
   cursor: pointer;
   font-size: 14px;
 }

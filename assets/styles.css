@@ -172,3 +172,11 @@ a {
   position: -webkit-sticky;
   top: 4rem;
 }
+
+.dropdown-dark .dropdown-item {
+  color: lightgrey;
+}
+
+.dropdown-dark .dropdown-item:hover {
+  color: #333;
+}

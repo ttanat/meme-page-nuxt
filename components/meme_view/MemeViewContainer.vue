@@ -43,7 +43,7 @@
           <button class="btn lower-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <font-awesome-icon :icon="['fas', 'ellipsis-h']" />
           </button>
-          <div class="dropdown-menu bg-dark">
+          <div class="dropdown-menu bg-dark dropdown-dark">
             <nuxt-link class="dropdown-item" :to="'/img?m='+meme.uuid" target="_blank"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link>
             <a class="dropdown-item" href="javascript:void(0);"><font-awesome-icon :icon="['far', 'flag']" /> Report</a>
           </div>
@@ -112,7 +112,6 @@ export default {
   font-size: 12px;
 }
 .dropdown-item {
-  color: lightgrey;
   cursor: pointer;
   font-size: 14px;
 }
