@@ -2,10 +2,12 @@
   <main>
     <div v-if="page.cover" style="overflow-x: hidden;"><img :src="page.cover" style="max-height: 150px;min-width: 100%;margin-left: 50%;transform: translateX(-50%);"></div>
 
-    <div class="container-fluid">
+    <div class="container-fluid mt-4 mb-2">
       <div class="row justify-content-center">
-        <div class="col-lg-3 col-xl-2 mb-3 mt-4" id="page-left">
 
+        <!-- Left column -->
+        <div class="col-lg-3 col-xl-2" id="page-left">
+          <!-- Page image and names -->
           <div class="container-fluid">
             <div class="row mb-3">
               <img v-if="page.image" class="rounded-circle my-1 mr-2" id="page-pic" :src="page.image" height="50" width="50">
@@ -29,7 +31,7 @@
               </div>
             </div>
           </div>
-
+          <!-- Page stats -->
           <table class="mb-2 w-100">
             <tr>
               <td class="page-stat" id="sub-count">{{ page.subs }}</td>
@@ -40,19 +42,21 @@
               <td class="page-stat"><small>posts</small></td>
             </tr>
           </table>
-
-          <div v-if="is_page_admin" style="bottom: 0;position: absolute;">
+          <!-- Requests and settings buttons for admin -->
+          <div v-if="is_page_admin" id="left-lower-btns">
             <nuxt-link v-if="page.private" :to="page.name+'/requests'" class="left-lower-btn"><font-awesome-icon :icon="['far', 'bell']" /> Requests</nuxt-link><br>
             <nuxt-link :to="page.name+'/settings'" class="left-lower-btn"><font-awesome-icon :icon="['fas', 'cog']" /> Settings</nuxt-link>
           </div>
         </div>
 
-        <div class="col-sm-8 col-lg-6 col-xl-6 mt-4" id="mid">
+        <!-- Middle column -->
+        <div class="col-sm-8 col-lg-6 col-xl-6" id="mid">
           <MemeItems v-if="show" :page-config="page_config" />
           <div v-else-if="page.private && !show" class="no-memes">This meme page is private.<br><br>Subscribe to view memes posted here.</div>
         </div>
 
-        <div class="col-sm-4 col-lg-3 col-xl-3 mt-4" id="right">
+        <!-- Right column -->
+        <div class="col-sm-4 col-lg-3 col-xl-3" id="right">
           <div v-if="show" style="width: 260px;">
             <div class="mb-4 p-2 bg-dark" style="border-radius: 3px;">
               <BioDescription
@@ -86,6 +90,7 @@
 
       </div>
     </div>
+
   </main>
 </template>
 
@@ -147,9 +152,6 @@ main {
 #page-display-name {
   margin: 5px 5px 5px 0;
 }
-/* #page-left {
-  min-height: calc(100vh - 5rem);
-} */
 .left-lower-btn {
   color: grey;
   font-size: 14px;
@@ -186,6 +188,19 @@ main {
   }
   html {
     scrollbar-width: none;
+  }
+}
+@media (min-width: 992px) {
+  #page-left {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 4rem;
+    height: 100%;
+    min-height: calc(100vh - 5rem);
+  }
+  #left-lower-btns {
+    bottom: 0;
+    position: absolute;
   }
 }
 </style>

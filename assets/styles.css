@@ -169,29 +169,16 @@ a {
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
   .list-img, #item-page-dropdown, #right {
-      display: none;
+    display: none;
   }
   #notif-dropdown > .dropdown-menu {
-      width: 300px;
+    width: 300px;
   }
   .notif-right-column {
-      width: 200px;
+    width: 200px;
   }
   .comment-image, .reply-image {
-      max-width: 100%;
-  }
-}
-
-/* Small devices (landscape phones, less than 768px) */
-@media (min-width: 767.98px) {
-  #page-left {
-    position: sticky;
-    position: -webkit-sticky;
-    top: 4rem;
-    height: 100%;
-  }
-  #page-left {
-    min-height: calc(100vh - 5rem);
+    max-width: 100%;
   }
 }
 
@@ -203,9 +190,6 @@ a {
   .ad {
     width: 230px;
     height: 200px;
-  }
-  #page-left {
-    min-height: unset;
   }
 }
 
