@@ -8,7 +8,7 @@
       @comment-edited-event="commentEdited"
       @comment-deleted-event="commentDeleted"
       @set-points-event="setPoints"
-      @increment-comment-count-event="$emit('increment-comment-count-event')"
+      @increment-num-replies-event="incrementNumReplies"
     />
     <div v-show="loading" class="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
   </div>
@@ -91,6 +91,12 @@ export default {
     commentDeleted(uuid) {
       const comment = this.getComment(uuid)
       comment.content = comment.image = null
+    },
+    incrementNumReplies(uuid) {
+      // Increment num_replies for comment
+      this.comments.find(comment => comment.uuid === uuid).num_replies++
+      // Increment number of comments at top of comment section
+      this.$emit('increment-comment-count-event')
     }
   },
   beforeDestroy() {

@@ -289,8 +289,7 @@ export default {
     replyAdded(data) {
       // Only add reply if it is the first or last reply
       if (!this.comment.num_replies || this.comment.num_replies === this.replies.length) this.replies.push(data)
-      this.comment.num_replies++
-      this.$emit("increment-comment-count-event")
+      this.$emit("increment-num-replies-event", this.comment.uuid)
     },
     imageInputValid() {
       const input = this.$refs.imageInput
