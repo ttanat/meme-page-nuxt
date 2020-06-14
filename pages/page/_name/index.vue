@@ -44,8 +44,8 @@
           </table>
           <!-- Requests and settings buttons for admin -->
           <div v-if="is_page_admin" id="left-lower-btns" class="mb-2 mb-lg-0">
-            <nuxt-link v-if="page.private" :to="page.name+'/requests'" class="left-lower-btn"><font-awesome-icon :icon="['far', 'bell']" /> Requests</nuxt-link><br>
-            <nuxt-link :to="page.name+'/settings'" class="left-lower-btn"><font-awesome-icon :icon="['fas', 'cog']" /> Settings</nuxt-link>
+            <nuxt-link v-if="page.private" :to="page.name+'/requests'" class="left-lower-btn" no-prefetch><font-awesome-icon :icon="['far', 'bell']" /> Requests</nuxt-link><br>
+            <nuxt-link :to="page.name+'/settings'" class="left-lower-btn" no-prefetch><font-awesome-icon :icon="['fas', 'cog']" /> Settings</nuxt-link>
           </div>
         </div>
 
@@ -71,12 +71,13 @@
             <img v-if="page.num_posts && show" class="ad" src="~/assets/ad.png" alt="Advertisement">
             <div v-if="show" class="list-group mt-4 mb-5">
               <div class="list-group-item list-group-item-action py-2" style="background: darkgreen;color: white;">Moderators</div>
-              <nuxt-link :to="'/user/'+page.admin" class="list-group-item list-group-item-action py-2">{{ page.admin }} (admin)</nuxt-link>
+              <nuxt-link :to="'/user/'+page.admin" class="list-group-item list-group-item-action py-2" no-prefetch>{{ page.admin }} (admin)</nuxt-link>
               <nuxt-link
                 v-for="mod in page.moderators"
                 :key="mod"
                 :to="'/user/'+mod"
                 class="list-group-item list-group-item-action py-2"
+                no-prefetch
               >
                 {{ mod }}
               </nuxt-link>
