@@ -3,6 +3,7 @@
     <div class="row">
 
       <div class="reply-left-column">
+        <!-- Replier image or icon -->
         <font-awesome-icon v-if="isDeleted" :icon="['fas', 'user-circle']" class="mt-2" style="color: grey;" />
         <nuxt-link v-else :to="'/user/'+reply.username" no-prefetch>
           <img v-if="reply.dp_url" class="rounded-circle" :src="reply.dp_url" height="25" width="25">
@@ -12,40 +13,52 @@
 
       <div class="reply-right-column" :style="{paddingTop: reply.dp_url ? '3px' : ''}">
 
-        <span>
-          <span v-if="isDeleted" class="comment-username">[REDACTED]</span>
-          <nuxt-link v-else :to="'/user/'+reply.username" class="comment-username" no-prefetch>{{ reply.username }}</nuxt-link>&nbsp;
-          <span class="comment-date">{{ formatDate(reply.post_date) }}{{ reply.edited ? " (edited)" : "" }}</span>
-        </span>
-
-        <div v-if="isAuthenticated && !isDeleted" class="dropdown comment-dropdown-btn float-right">
-          <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <font-awesome-icon :icon="['fas', 'angle-down']" />
+        <div>
+          <!-- Username and date -->
+          <span>
+            <span v-if="isDeleted" class="comment-username">[REDACTED]</span>
+            <nuxt-link v-else :to="'/user/'+reply.username" class="comment-username" no-prefetch>{{ reply.username }}</nuxt-link>&nbsp;
+            <span class="comment-date">{{ formatDate(reply.post_date) }}{{ reply.edited ? " (edited)" : "" }}</span>
           </span>
-          <div class="dropdown-menu dropdown-menu-right c-dropdown-menu">
-            <template v-if="isAuthenticated && isOwnReply">
-              <div class="dropdown-item" ref="toggleEditButton" @click="toggleEdit">
-                <template v-if="editing"><font-awesome-icon :icon="['fas', 'times']" />&ensp;Cancel</template>
-                <template v-else><font-awesome-icon :icon="['fas', 'pen']" />&ensp;Edit</template>
-              </div>
-              <div class="dropdown-item" @click="confirmDelete"><font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;Delete</div>
-            </template>
-            <div v-else class="dropdown-item"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
+
+          <!-- Dropdown buttons for editing/deleting/reporting -->
+          <div v-if="isAuthenticated && !isDeleted" class="dropdown comment-dropdown-btn float-right">
+            <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <font-awesome-icon :icon="['fas', 'angle-down']" />
+            </span>
+            <div class="dropdown-menu dropdown-menu-right c-dropdown-menu">
+              <template v-if="isOwnReply">
+                <div v-if="editing" @click="editReply" class="dropdown-item">
+                  <font-awesome-icon :icon="['fas', 'save']" />&ensp;Save
+                </div>
+                <div class="dropdown-item" ref="toggleEditButton" @click="toggleEdit">
+                  <font-awesome-icon :icon="['fas', editing ? 'times' : 'pen']" />&ensp;{{ editing ? "Cancel" : "Edit"}}
+                </div>
+                <div class="dropdown-item" @click="confirmDelete">
+                  <font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;Delete
+                </div>
+              </template>
+              <div v-else class="dropdown-item"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
+            </div>
           </div>
         </div>
-        <br>
 
+        <!-- Reply content -->
         <span v-if="isDeleted" class="comment-deleted">Comment has been REDACTED</span>
         <span v-else v-show="!editing" :class="{'d-block': !editing}" class="comment-content reply-content">
           <span v-if="rpattern"><nuxt-link :to="'/user/'+rpattern[1]">{{ rpattern[0] }}</nuxt-link>{{ replyAfterMention }}</span>
           <template v-else>{{ reply.content }}</template>
         </span>
 
-        <input v-if="!isDeleted" v-show="editing && isAuthenticated && isOwnReply" ref="editReplyInput" @keyup.enter="editReply(reply.uuid)" class="edit-comment-field" :value="reply.content">
+        <!-- Input for editing reply -->
+        <input v-model="editReplyValue" v-if="!isDeleted" v-show="editing && isOwnReply" ref="editReplyInput" class="edit-comment-field" maxlength="150">
+
+        <!-- Reply image -->
         <nuxt-link v-if="reply.image" :to="'/img?c='+reply.uuid" target="_blank">
           <img ref="replyImg" class="mt-1 reply-image fade-in" :data-src="reply.image">
         </nuxt-link>
 
+        <!-- Like/dislike/reply buttons under reply -->
         <div v-if="!isDeleted" class="container-fluid">
           <div class="row comment-buttons">
             <button @click="vote('l')" :class="{green: isLiked}" class="btn btn-sm c-thumbs like"><font-awesome-icon :icon="[isLiked ? 'fas' : 'far', 'thumbs-up']" /></button>
@@ -116,7 +129,8 @@ export default {
       typingReply: false,
       replyInputValue: "",
       replyInputPlaceholder: "Write a reply",
-      imageFilename: ""
+      imageFilename: "",
+      editReplyValue: this.reply.content
     }
   },
   computed: {
@@ -124,7 +138,7 @@ export default {
       return this.$auth.loggedIn
     },
     isOwnReply() {
-      return this.reply.username === this.$auth.user.username
+      return this.isAuthenticated && this.reply.username === this.$auth.user.username
     },
     hasDP() {
       return this.isAuthenticated && this.$auth.user ? this.$auth.user.image : false
@@ -156,20 +170,21 @@ export default {
       $("#deleteModal").modal('show')
     },
     deleteReply() {
-      this.$axios.delete(`/comment/delete?u=${this.reply.uuid}`)
+      this.$axios.delete(`/api/comment/delete?u=${this.reply.uuid}`)
         .then(res => {
           if (res.status === 204) this.$emit("reply-deleted-event", this.reply.uuid)
         })
         .catch(this.displayError)
     },
-    editReply(uuid) {
-      const val = event.target.value.slice(0, 150).trim()
+    editReply() {
+      const uuid = this.reply.uuid
+      const val = this.editReplyValue.slice(0, 150).trim()
       this.toggleEdit(uuid)
       if (this.isAuthenticated && val.length && val !== this.reply.content) {
         const data = new FormData()
-        data.set("c", val)
-        data.set("u", uuid)
-        this.$axios.post("/comment/edit", data)
+        data.set("content", val)
+        data.set("uuid", uuid)
+        this.$axios.post("/api/comment/edit", data)
           .then(res => this.$emit("reply-edited-event", uuid, val))
           .catch(this.displayError)
       }
@@ -199,7 +214,7 @@ export default {
         this.replyInputValue = ""
         this.replyInputPlaceholder = "Sending..."
 
-        this.$axios.post("/reply", data)
+        this.$axios.post("/api/reply", data)
           .then(res => res.data)
           .then(response => {
             this.typingReply = false

@@ -4,6 +4,7 @@
       <div class="row">
 
         <div class="comment-left-column">
+          <!-- Commenter image or icon -->
           <font-awesome-icon v-if="isDeleted" :icon="['fas', 'user-circle']" style="color: grey;" />
           <nuxt-link v-else :to="'/user/'+comment.username" no-prefetch>
             <img v-if="comment.dp_url" class="rounded-circle" :src="comment.dp_url" height="40" width="40">
@@ -14,17 +15,23 @@
         <div class="comment-right-column" :style="{paddingTop: comment.dp_url ? '10px' : '5px'}">
 
           <div>
+            <!-- Username and date -->
             <span>
               <span v-if="isDeleted" class="comment-username">[REDACTED]</span>
               <nuxt-link v-else :to="'/user/'+comment.username" class="comment-username" no-prefetch>{{ comment.username }}</nuxt-link>&nbsp;
               <span class="comment-date">{{ formatDate(comment.post_date) }}{{ comment.edited && !isDeleted ? " (edited)" : "" }}</span>
             </span>
+
+            <!-- Dropdown buttons for editing/deleting/reporting -->
             <div v-if="isAuthenticated && !isDeleted" class="dropdown comment-dropdown-btn float-right">
               <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <font-awesome-icon :icon="['fas', 'angle-down']" />
               </span>
               <div class="dropdown-menu dropdown-menu-right c-dropdown-menu">
                 <template v-if="isOwnComment">
+                  <div v-if="editing" @click="editComment" class="dropdown-item">
+                    <font-awesome-icon :icon="['fas', 'save']" />&ensp;Save
+                  </div>
                   <div class="dropdown-item" @click="toggleEdit" ref="toggleEditButton">
                     <font-awesome-icon :icon="['fas', editing ? 'times' : 'pen']" />&ensp;{{ editing ? "Cancel" : "Edit" }}
                   </div>
@@ -37,12 +44,18 @@
             </div>
           </div>
 
+          <!-- Comment content -->
           <span v-show="!editing" :class="{'d-block': !editing, 'comment-deleted': isDeleted}" class="comment-content mr-2">{{ isDeleted ? "Comment has been REDACTED" : comment.content }}</span>
-          <input v-if="!isDeleted" v-show="editing && isAuthenticated && isOwnComment" ref="editCommentInput" @keyup.enter="editComment(comment.uuid)" class="edit-comment-field" :value="comment.content">
+
+          <!-- Input for editing comment -->
+          <input v-model.trim="editCommentValue" v-if="!isDeleted" v-show="editing && isAuthenticated && isOwnComment" ref="editCommentInput" class="edit-comment-field" maxlength="150">
+
+          <!-- Comment image -->
           <nuxt-link v-if="comment.image" :to="'/img?c='+comment.uuid" target="_blank" no-prefetch>
             <img ref="commentImg" class="mt-1 comment-image fade-in" :data-src="comment.image">
           </nuxt-link>
 
+          <!-- Like/dislike/reply buttons under comment -->
           <div v-if="!isDeleted" class="container-fluid">
             <div class="row comment-buttons">
               <button @click="vote('l')" :class="{green: isLiked}" class="btn btn-sm c-thumbs like mr-0"><font-awesome-icon :icon="[isLiked ? 'fas' : 'far', 'thumbs-up']" style="margin-left: 0;" /></button>
@@ -52,11 +65,14 @@
             </div>
           </div>
 
+          <!-- If comment has replies -->
           <div v-if="comment.num_replies">
+            <!-- Button to show replies -->
             <small @click="viewReplies" class="comment-small">
               {{ showingReplies ? "Hide" : "View" }} {{ comment.num_replies === 1 ? "reply" : formatNumber(comment.num_replies) + " replies" }} <font-awesome-icon :icon="['fas', showingReplies ? 'caret-up' : 'caret-down']" />
             </small>
             <br>
+            <!-- Replies -->
             <div v-show="showingReplies">
               <ReplyItem
                 v-for="reply in replies"
@@ -69,6 +85,7 @@
                 @set-points-event="setPoints"
               />
             </div>
+            <!-- Button to load more replies -->
             <div v-if="loadMoreBtnShowing && showingReplies"><small class="comment-small" @click="loadReplies">Load more <font-awesome-icon :icon="['fas', 'angle-right']" /></small></div>
             <div v-show="loadSpinnerShowing" style="font-size: 20px;"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
           </div>
@@ -143,6 +160,7 @@ export default {
       replyInputValue: "",
       replyInputPlaceholder: "Write a reply",
       imageFilename: "",
+      editCommentValue: this.comment.content
     }
   },
   mounted() {
@@ -186,8 +204,9 @@ export default {
         })
         .catch(console.log)
     },
-    editComment(uuid) {
-      const val = this.$refs.editCommentInput.value.slice(0, 150).trim()
+    editComment() {
+      const uuid = this.comment.uuid
+      const val = this.editCommentValue.slice(0, 150).trim()
       this.toggleEdit(uuid)
       if (!this.isAuthenticated || !val.length || val === this.comment.content) return false
       const data = new FormData()
