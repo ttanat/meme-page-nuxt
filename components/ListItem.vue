@@ -25,14 +25,13 @@ export default {
     result: {
       type: Object,
       required: true
-    },
-    searchUser: {
-      type: Boolean,
-      required: true
     }
   },
   mixins: [parseBioMixin],
   computed: {
+    searchUser() {
+      return this.$route.query.q[0] === '@'
+    },
     getURL() {
       return this.searchUser ? `/user/${this.result.username}` : `/page/${this.result.name}`
     },

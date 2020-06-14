@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ListItem v-for="(result, i) in results" :key="i" :result="result" :searchUser="query[0]==='@'" />
+    <ListItem v-for="(result, i) in results" :key="i" :result="result" />
     <div v-show="loading || $fetchState.pending" class="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     <div v-if="noResults" style="margin-top: 30px;text-align: center;">No results matching query.<br><br>Return <nuxt-link to="/">home</nuxt-link></div>
   </div>
@@ -65,7 +65,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
