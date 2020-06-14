@@ -1,12 +1,12 @@
 <template>
   <li class="media mt-1 mb-4">
-    <nuxt-link class="mr-3" :to="getURL">
+    <nuxt-link class="mr-3 media-img-link" :to="getURL" no-prefetch>
       <img v-if="result.dp_url" class="media-img rounded-circle" :src="result.dp_url" height="45" width="45">
       <font-awesome-icon v-else :icon="['fas', searchUser ? 'user' : 'user-friends']" class="media-img" />
     </nuxt-link>
     <div class="media-body">
       <h6 class="mt-0 mb-1">
-        <nuxt-link :to="getURL">
+        <nuxt-link :to="getURL" no-prefetch>
           {{ searchUser ? result.username : result.display_name || result.name }}
         </nuxt-link>
       </h6>
@@ -50,6 +50,10 @@ export default {
 </script>
 
 <style scoped>
+.media-img-link {
+  width: 45px;
+  text-align: center;
+}
 .media-img {
   cursor: pointer;
   margin-bottom: 10px;
