@@ -34,8 +34,8 @@
           <!-- Page stats -->
           <table class="mb-2 w-100">
             <tr>
-              <td class="page-stat" id="sub-count">{{ page.subs }}</td>
-              <td class="page-stat" id="post-count">{{ page.num_posts }}</td>
+              <td class="page-stat" id="sub-count">{{ formatNumber(page.subs) }}</td>
+              <td class="page-stat" id="post-count">{{ formatNumber(page.num_posts) }}</td>
             </tr>
             <tr>
               <td class="page-stat"><small>users</small></td>
@@ -99,6 +99,7 @@
 import MemeItems from '~/components/MemeItems'
 import SubscribeButton from '~/components/page/SubscribeButton'
 import BioDescription from '~/components/profile/BioDescription'
+import formatNumberMixin from '~/mixins/formatNumberMixin'
 
 export default {
   components: {
@@ -106,6 +107,7 @@ export default {
     SubscribeButton,
     BioDescription
   },
+  mixins: [formatNumberMixin],
   async asyncData({ $axios, $auth, params }) {
     const { data } = await $axios.get(`/api/page/${params.name}`)
     return {

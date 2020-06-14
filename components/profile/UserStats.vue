@@ -1,9 +1,9 @@
 <template>
   <table class="mb-3 w-100 text-center">
     <tr>
-      <td title="Total points">{{ stats.clout }}</td>
-      <td class="pointer" id="follower-count">{{ stats.num_followers }}</td>
-      <td class="pointer">{{ stats.num_following }}</td>
+      <td title="Total points">{{ formatNumber(stats.clout) }}</td>
+      <td class="pointer" id="follower-count">{{ formatNumber(stats.num_followers) }}</td>
+      <td class="pointer">{{ formatNumber(stats.num_following) }}</td>
     </tr>
     <tr>
       <td title="Total points"><small>clout</small></td>
@@ -14,8 +14,11 @@
 </template>
 
 <script>
+import formatNumberMixin from '~/mixins/formatNumberMixin'
+
 export default {
   name: 'UserStats',
+  mixins: [formatNumberMixin],
   props: {
     stats: {
       type: Object,
