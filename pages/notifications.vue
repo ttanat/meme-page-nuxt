@@ -1,7 +1,7 @@
 <template>
   <main class="px-3 px-md-4 px-xl-5">
     <h5>Notifications</h5>
-    <div v-for="(notif, i) in notifications" :key="i" :notif="notif" :class="{'not-seen': !notif.seen}" class="notif py-2 pl-2">
+    <div v-for="(notif, i) in notifications" :key="i" :class="{'not-seen': !notif.seen}" class="notif py-2 pl-2">
       <nuxt-link :to="'/user/'+getUsername(notif.message)" target="_blank" no-prefetch>{{ getUsername(notif.message) }}</nuxt-link> {{ splitMessage(notif.message) }}
       &ensp;<small class="text-muted">{{ new Date(notif.timestamp).toString() }}</small>
       &ensp;<nuxt-link :to="notif.link" class="ext-link" target="_blank" no-prefetch><font-awesome-icon :icon="['fas', 'external-link-alt']" /></nuxt-link>
