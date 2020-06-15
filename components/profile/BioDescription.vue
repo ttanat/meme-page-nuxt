@@ -92,7 +92,7 @@ export default {
         .then(new_val => {
           if (this.isProfilePage) {
             this.newBio = new_val
-            this.$auth.setUser(Object.assign({}, this.$auth.user, {bio: new_val}))
+            this.$setUserField({bio: new_val})
           } else {
             this.$emit("description-change-event", new_val)
           }

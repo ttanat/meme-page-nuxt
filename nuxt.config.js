@@ -42,7 +42,8 @@ export default {
     '~/plugins/successToast.js',
     '~/plugins/errorToast.js',
     '~/plugins/displayError.js',
-    '~/plugins/axios.js'
+    '~/plugins/axios.js',
+    '~/plugins/auth.js'
   ],
   /*
   ** Nuxt.js dev-modules

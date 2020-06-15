@@ -111,7 +111,7 @@ export default {
         this.$axios.delete(`/api/page/${this.$route.params.name}/settings?d=page`)
           .then(res => {
             if (res.status === 204) {
-              this.removeFromAuthUser()
+              this.$popUserFieldArray("moderating", this.$route.params.name)
               this.errorToast(`${this.pageInfo.display_name || this.pageInfo.name} has been deleted :(`)
               this.$router.push('/')
             } else {
@@ -120,10 +120,6 @@ export default {
           })
           .catch(console.log)
       }
-    },
-    removeFromAuthUser() {
-      const new_moderating = this.$auth.user.moderating.filter(page => page.name !== this.$route.params.name)
-      this.$auth.setUser(Object.assign({}, this.$auth.user, {moderating: new_moderating}))
     }
   }
 }

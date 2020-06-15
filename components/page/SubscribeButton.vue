@@ -52,37 +52,22 @@ export default {
             } else { // Response says if user subscribed or unsubscribed
               this.$emit("subscribe-changed-event", data.subscribed)
               this.btnText = data.subscribed ? "Subscribed" : this.isPrivate ? "Request" : "Subscribe"
-              this.addOrRemovePage(data.subscribed)
+              this.addOrRemoveSubscription(data.subscribed)
             }
           })
           .catch(this.displayError)
       }
     },
-    addOrRemovePage(add) {
-      /*
-        Adds or removes page from $auth.user.subscriptions
-      */
-      const current_page = {
-        name: this.$route.params.name,
-        dname: this.displayName,
-        private: this.isPrivate
-      }
-      const new_subscriptions = []
+    addOrRemoveSubscription(add) {
       if (add) {
-        // Populate array with subscriptions from auth user
-        new_subscriptions.push(...this.$auth.user.subscriptions.map(page => {
-          return Object.fromEntries(Object.entries(page))
-        }))
-        // Add current page to array
-        new_subscriptions.push(current_page)
+        this.$appendUserFieldArray("subscriptions", {
+          name: this.$route.params.name,
+          dname: this.displayName,
+          private: this.isPrivate
+        })
       } else {
-        // Populate array with subscriptions from auth user but exclude current page
-        new_subscriptions.push(...this.$auth.user.subscriptions.filter(page => {
-          return page.name !== current_page.name
-        }))
+        this.$popUserFieldArray("subscriptions", this.$route.params.name)
       }
-      // Set new subscriptions for user
-      this.$auth.setUser(Object.assign({}, this.$auth.user, {subscriptions: new_subscriptions}))
     }
   }
 }

@@ -50,7 +50,7 @@ export default {
         this.$axios.post("/api/settings", data)
           .then(() => {
             this.$refs.oldImage.onload = this.removeInputImage
-            this.$auth.setUser(Object.assign({}, this.$auth.user, {image: this.$refs.newImage.src}))
+            this.$setUserField({image: this.$refs.newImage.src})
             this.$refs.newImage.src = null
             this.successToast("Profile picture changed")
           })
@@ -67,9 +67,7 @@ export default {
       if (confirm("Are you sure you want to delete your profile picture?")) {
         this.$axios.delete(`/api/settings?f=image`)
           .then(res => {
-            if (res.status === 204) {
-              this.$auth.setUser(Object.assign({}, this.$auth.user, {image: null}))
-            }
+            if (res.status === 204) this.$setUserField({image: null})
           })
           .catch(this.displayError)
       }

@@ -132,20 +132,11 @@ export default {
       }
     },
     addPageToAuthUser(formData) {
-      const new_moderating = this.$auth.user.moderating.map(page => {
-        return Object.fromEntries(Object.entries(page))
-      })
-      new_moderating.push({
+      this.$appendUserFieldArray("moderating", {
         name: formData.get("name"),
         dname: formData.get("display_name"),
         private: JSON.parse(formData.get("private"))
       })
-      this.$auth.setUser(Object.assign({}, this.$auth.user, {moderating: new_moderating}))
-      // this.$store.commit("auth/newMemePage", {
-      //   name: formData.get("name"),
-      //   dname: formData.get("display_name"),
-      //   private: JSON.parse(formData.get("private"))
-      // })
     }
   }
 }
