@@ -1,15 +1,19 @@
 import jwt from 'jsonwebtoken'
 
-function getCurrentTime() {
-  return new Date().getTime()
+const getCurrentTime = () => new Date().getTime()
+
+function accessTokenAboutToExpire(context) {
+  // Gets expiry time of access token in seconds
+  const { exp } = jwt.decode(context.$auth.getToken('local').slice(7)) // Slice to remove "Bearer "
+  // Returns true if access token is 10 seconds from expiring
+  return getCurrentTime() + 10000 > exp * 1000 // Convert exp to milliseconds
 }
 
-function getAccessTokenExp(context) {
-  return jwt.decode(context.$auth.getToken('local').slice(7)).exp * 1000
-}
-
-function getRefreshTokenExp(context) {
-  return jwt.decode(context.$auth.getRefreshToken('local')).exp * 1000
+function refreshTokenAboutToExpire(context) {
+  // Gets expiry time of refresh token in seconds
+  const { exp } = jwt.decode(context.$auth.getRefreshToken('local'))
+  // Returns true if refresh token is 10 seconds from expiring
+  return getCurrentTime() + 10000 > exp * 1000 // Convert exp to milliseconds
 }
 
 function refresh(context, config, resolve, reject) {
@@ -32,10 +36,8 @@ export default function (context) {
       if (!context.$auth.loggedIn || ["/api/token/refresh/", "/api/token/", "/api/register", "/api/auth/logout"].includes(config.url)) {
         resolve(config)
       } else {
-        // If access token about to expire...
-        if (getCurrentTime() + 10000 > getAccessTokenExp(context)) {
-          // If refresh token about to expire, log out
-          if (getCurrentTime() + 10000 > getRefreshTokenExp(context)) {
+        if (accessTokenAboutToExpire(context)) {
+          if (refreshTokenAboutToExpire(context)) {
             reject(new Error("Session expired. Please log in again."))
           } else {
             // Else, get new access token
@@ -50,18 +52,21 @@ export default function (context) {
 
   context.$axios.onError(err => {
     return new Promise((resolve, reject) => {
-      /*
-        Case: Access token is expired and link is opened in new tab
-        Default behaviour: Users are automatically logged out
-        This promise refreshes the access token if the refresh token is not expired
-      */
-      if (err.response && err.response.status === 401 && err.response.config.url !== "/api/token/refresh/"
-          && context.$auth.getRefreshToken('local') && getCurrentTime() + 10000 < getRefreshTokenExp(context)) {
+      if (err.response && err.response.status === 401
+        && err.response.config.url !== "/api/token/refresh/"
+        && context.$auth.getRefreshToken('local')
+        && !refreshTokenAboutToExpire(context)) {
+        /*
+          Case: Access token is expired and link is opened in new tab
+          Default behaviour: Users are automatically logged out
+          This 'if' clause refreshes the access token if the refresh token is not expired
+        */
         refresh(context, err.response.config, resolve, reject)
       } else {
         // If refresh failed or refresh token isn't valid
         if (err.message === "Session expired. Please log in again."
-            || (err.response && err.response.status === 401 && !["/api/token/", "/api/register"].includes(err.response.config.url))) {
+            || (err.response && err.response.status === 401
+                && !["/api/token/", "/api/register"].includes(err.response.config.url))) {
           // If token refresh failed or not authenticated, logout
           // Or if 401 response not from logging in
           alert("Session expired. Please log in again.")
