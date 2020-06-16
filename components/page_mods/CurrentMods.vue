@@ -9,6 +9,7 @@
           @mod-select-event="numSelected++"
           @mod-unselect-event="numSelected--"
         />
+        <div v-if="!moderators.length && !loading">None</div>
       </div>
     </div>
     <!-- Spinner and load more button -->
