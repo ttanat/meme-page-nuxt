@@ -44,7 +44,6 @@
     >
       Save
     </button>
-    <button class="btn btn-sm btn-danger" @click="deletePage" type="button">Delete page</button>
   </form>
 </template>
 
@@ -105,21 +104,6 @@ export default {
           this.successToast("Preferences saved")
         })
         .catch(this.displayError)
-    },
-    deletePage() {
-      if (confirm('Are you sure you want to delete this page?')) {
-        this.$axios.delete(`/api/page/${this.$route.params.name}/settings?d=page`)
-          .then(res => {
-            if (res.status === 204) {
-              this.$popUserFieldArray("moderating", this.$route.params.name)
-              this.errorToast(`${this.pageInfo.display_name || this.pageInfo.name} has been deleted :(`)
-              this.$router.push('/')
-            } else {
-              throw "Unexpected error occurred"
-            }
-          })
-          .catch(console.log)
-      }
     }
   }
 }
