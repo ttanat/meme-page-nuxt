@@ -1,6 +1,6 @@
 <template>
   <div class="col-md-6 col-lg-3 px-0">
-    <div class="media p-2 mb-4">
+    <div @click="toggleSelected" :class="{selected: selected}" class="media pointer p-2 mb-4">
       <!-- User image or icon -->
       <nuxt-link :to="'/user/'+mod.username" class="user-icon" target="_blank" no-prefetch>
         <img v-if="mod.image" :src="mod.image" class="mr-2 pointer rounded-circle">
@@ -9,7 +9,7 @@
       <!-- Username -->
       <div class="media-body">
         <nuxt-link :to="'/user/'+mod.username" target="_blank" no-prefetch>
-          {{ mod.username }}<!--&ensp;<font-awesome-icon :icon="['fas', 'external-link-alt']" class="ext-link" />-->
+          {{ mod.username }}
         </nuxt-link>
       </div>
     </div>
@@ -23,6 +23,17 @@ export default {
     mod: {
       type: Object,
       required: true
+    }
+  },
+  data() {
+    return {
+      selected: false
+    }
+  },
+  methods: {
+    toggleSelected() {
+      this.selected = !this.selected
+      this.$emit(this.selected ? "mod-select-event" : "mod-unselect-event")
     }
   }
 }
@@ -39,10 +50,18 @@ export default {
   display: flex;
   align-items: center;
 }
+.selected {
+  background: #432f10;
+}
 .user-icon {
   color: lightgrey !important;
 }
 .ext-link {
   font-size: 12px;
+}
+@media (max-width: 767.98px) {
+  .media {
+    width: 100%;
+  }
 }
 </style>
