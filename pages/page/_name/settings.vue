@@ -1,51 +1,57 @@
 <template>
   <main>
-    <div class="container-fluid mb-3">
+    <div class="container-fluid">
       <div class="row justify-content-center">
 
         <div class="col-md-11 mb-2">
           <h4 class="mb-3">
             Settings - <nuxt-link :to="'/page/'+page.name" style="color: inherit;">{{ page.display_name || page.name }}</nuxt-link>
-            <nuxt-link class="btn btn-sm btn-secondary float-right" :to="'/page/'+page.name">Go back</nuxt-link>
+            <nuxt-link class="btn btn-sm btn-secondary float-right d-none d-lg-inline" :to="'/page/'+page.name">Go back</nuxt-link>
           </h4>
         </div>
 
-        <div class="col-md-3 mb-5">
+        <SettingsSidebar />
+        <div class="col-md-5 mb-5 mb-md-1">
+          <InfoForm :page-info="page" @change-info-event="changePageInfo" />
+        </div>
+        <div class="col-md-4 mb-5 mb-md-1">
           <ImageForm :page-image-url="page.image" />
           <br><br>
           <CoverForm :page-cover-url="page.cover" />
         </div>
-        <div class="col-md-5 mb-5">
-          <InfoForm :page-info="page" @change-info-event="changePageInfo" />
-        </div>
-        <div class="col-md-3">
-          <CurrentMods :mods="page.mods" @remove-mods-event="removeMods" />
+        <!-- <div class="col-md-3"> -->
+          <!-- <CurrentMods :mods="page.mods" @remove-mods-event="removeMods" /> -->
           <!-- <label>Requests pending</label>
           <ul class="list-group mb-4">
             <button v-for="username in page.pending" :key="username" type="button" class="list-group-item list-group-item-action">{{ username }}</button>
           </ul> -->
-          <AddMods />
-        </div>
+          <!-- <AddMods /> -->
+        <!-- </div> -->
 
       </div>
     </div>
+    <DeletePageForm :display-name="page.display_name" />
   </main>
 </template>
 
 <script>
+import SettingsSidebar from '~/components/page_settings/SettingsSidebar'
 import ImageForm from '~/components/page_settings/ImageForm'
 import CoverForm from '~/components/page_settings/CoverForm'
 import InfoForm from '~/components/page_settings/InfoForm'
 import CurrentMods from '~/components/page_settings/CurrentMods'
 import AddMods from '~/components/page_settings/AddMods'
+import DeletePageForm from '~/components/page_settings/DeletePageForm'
 
 export default {
   components: {
+    SettingsSidebar,
     ImageForm,
     CoverForm,
     InfoForm,
     CurrentMods,
-    AddMods
+    AddMods,
+    DeletePageForm
   },
   async asyncData({ $axios, route }) {
     const { data } = await $axios.get(`/api/page/${route.params.name}/settings`)
