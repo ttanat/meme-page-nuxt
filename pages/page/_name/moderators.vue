@@ -13,7 +13,9 @@
         <SettingsSidebar />
         <div class="col-md-9">
           <h5>Add Moderators</h5>
-          <div style="background:white">woeijf</div>
+          <AddMods />
+          <h5>Pending invites</h5>
+          <PendingMods />
           <h5>Current Moderators</h5>
           <CurrentMods />
         </div>
@@ -25,12 +27,16 @@
 
 <script>
 import SettingsSidebar from '~/components/page_settings/SettingsSidebar'
+import AddMods from '~/components/page_mods/AddMods'
+import PendingMods from '~/components/page_mods/PendingMods'
 import CurrentMods from '~/components/page_mods/CurrentMods'
 
 export default {
   middleware: 'custom-auth',
   components: {
     SettingsSidebar,
+    AddMods,
+    PendingMods,
     CurrentMods
   }
 }
