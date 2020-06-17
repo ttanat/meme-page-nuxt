@@ -46,8 +46,6 @@ export default {
 #back-btn {
   width: 55px;
   border-radius: 4px;
-}
-#back-btn:hover {
   color: gainsboro;
 }
 </style>
