@@ -19,8 +19,13 @@
 </template>
 
 <script>
+import ModItem from './ModItem'
+
 export default {
   name: 'PendingMods',
+  components: {
+    ModItem
+  },
   data() {
     return {
       pendingMods: []
