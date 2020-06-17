@@ -2,7 +2,7 @@
   <div class="mb-4">
     <input
       v-model.trim="newUser"
-      @keyup.enter="addNewUser"
+      @keyup.enter="addUserToList"
       class="form-control form-control-sm mb-3"
       placeholder="Username"
       maxlength="32"
@@ -20,13 +20,14 @@
     </div>
     <button
       v-if="modsToAdd.length"
+      @click="inviteUsers"
       class="btn btn-sm btn-primary mr-2"
     >
       {{ modsToAdd.length > 1 ? `Send ${modsToAdd.length} invites` : "Send invite" }}
     </button>
     <button
       v-if="numSelected"
-      @click="removeNewUsers"
+      @click="removeUserFromList"
       class="btn btn-sm btn-danger"
     >
       Remove
@@ -50,7 +51,7 @@ export default {
     }
   },
   methods: {
-    addNewUser() {
+    addUserToList() {
       const val = this.newUser
       let err
       if (val === this.$auth.user.username) {
@@ -69,10 +70,21 @@ export default {
         this.newUser = ""
       }
     },
-    removeNewUsers() {
+    removeUserFromList() {
       const selected = this.$children.filter(c => c.selected).map(c => c.mod.username)
       this.modsToAdd = this.modsToAdd.filter(m => !selected.includes(m.username))
       this.numSelected = 0
+    },
+    inviteUsers() {
+      if (this.modsToAdd.length) {
+        const data = new FormData()
+        for (const mod of this.modsToAdd) {
+          data.append("new_mods", mod.username)
+        }
+        this.$axios.post(`/api/mods/invite/${this.$route.params.name}`, data)
+          .then(() => {/* Add to pending */})
+          .catch(err => err.response ? this.errorToast(err.response.data) : console.log(err))
+      }
     }
   }
 }

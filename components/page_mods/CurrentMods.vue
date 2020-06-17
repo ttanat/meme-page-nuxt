@@ -31,7 +31,7 @@ export default {
     return {
       // moderators: [{username: "max"}, {username: "jane"}, {username: "moseby"}, {username: "kevin"}, {username: "allison"}],
       moderators: [],
-      next: `${this.$axios.defaults.baseURL}/api/moderators/${this.$route.params.name}?page=1`,
+      next: `/api/mods/current/${this.$route.params.name}`,
       loading: false,
       numSelected: 0
     }
@@ -45,11 +45,8 @@ export default {
       this.loading = true
       try {
         const { data } = await this.$axios.get(this.next)
-        this.moderators.push(...data.results)
-        if (data.lid) {
-          const url = new URL(this.next)
-          url.searchParams.set("lid", data.lid)
-          this.next = url.href
+        if (data.length) {
+          this.moderators.push(...data)
         } else {
           this.next = null
         }

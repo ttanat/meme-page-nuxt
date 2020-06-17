@@ -21,8 +21,13 @@
 <script>
 export default {
   name: 'PendingMods',
+  data() {
+    return {
+      pendingMods: []
+    }
+  },
   async fetch() {
-    const { data } = await this.$axios.get(`/api/mods/admin/${this.$route.params.name}`)
+    const { data } = await this.$axios.get(`/api/mods/pending/${this.$route.params.name}`)
     this.pendingMods = []
   }
 }
