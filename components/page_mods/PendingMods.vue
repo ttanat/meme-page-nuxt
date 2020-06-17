@@ -3,9 +3,9 @@
     <div class="container-fluid">
       <div class="row">
         <ModItem
-          v-for="mod in pendingMods"
-          :key="mod.username"
-          :mod="mod"
+          v-for="username in pendingMods"
+          :key="username"
+          :username="username"
           @mod-select-event="numSelected++"
           @mod-unselect-event="numSelected--"
         />
@@ -28,7 +28,8 @@ export default {
   },
   async fetch() {
     const { data } = await this.$axios.get(`/api/mods/pending/${this.$route.params.name}`)
-    this.pendingMods = []
+    this.pendingMods.push(...data)
+    this.$emit("add-mods-event", data)
   }
 }
 </script>

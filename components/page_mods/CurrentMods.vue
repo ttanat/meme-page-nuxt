@@ -3,18 +3,17 @@
     <div class="container-fluid">
       <div class="row">
         <ModItem
-          v-for="mod in moderators"
-          :key="mod.username"
-          :mod="mod"
+          v-for="username in moderators"
+          :key="username"
+          :username="username"
           @mod-select-event="numSelected++"
           @mod-unselect-event="numSelected--"
         />
-        <div v-if="!moderators.length && !loading">None</div>
+        <div v-if="!moderators.length && !$fetchState.pending">None</div>
       </div>
     </div>
-    <!-- Spinner and load more button -->
-    <div v-if="loading" id="spinner" class="mt-3"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
-    <div v-else-if="next"><small class="pointer" @click="loadMore">Load more</small></div>
+    <!-- Spinner and remove button -->
+    <div v-if="$fetchState.pending" id="spinner" class="mt-3"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     <button v-if="numSelected" @click="removeMods" class="btn btn-sm btn-danger mt-3">Remove</button>
   </div>
 </template>
@@ -29,33 +28,26 @@ export default {
   },
   data() {
     return {
-      // moderators: [{username: "max"}, {username: "jane"}, {username: "moseby"}, {username: "kevin"}, {username: "allison"}],
-      moderators: [],
+      moderators: ["max", "jane", "moseby", "kevin", "allison"],
+      // moderators: [],
       next: `/api/mods/current/${this.$route.params.name}`,
-      loading: false,
       numSelected: 0
     }
   },
-  created() {
-    this.loadMore()
+  async fetch() {
+    if (this.next === null) return false
+    try {
+      const { data } = await this.$axios.get(this.next)
+      if (data.length) {
+        this.moderators.push(...data)
+      } else {
+        this.next = null
+      }
+    } catch (err) {
+      console.log(err)
+    }
   },
   methods: {
-    async loadMore() {
-      if (this.next === null) return false
-      this.loading = true
-      try {
-        const { data } = await this.$axios.get(this.next)
-        if (data.length) {
-          this.moderators.push(...data)
-        } else {
-          this.next = null
-        }
-      } catch (err) {
-        console.log(err)
-      } finally {
-        this.loading = false
-      }
-    },
     incrementNumSelected() {
       this.numSelected++
     },
@@ -63,14 +55,17 @@ export default {
       this.numSelected--
     },
     removeMods() {
-      const selected = this.$children.filter(c => c.selected).map(c => c.mod.username)
+      const selected = this.$children.filter(c => c.selected).map(c => c.username)
       if (!confirm(`Are you sure you want to remove ${selected.length > 1 ? "these moderators" : selected[0]}`)) return false
-      this.moderators = this.moderators.filter(m => !selected.includes(m.username))
+      this.moderators = this.moderators.filter(m => m !== username)
       this.numSelected = 0
       this.$toast.info(`${selected.length > 1 ? `${selected.length} moderators` : selected[0]} removed`, {
         position: 'top-center',
         duration: 1500
       })
+    },
+    removeModsFromEveryone() {
+
     }
   }
 }

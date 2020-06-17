@@ -10,9 +10,9 @@
     <div class="container-fluid">
       <div class="row">
         <ModItem
-          v-for="mod in modsToAdd"
-          :key="mod.username"
-          :mod="mod"
+          v-for="username in modsToAdd"
+          :key="username"
+          :username="username"
           @mod-select-event="numSelected++"
           @mod-unselect-event="numSelected--"
         />
@@ -60,26 +60,26 @@ export default {
         err = "Please enter a valid username"
       } else if (this.modsToAdd.length >= 20) {
         err = "Maximum number of moderators reached"
-      } else if (this.modsToAdd.find(user => user.username === val)) {
+      } else if (this.modsToAdd.includes(val)) {
         err = "Moderator already exists"
       }
       if (err) {
         this.errorToast(err)
       } else {
-        this.modsToAdd.push({username: val, image: null})
+        this.modsToAdd.push(val)
         this.newUser = ""
       }
     },
     removeUserFromList() {
-      const selected = this.$children.filter(c => c.selected).map(c => c.mod.username)
-      this.modsToAdd = this.modsToAdd.filter(m => !selected.includes(m.username))
+      const selected = this.$children.filter(c => c.selected).map(c => c.username)
+      this.modsToAdd = this.modsToAdd.filter(username => !selected.includes(username))
       this.numSelected = 0
     },
     inviteUsers() {
       if (this.modsToAdd.length) {
         const data = new FormData()
-        for (const mod of this.modsToAdd) {
-          data.append("new_mods", mod.username)
+        for (const username of this.modsToAdd) {
+          data.append("new_mods", username)
         }
         this.$axios.post(`/api/mods/invite/${this.$route.params.name}`, data)
           .then(() => {/* Add to pending */})
