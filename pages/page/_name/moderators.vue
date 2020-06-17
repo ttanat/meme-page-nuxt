@@ -13,11 +13,19 @@
         <SettingsSidebar />
         <div class="col-md-9">
           <h5>Add Moderators</h5>
-          <AddMods />
+          <AddMods
+            @add-mods-event="addModsToEveryone"
+          />
           <h5>Pending invites</h5>
-          <PendingMods />
+          <PendingMods
+            @add-mods-event="addModsToEveryone"
+            @remove-mods-event="removeModsFromEveryone"
+          />
           <h5>Current Moderators</h5>
-          <CurrentMods />
+          <CurrentMods
+            @add-mods-event="addModsToEveryone"
+            @remove-mods-event="removeModsFromEveryone"
+          />
         </div>
 
       </div>
@@ -38,6 +46,19 @@ export default {
     AddMods,
     PendingMods,
     CurrentMods
+  },
+  data() {
+    return {
+      everyone: []
+    }
+  },
+  methods: {
+    addModsToEveryone(mods) {
+      this.everyone.push(...mods)
+    },
+    removeModsFromEveryone(mods) {
+      this.everyone = this.everyone.filter(e => !mods.includes(e.username))
+    }
   }
 }
 </script>
