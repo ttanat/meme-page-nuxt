@@ -16,6 +16,7 @@
           <AddMods
             :mods-to-add="modsToAdd"
             :everyone="everyone"
+            :pending-and-current="[...pending, ...current]"
             @add-mods-event="addMods"
             @remove-mods-event="removeMods"
             @add-pending-event="addPending"

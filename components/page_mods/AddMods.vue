@@ -51,6 +51,10 @@ export default {
     everyone: {
       type: Array,
       required: true
+    },
+    pendingAndCurrent: {
+      type: Array,
+      required: true
     }
   },
   data() {
@@ -86,9 +90,9 @@ export default {
     },
     inviteUsers() {
       // Check for duplicates
-      const duplicates = this.modsToAdd.filter(username => this.everyone.includes(username))
+      const duplicates = this.modsToAdd.filter(username => this.pendingAndCurrent.includes(username))
       if (duplicates.length) {
-        this.errorToast(`${duplicates.join(", ")} already exist${duplicates.length > 1 ? "s" : ""}`)
+        this.errorToast(`${duplicates.join(", ")} already exist${duplicates.length > 1 ? "" : "s"}`)
         return false
       }
 
