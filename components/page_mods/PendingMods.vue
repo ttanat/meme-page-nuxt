@@ -11,8 +11,14 @@
         />
       </div>
     </div>
-    <button v-if="numSelected" @click="removePending" class="btn btn-sm btn-danger mb-4">
-      <font-awesome-icon v-if="removing" :icon="['fas', 'circle-notch']" />
+    <button
+      v-if="numSelected"
+      @click="removePending"
+      :disabled="removing"
+      :class="{'not-allowed': removing}"
+      class="btn btn-sm btn-danger mb-4"
+    >
+      <font-awesome-icon v-if="removing" :icon="['fas', 'circle-notch']" spin />
       <template v-else>Remove</template>
     </button>
   </div>

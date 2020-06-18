@@ -11,7 +11,16 @@
         />
       </div>
     </div>
-    <button v-if="numSelected" @click="removeMods" class="btn btn-sm btn-danger mt-3">Remove</button>
+    <button
+      v-if="numSelected"
+      @click="removeMods"
+      :disabled="removing"
+      :class="{'not-allowed': removing}"
+      class="btn btn-sm btn-danger"
+    >
+      <font-awesome-icon v-if="removing" :icon="['fas', 'circle-notch']" spin />
+      <template v-else>Remove</template>
+    </button>
   </div>
 </template>
 
@@ -31,19 +40,31 @@ export default {
   },
   data() {
     return {
-      numSelected: 0
+      numSelected: 0,
+      removing: false
     }
   },
   methods: {
     removeMods() {
       const selected = this.$children.filter(c => c.selected).map(c => c.username)
-      if (!confirm(`Are you sure you want to remove ${selected.length > 1 ? "these moderators" : selected[0]}`)) return false
-      this.$emit("remove-mods-event", selected, "current")
-      this.numSelected = 0
-      this.$toast.info(`${selected.length > 1 ? `${selected.length} moderators` : selected[0]} removed`, {
-        position: 'top-center',
-        duration: 1500
-      })
+      if (!selected.length) return false
+      if (confirm(`Are you sure you want to remove ${selected.length > 1 ? "these moderators" : selected[0]}?`)) {
+        this.removing = true
+        const query_params_string = selected.map(s => `username=${s}`).join('&')
+        this.$axios.delete(`/api/mods/current/${this.$route.params.name}?${query_params_string}`)
+          .then(res => {
+            if (res.status === 204) {
+              this.$emit("remove-mods-event", selected, "current")
+              this.numSelected = 0
+              this.$toast.info(`${selected.length > 1 ? `${selected.length} moderators` : selected[0]} removed`, {
+                position: 'top-center',
+                duration: 1500
+              })
+            }
+          })
+          .catch(console.log)
+          .finally(() => this.removing = false)
+      }
     }
   }
 }
