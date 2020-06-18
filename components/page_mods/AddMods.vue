@@ -27,7 +27,7 @@
     </button>
     <button
       v-if="numSelected"
-      @click="removeUserFromList"
+      @click="removeUsersFromList"
       class="btn btn-sm btn-danger"
     >
       Remove
@@ -43,10 +43,19 @@ export default {
   components: {
     ModItem
   },
+  props: {
+    modsToAdd: {
+      type: Array,
+      required: true
+    },
+    everyone: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       newUser: "",
-      modsToAdd: [],
       numSelected: 0
     }
   },
@@ -58,31 +67,38 @@ export default {
         err = "Cannot add yourself"
       } else if (!val.match(/^[a-z0-9_]+$/i) || val.length > 32) {
         err = "Please enter a valid username"
-      } else if (this.modsToAdd.length >= 20) {
+      } else if (this.everyone.length >= 50) {
         err = "Maximum number of moderators reached"
-      } else if (this.modsToAdd.includes(val)) {
+      } else if (this.everyone.includes(val)) {
         err = "Moderator already exists"
       }
       if (err) {
         this.errorToast(err)
       } else {
-        this.modsToAdd.push(val)
+        this.$emit("add-mods-event", [val], "modsToAdd")
         this.newUser = ""
       }
     },
-    removeUserFromList() {
+    removeUsersFromList() {
       const selected = this.$children.filter(c => c.selected).map(c => c.username)
-      this.modsToAdd = this.modsToAdd.filter(username => !selected.includes(username))
+      this.$emit("remove-mods-event", selected, "modsToAdd")
       this.numSelected = 0
     },
     inviteUsers() {
+      // Check for duplicates
+      const duplicates = this.modsToAdd.filter(username => this.everyone.includes(username))
+      if (duplicates.length) {
+        this.errorToast(`${duplicates.join(", ")} already exist${duplicates.length > 1 ? "s" : ""}`)
+        return false
+      }
+
       if (this.modsToAdd.length) {
         const data = new FormData()
         for (const username of this.modsToAdd) {
           data.append("new_mods", username)
         }
         this.$axios.post(`/api/mods/invite/${this.$route.params.name}`, data)
-          .then(() => {/* Add to pending */})
+          .then(res => this.$emit("add-pending-event", res.data))
           .catch(err => err.response ? this.errorToast(err.response.data) : console.log(err))
       }
     }
