@@ -10,7 +10,7 @@
       <div class="row">
         <ModItem
           v-for="username in moderators"
-          v-show="username.match(new RegExp(searchUser, 'i'))"
+          v-show="username.toLowerCase().includes(searchUser.toLowerCase())"
           :key="username"
           :admin-view="adminView"
           :username="username"
