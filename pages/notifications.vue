@@ -46,7 +46,14 @@ export default {
   methods: {
     acceptModInvite(pname) {
       this.$axios.put(`/api/mods/handle_invite/${pname}`)
-        .then(() => this.modInvites = this.modInvites.filter(pn => pn !== pname))
+        .then(({ data }) => {
+          this.modInvites = this.modInvites.filter(pn => pn !== pname)
+          this.$appendUserFieldArray("moderating", {
+            name: pname,
+            dname: data.dname,
+            private: data.private
+          })
+        })
         .catch(console.log)
     },
     declineModInvite(pname) {
