@@ -1,9 +1,16 @@
 <template>
   <div>
+    <input
+      v-model.trim="searchUser"
+      class="form-control form-control-sm mb-3"
+      placeholder="Search"
+      maxlength="32"
+    >
     <div class="container-fluid">
       <div class="row">
         <ModItem
           v-for="username in moderators"
+          v-show="username.match(new RegExp(searchUser, 'i'))"
           :key="username"
           :admin-view="adminView"
           :username="username"
@@ -45,6 +52,7 @@ export default {
   },
   data() {
     return {
+      searchUser: "",
       numSelected: 0,
       removing: false
     }
@@ -76,11 +84,19 @@ export default {
 </script>
 
 <style scoped>
+input {
+  width: 50%;
+}
 a:not(.btn) {
   color: royalblue;
   font-size: 15px;
 }
 small {
   color: royalblue;
+}
+@media (max-width: 767.98px) {
+  input {
+    width: 100%;
+  }
 }
 </style>
