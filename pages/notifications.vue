@@ -1,9 +1,18 @@
 <template>
   <main class="px-3 px-md-4 px-xl-5">
     <h5>Notifications</h5>
+    <div v-for="pname in modInvites" :key="pname" class="notif py-2 pl-2">
+      Moderator invite for <nuxt-link :to="'/page/'+pname" no-prefetch>{{ pname }}</nuxt-link>
+      &ensp;<small class="text-muted">Accept to become a moderator of this page</small>
+      &ensp;<nuxt-link :to="'/page/'+pname" class="ext-link" target="_blank" no-prefetch><font-awesome-icon :icon="['fas', 'external-link-alt']" /></nuxt-link>
+      <div class="float-right">
+        <button @click="acceptModInvite(pname)" class="btn btn-sm btn-primary buttons mr-2">Accept</button>
+        <button @click="declineModInvite(pname)" class="btn btn-sm btn-secondary buttons">Decline</button>
+      </div>
+    </div>
     <div v-for="(notif, i) in notifications" :key="i" :class="{'not-seen': !notif.seen}" class="notif py-2 pl-2">
-      <nuxt-link :to="'/user/'+getUsername(notif.message)" target="_blank" no-prefetch>{{ getUsername(notif.message) }}</nuxt-link> {{ splitMessage(notif.message) }}
-      &ensp;<small class="text-muted">{{ new Date(notif.timestamp).toString() }}</small>
+      <nuxt-link :to="'/user/'+getUsername(notif.message)" no-prefetch>{{ getUsername(notif.message) }}</nuxt-link> {{ splitMessage(notif.message) }}
+      &ensp;<small class="text-muted">{{ new Date(notif.timestamp).toUTCString() }}</small>
       &ensp;<nuxt-link :to="notif.link" class="ext-link" target="_blank" no-prefetch><font-awesome-icon :icon="['fas', 'external-link-alt']" /></nuxt-link>
     </div>
     <div v-if="loading" id="spinner" class="mt-3"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
@@ -22,6 +31,7 @@ export default {
   },
   data() {
     return {
+      modInvites: [],
       notifications: [],
       next: `${this.$axios.defaults.baseURL}/api/notifications?page=1`, // Need baseURL to parse URL in loadMore
       loading: false
@@ -29,8 +39,21 @@ export default {
   },
   created() {
     this.loadMore()
+    this.$axios.get(`/api/mods/handle_invite`)
+      .then(({ data }) => this.modInvites.push(...data))
+      .catch(console.log)
   },
   methods: {
+    acceptModInvite(pname) {
+      this.$axios.put(`/api/mods/handle_invite/${pname}`)
+        .then(() => this.modInvites = this.modInvites.filter(pn => pn !== pname))
+        .catch(console.log)
+    },
+    declineModInvite(pname) {
+      this.$axios.delete(`/api/mods/handle_invite/${pname}`)
+        .then(() => this.modInvites = this.modInvites.filter(pn => pn !== pname))
+        .catch(console.log)
+    },
     async loadMore() {
       if (this.next === null) return false
       this.loading = true
@@ -80,5 +103,9 @@ a {
 }
 small {
   color: royalblue;
+}
+.buttons {
+  padding: 1px 5px;
+  font-size: 13px;
 }
 </style>
