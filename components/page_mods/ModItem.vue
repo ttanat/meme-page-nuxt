@@ -1,6 +1,6 @@
 <template>
   <div class="col-md-6 col-lg-3 px-0">
-    <div @click="toggleSelected" :class="{selected: selected}" class="media pointer p-2 mb-4">
+    <div @click="toggleSelected" :class="divClass" class="media p-2 mb-4">
       <!-- User image or icon -->
       <nuxt-link :to="'/user/'+username" class="user-icon" target="_blank" no-prefetch>
         <font-awesome-icon :icon="['fas', 'user']" class="mr-2 pointer" />
@@ -19,6 +19,11 @@
 export default {
   name: 'ModItem',
   props: {
+    adminView: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     username: {
       type: String,
       required: true
@@ -29,8 +34,17 @@ export default {
       selected: false
     }
   },
+  computed: {
+    divClass() {
+      return {
+        selected: this.selected && this.adminView,
+        pointer: this.adminView
+      }
+    }
+  },
   methods: {
     toggleSelected() {
+      if (!this.adminView) return false
       this.selected = !this.selected
       this.$emit(this.selected ? "mod-select-event" : "mod-unselect-event")
     }

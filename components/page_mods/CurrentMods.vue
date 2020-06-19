@@ -5,6 +5,7 @@
         <ModItem
           v-for="username in moderators"
           :key="username"
+          :admin-view="adminView"
           :username="username"
           @mod-select-event="numSelected++"
           @mod-unselect-event="numSelected--"
@@ -12,7 +13,7 @@
       </div>
     </div>
     <button
-      v-if="numSelected"
+      v-if="numSelected && adminView"
       @click="removeMods"
       :disabled="removing"
       :class="{'not-allowed': removing}"
@@ -33,6 +34,10 @@ export default {
     ModItem
   },
   props: {
+    adminView: {
+      type: Boolean,
+      required: true
+    },
     moderators: {
       type: Array,
       required: true

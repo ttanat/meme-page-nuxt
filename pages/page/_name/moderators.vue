@@ -27,6 +27,7 @@
           <template v-if="adminView">
             <h5>Add Moderators</h5>
             <AddMods
+              :admin-view="adminView"
               :mods-to-add="modsToAdd"
               :everyone="everyone"
               :pending-and-current="[...pending, ...current]"
@@ -37,6 +38,7 @@
 
             <h5>Pending invites</h5>
             <PendingMods
+              :admin-view="adminView"
               :pending="pending"
               @add-mods-event="addMods"
               @remove-mods-event="removeMods"
@@ -46,6 +48,7 @@
 
           <h5>Current Moderators</h5>
           <CurrentMods
+            :admin-view="adminView"
             :moderators="current"
             @add-mods-event="addMods"
             @remove-mods-event="removeMods"
@@ -72,6 +75,12 @@ export default {
     PendingMods,
     CurrentMods
   },
+  head() {
+    this.$store.commit("setCurrentPage", "")
+    return {
+      title: `${this.$route.params.name} - Moderators`
+    }
+  },
   data() {
     return {
       modsToAdd: [],
@@ -87,13 +96,13 @@ export default {
   },
   async fetch() {
     const { data } = await this.$axios.get(`/api/mods/get_mods/${this.$route.params.name}`)
-    if (this.$auth.loggedIn && typeof data === "object" && data !== null) {
+    if (Array.isArray(data)) {
+      this.current.push(...data)
+    } else if (this.$auth.loggedIn && typeof data === "object" && data !== null) {
       this.pending.push(...data.pending)
       this.current.push(...data.current)
       this.adminView = true
       // this.current.push(...["max", "jane", "moseby", "kevin", "allison"])
-    } else if (Array.isArray(data)) {
-      this.current.push(...data)
     }
   },
   methods: {
@@ -110,9 +119,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.spinner {
-  font-size: large;
-}
-</style>

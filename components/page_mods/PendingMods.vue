@@ -3,6 +3,7 @@
     <div class="container-fluid">
       <div class="row">
         <ModItem
+          :admin-view="adminView"
           v-for="username in pending"
           :key="username"
           :username="username"
@@ -33,6 +34,10 @@ export default {
     ModItem
   },
   props: {
+    adminView: {
+      type: Boolean,
+      required: true
+    },
     pending: {
       type: Array,
       required: true

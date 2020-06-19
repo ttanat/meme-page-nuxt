@@ -5,7 +5,7 @@
         <div class="col-md-11 mb-2">
           <h4 class="mb-3">Requests</h4>
         </div>
-        <SettingsSidebar />
+        <SettingsSidebar :admin-view="adminView" />
         <div class="col-md-9">
           <!-- Links to join page -->
           <InviteLinks />
@@ -49,7 +49,8 @@ export default {
       requests: [],
       next: `${this.$axios.defaults.baseURL}/api/subscribe_request/${this.$route.params.name}`,
       loading: false,
-      noRequests: false
+      noRequests: false,
+      adminView: false
     }
   },
   created() {
@@ -70,6 +71,7 @@ export default {
           this.next = url.href
         } else {
           this.next = null
+          this.adminView = data.is_admin
         }
       } catch (err) {
         console.log(err)

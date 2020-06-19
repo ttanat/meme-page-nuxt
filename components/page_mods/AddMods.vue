@@ -10,6 +10,7 @@
     <div class="container-fluid">
       <div class="row">
         <ModItem
+          :admin-view="adminView"
           v-for="username in modsToAdd"
           :key="username"
           :username="username"
@@ -44,6 +45,10 @@ export default {
     ModItem
   },
   props: {
+    adminView: {
+      type: Boolean,
+      required: true
+    },
     modsToAdd: {
       type: Array,
       required: true
