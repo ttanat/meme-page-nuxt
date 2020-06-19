@@ -7,7 +7,7 @@
           <h4>
             Moderators
             <nuxt-link
-              v-if="!$fetchState.pending"
+              v-if="!isModerating && !$fetchState.pending"
               :to="'/page/'+$route.params.name"
               class="btn btn-sm btn-secondary float-right d-none d-lg-inline"
               no-prefetch
@@ -17,13 +17,13 @@
           </h4>
         </div>
 
-        <SettingsSidebar :admin-view="adminView" />
+        <SettingsSidebar v-if="isModerating" :admin-view="adminView" />
         <div v-if="$fetchState.pending" class="col-md-9">
           <div class="mb-4 loading">
             <font-awesome-icon :icon="['fas', 'circle-notch']" spin />
           </div>
         </div>
-        <div v-else class="col-md-9">
+        <div v-else :class="[isModerating ? 'col-md-9' : 'col-md-11']">
           <template v-if="adminView">
             <h5>Add Moderators</h5>
             <AddMods
@@ -46,7 +46,7 @@
             <div v-if="!pending.length" class="mb-4">None</div>
           </template>
 
-          <h5>Current Moderators</h5>
+          <h5 v-if="isModerating">Current Moderators</h5>
           <CurrentMods
             :admin-view="adminView"
             :moderators="current"
@@ -92,6 +92,9 @@ export default {
   computed: {
     everyone() {
       return [...this.modsToAdd, ...this.pending, ...this.current]
+    },
+    isModerating() {
+      return this.$auth.loggedIn && !!this.$auth.user.moderating.find(p => p.name === this.$route.params.name)
     }
   },
   async fetch() {
