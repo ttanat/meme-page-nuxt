@@ -68,7 +68,6 @@ import PendingMods from '~/components/page_mods/PendingMods'
 import CurrentMods from '~/components/page_mods/CurrentMods'
 
 export default {
-  middleware: 'custom-auth',
   components: {
     SettingsSidebar,
     AddMods,

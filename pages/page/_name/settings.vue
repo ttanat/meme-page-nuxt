@@ -44,6 +44,7 @@ import AddMods from '~/components/page_settings/AddMods'
 import DeletePageForm from '~/components/page_settings/DeletePageForm'
 
 export default {
+  middleware: 'page-auth',
   components: {
     SettingsSidebar,
     ImageForm,

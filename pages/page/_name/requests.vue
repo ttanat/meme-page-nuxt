@@ -33,7 +33,7 @@ import SettingsSidebar from '~/components/page_settings/SettingsSidebar'
 import InviteLinks from '~/components/page/InviteLinks'
 
 export default {
-  middleware: 'custom-auth',
+  middleware: 'page-auth',
   components: {
     SettingsSidebar,
     InviteLinks
