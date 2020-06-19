@@ -17,7 +17,7 @@
           </h4>
         </div>
 
-        <SettingsSidebar />
+        <SettingsSidebar :admin-view="adminView" />
         <div v-if="$fetchState.pending" class="col-md-9">
           <div class="mb-4 loading">
             <font-awesome-icon :icon="['fas', 'circle-notch']" spin />

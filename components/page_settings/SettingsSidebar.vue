@@ -9,6 +9,7 @@
       Back
     </nuxt-link>
     <nuxt-link
+      v-if="adminView"
       :to="'/page/'+$route.params.name+'/settings'"
       :class="{'sl-active': $route.path.endsWith('/settings')}"
       class="sidebar"
@@ -37,7 +38,14 @@
 
 <script>
 export default {
-  name: 'SettingsSidebar'
+  name: 'SettingsSidebar',
+  props: {
+    adminView: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  }
 }
 </script>
 

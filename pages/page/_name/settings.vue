@@ -10,7 +10,7 @@
           </h4>
         </div>
 
-        <SettingsSidebar />
+        <SettingsSidebar :admin-view="true" />
         <div class="col-md-5 mb-5 mb-md-1">
           <InfoForm :page-info="page" @change-info-event="changePageInfo" />
         </div>
