@@ -26,6 +26,7 @@
       Moderators
     </nuxt-link>
     <nuxt-link
+      v-if="pagePrivate"
       :to="'/page/'+$route.params.name+'/requests'"
       :class="{'sl-active': $route.path.endsWith('/requests')}"
       class="sidebar"
@@ -44,6 +45,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    pagePrivate: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   }
 }

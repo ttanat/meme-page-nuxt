@@ -17,7 +17,7 @@
           </h4>
         </div>
 
-        <SettingsSidebar :admin-view="adminView" />
+        <SettingsSidebar :admin-view="adminView" :page-private="pagePrivate" />
         <div v-if="$fetchState.pending" class="col-md-9">
           <div class="mb-4 loading">
             <font-awesome-icon :icon="['fas', 'circle-notch']" spin />
@@ -86,7 +86,8 @@ export default {
       modsToAdd: [],
       pending: [],
       current: [],
-      adminView: false
+      adminView: false,
+      pagePrivate: false
     }
   },
   computed: {
@@ -96,14 +97,13 @@ export default {
   },
   async fetch() {
     const { data } = await this.$axios.get(`/api/mods/get_mods/${this.$route.params.name}`)
-    if (Array.isArray(data)) {
-      this.current.push(...data)
-    } else if (this.$auth.loggedIn && typeof data === "object" && data !== null) {
+    if (this.$auth.loggedIn && !!data.pending) {
       this.pending.push(...data.pending)
-      this.current.push(...data.current)
       this.adminView = true
       // this.current.push(...["max", "jane", "moseby", "kevin", "allison"])
     }
+    this.current.push(...data.current)
+    this.pagePrivate = data.private
   },
   methods: {
     addMods(mods_to_add, array) {
