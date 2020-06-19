@@ -6,32 +6,43 @@
         <div class="col-md-11 mb-3">
           <h4>
             Moderators
-            <nuxt-link class="btn btn-sm btn-secondary float-right d-none d-lg-inline" :to="'/page/'+$route.params.name">Go back</nuxt-link>
+            <nuxt-link
+              v-if="!$fetchState.pending"
+              :to="'/page/'+$route.params.name"
+              class="btn btn-sm btn-secondary float-right d-none d-lg-inline"
+              no-prefetch
+            >
+              Go back
+            </nuxt-link>
           </h4>
         </div>
 
         <SettingsSidebar />
-        <div class="col-md-9">
-          <h5>Add Moderators</h5>
-          <AddMods
-            :mods-to-add="modsToAdd"
-            :everyone="everyone"
-            :pending-and-current="[...pending, ...current]"
-            @add-mods-event="addMods"
-            @remove-mods-event="removeMods"
-            @add-pending-event="addPending"
-          />
-
-          <h5>Pending invites</h5>
-          <PendingMods
-            :pending="pending"
-            @add-mods-event="addMods"
-            @remove-mods-event="removeMods"
-          />
-          <div v-if="$fetchState.pending" class="mb-4 spinner">
+        <div v-if="$fetchState.pending" class="col-md-9">
+          <div class="mb-4 loading">
             <font-awesome-icon :icon="['fas', 'circle-notch']" spin />
           </div>
-          <div v-else-if="!$fetchState.pending && !pending.length" class="mb-4">None</div>
+        </div>
+        <div v-else class="col-md-9">
+          <template v-if="adminView">
+            <h5>Add Moderators</h5>
+            <AddMods
+              :mods-to-add="modsToAdd"
+              :everyone="everyone"
+              :pending-and-current="[...pending, ...current]"
+              @add-mods-event="addMods"
+              @remove-mods-event="removeMods"
+              @add-pending-event="addPending"
+            />
+
+            <h5>Pending invites</h5>
+            <PendingMods
+              :pending="pending"
+              @add-mods-event="addMods"
+              @remove-mods-event="removeMods"
+            />
+            <div v-if="!pending.length" class="mb-4">None</div>
+          </template>
 
           <h5>Current Moderators</h5>
           <CurrentMods
@@ -39,10 +50,7 @@
             @add-mods-event="addMods"
             @remove-mods-event="removeMods"
           />
-          <div v-if="$fetchState.pending" class="spinner">
-            <font-awesome-icon :icon="['fas', 'circle-notch']" spin />
-          </div>
-          <div v-else-if="!$fetchState.pending && !current.length">None</div>
+          <div v-if="!current.length">None</div>
         </div>
 
       </div>
@@ -68,7 +76,8 @@ export default {
     return {
       modsToAdd: [],
       pending: [],
-      current: []
+      current: [],
+      adminView: false
     }
   },
   computed: {
@@ -81,6 +90,7 @@ export default {
     if (this.$auth.loggedIn && typeof data === "object" && data !== null) {
       this.pending.push(...data.pending)
       this.current.push(...data.current)
+      this.adminView = true
       // this.current.push(...["max", "jane", "moseby", "kevin", "allison"])
     } else if (Array.isArray(data)) {
       this.current.push(...data)
