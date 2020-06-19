@@ -44,9 +44,18 @@
             </tr>
           </table>
           <!-- Requests and settings buttons for admin -->
-          <div v-if="is_page_admin" id="left-lower-btns" class="mb-2 mb-lg-0">
-            <nuxt-link v-if="page.private" :to="page.name+'/requests'" class="left-lower-btn" no-prefetch><font-awesome-icon :icon="['far', 'bell']" /> Requests</nuxt-link><br>
-            <nuxt-link :to="page.name+'/settings'" class="left-lower-btn" no-prefetch><font-awesome-icon :icon="['fas', 'cog']" /> Settings</nuxt-link>
+          <div v-if="is_page_admin || is_page_mod" id="left-lower-btns" class="mb-2 mb-lg-0">
+            <nuxt-link :to="page.name+'/moderators'" class="left-lower-btn" no-prefetch>
+              <font-awesome-icon :icon="['far', 'user']" /> Moderators
+            </nuxt-link>
+            <br>
+            <nuxt-link v-if="page.private" :to="page.name+'/requests'" class="left-lower-btn" no-prefetch>
+              <font-awesome-icon :icon="['far', 'bell']" /> Requests
+            </nuxt-link>
+            <br v-if="page.private">
+            <nuxt-link v-if="is_page_admin" :to="page.name+'/settings'" class="left-lower-btn" no-prefetch>
+              <font-awesome-icon :icon="['fas', 'cog']" /> Settings
+            </nuxt-link>
           </div>
         </div>
 
@@ -81,7 +90,7 @@
               </nuxt-link>
               <nuxt-link
                 :to="'/user/'+page.admin"
-                class="list-group-item list-group-item-action py-2"
+                class="list-group-item list-group-item-action py-2 mod-list"
                 no-prefetch
               >
                 {{ page.admin }} (admin)
@@ -90,7 +99,7 @@
                 v-for="mod in page.moderators"
                 :key="mod"
                 :to="'/user/'+mod"
-                class="list-group-item list-group-item-action py-2"
+                class="list-group-item list-group-item-action py-2 mod-list"
                 no-prefetch
               >
                 {{ mod }}
@@ -129,6 +138,7 @@ export default {
       is_subscribed: data.is_subscribed || false,
       is_requested: data.is_requested || false,
       is_page_admin: $auth.loggedIn && $auth.user.username === data.page.admin,
+      is_page_mod: $auth.loggedIn && data.page.moderators.includes($auth.user.username),
       show: data.show,
       page_config: {
         num_posts: data.page.num_posts,
@@ -190,6 +200,9 @@ main {
 }
 .list-group-item {
   width: 260px;
+}
+.mod-list {
+  font-size: 14px;
 }
 @media (max-width: 575.98px) {
   #mid {
