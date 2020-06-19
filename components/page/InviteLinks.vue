@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-5">
+  <div class="mb-5">
     <h5 title="Maximum 100">Invite Links<span v-if="!$fetchState.pending"> ({{ links.length }})</span></h5>
     <div class="my-3">
       <input v-model.number="newLinkUses" class="form-control-sm" type="number" min="1" max="100" placeholder="Number of uses" title="Min 1, Max 100">
