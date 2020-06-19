@@ -45,11 +45,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
-    },
-    pagePrivate: {
-      type: Boolean,
-      required: false,
-      default: true
+    }
+  },
+  computed: {
+    pagePrivate() {
+      return this.$auth.loggedIn && !!this.$auth.user.moderating.find(p => p.name === this.$route.params.name && p.private)
     }
   }
 }

@@ -17,7 +17,7 @@
           </h4>
         </div>
 
-        <SettingsSidebar :admin-view="adminView" :page-private="pagePrivate" />
+        <SettingsSidebar :admin-view="adminView" />
         <div v-if="$fetchState.pending" class="col-md-9">
           <div class="mb-4 loading">
             <font-awesome-icon :icon="['fas', 'circle-notch']" spin />
@@ -103,7 +103,6 @@ export default {
       // this.current.push(...["max", "jane", "moseby", "kevin", "allison"])
     }
     this.current.push(...data.current)
-    this.pagePrivate = data.private
   },
   methods: {
     addMods(mods_to_add, array) {
