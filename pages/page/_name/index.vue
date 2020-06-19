@@ -138,8 +138,12 @@ export default {
       is_subscribed: data.is_subscribed || false,
       is_requested: data.is_requested || false,
       is_page_admin: $auth.loggedIn && $auth.user.username === data.page.admin,
-      is_page_mod: $auth.loggedIn && data.page.moderators.includes($auth.user.username),
+      is_page_mod: (Array.isArray(data.page.moderators)
+                    && $auth.loggedIn
+                    && data.page.moderators.includes($auth.user.username)),
       show: data.show,
+
+      // Use in MemeItems
       page_config: {
         num_posts: data.page.num_posts,
         private: data.page.private,
