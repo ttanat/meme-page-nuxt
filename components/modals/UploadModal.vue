@@ -21,12 +21,7 @@
                     <label>Upload to</label>
                     <select v-model="page" class="custom-select custom-select-sm mr-sm-2">
                       <option value="" selected>Your memes</option>
-                      <template v-if="$auth.loggedIn">
-                        <option v-for="m in $auth.user.moderating" :key="m.name" :value="m.name">{{ m.dname || m.name }}</option>
-                        <template v-for="s in $auth.user.subscriptions">
-                          <option v-if="s.permissions" :key="s.name" :value="s.name">{{ s.dname || s.name }}</option>
-                        </template>
-                      </template>
+                      <option v-for="p in uploadToOptions" :key="p.name" :value="p.name">{{ p.dname || p.name }}</option>
                     </select>
                   </div>
                   <div class="col-sm-6">
@@ -118,12 +113,17 @@ export default {
     }
   },
   computed: {
+    uploadToOptions() {
+      return [
+        ...this.$auth.user.moderating,
+        ...this.$auth.user.subscriptions.filter(s => 
+          s.permissions && !this.$auth.user.moderating.find(m => m.name === s.name)
+        )
+      ]
+    },
     displayTags() {
       const tags = this.tags.match(/#[a-zA-Z]\w*/g)
       return tags ? tags.slice(0, 20).join(" ") : ""
-    },
-    pathname() {
-      return this.$route.path
     },
     showClearButton() {
       return this.page || this.category || this.caption || this.nsfw || this.tags || this.canSubmit
@@ -228,7 +228,7 @@ export default {
       // Join all tags into one string (will be processed in backend instead)
       data.set("tags", tags ? tags.slice(0, 20).join("") : "")
       data.set("nsfw", this.nsfw)
-      if (this.pathname === "/profile") data.set("is_profile_page", true)
+      if (this.$route.path === "/profile") data.set("is_profile_page", true)
       // Add file to data
       if (JSON.parse(data.get("embed_caption"))) {
         // Generate captioned image if "Embed caption" is selected
