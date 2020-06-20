@@ -1,21 +1,21 @@
 <template>
   <div class="row list-row my-4">
     <div>
-      <div class="list-content">
+      <div v-if="comment.content || comment.rt" class="list-content">
         <span v-if="comment.rt && rpattern">
           <nuxt-link :to="'/user/'+rpattern[1]" target="_blank">{{ rpattern[0] }}</nuxt-link>{{ contentAfterMention }}
         </span>
         <template v-else>{{ comment.content }}</template>
         &nbsp;<small v-if="comment.rt" class="text-muted">replying to {{ replyingTo }}</small>
       </div>
-      <template v-if="comment.url">
+      <template v-if="comment.image">
         <nuxt-link :to="'/img?c='+comment.uuid" target="_blank">
-          <img :src="comment.url" class="mt-1">
+          <img :src="comment.image" class="mt-1">
         </nuxt-link>
         <br>
       </template>
       <nuxt-link :to="'/m/'+comment.m_uuid" target="_blank">
-        <small class="text-muted">Go to meme</small>&nbsp;<font-awesome-icon class="small" :icon="['fas', 'external-link-alt']" />
+        <small><span class="text-muted">Go to meme</span>&nbsp;<font-awesome-icon class="small" :icon="['fas', 'external-link-alt']" /></small>
       </nuxt-link>
     </div>
   </div>
