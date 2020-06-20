@@ -52,10 +52,12 @@
 .comment-image {
   object-fit: contain;
   max-height: 15rem;
+  max-width: 100%;
   border-radius: .5rem;
 }
 .reply-image {
-  height: 12rem;
+  max-height: 12rem;
+  max-width: 100%;
   border-radius: .5rem;
 }
 .comment-points {
