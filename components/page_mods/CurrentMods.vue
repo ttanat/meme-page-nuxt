@@ -1,6 +1,7 @@
 <template>
   <div>
     <input
+      v-if="moderators.length > 6"
       v-model.trim="searchUser"
       class="form-control form-control-sm mb-3"
       placeholder="Search"
