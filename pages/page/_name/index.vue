@@ -68,7 +68,7 @@
         <!-- Right column -->
         <div class="col-md-4 col-lg-3 col-xl-3" id="right">
           <div v-if="show" style="width: 260px;">
-            <div class="mb-4 p-2" id="page-description">
+            <div v-if="is_page_admin || page.description" class="mb-4 p-2" id="page-description">
               <BioDescription
                 v-if="is_page_admin"
                 :is-page-admin="is_page_admin"
