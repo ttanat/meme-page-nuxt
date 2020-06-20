@@ -79,7 +79,7 @@ export default {
 @import '~/assets/sidebar.css';
 h6 {
   color: grey;
-  font-size: 1.05rem;
+  font-size: .9rem;
 }
 hr {
   background-color: #505050;
