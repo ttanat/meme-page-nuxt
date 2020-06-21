@@ -2,13 +2,26 @@
   <table class="mb-3 w-100 text-center">
     <tr>
       <td title="Total points">{{ formatNumber(stats.clout) }}</td>
-      <td class="pointer" id="follower-count">{{ formatNumber(stats.num_followers) }}</td>
-      <td class="pointer">{{ formatNumber(stats.num_following) }}</td>
+      <td>
+        <nuxt-link v-if="isProfilePage" to="/profile/followers">{{ numFollowers }}</nuxt-link>
+        <span v-else>{{ numFollowers }}</span>
+      </td>
+      <td>
+        <nuxt-link v-if="isProfilePage" to="/profile/following">{{ numFollowing }}</nuxt-link>
+        <span v-else>{{ numFollowing }}</span>
+      </td>
     </tr>
+
     <tr>
       <td title="Total points"><small>clout</small></td>
-      <td class="pointer"><small>followers</small></td>
-      <td class="pointer"><small>following</small></td>
+      <td>
+        <nuxt-link v-if="isProfilePage" to="/profile/followers"><small>followers</small></nuxt-link>
+        <small v-else>followers</small>
+      </td>
+      <td>
+        <nuxt-link v-if="isProfilePage" to="/profile/following"><small>following</small></nuxt-link>
+        <small v-else>following</small>
+      </td>
     </tr>
   </table>
 </template>
@@ -24,6 +37,17 @@ export default {
       type: Object,
       required: true
     }
+  },
+  computed: {
+    isProfilePage() {
+      return this.$route.path.startsWith("/profile")
+    },
+    numFollowers() {
+      return this.formatNumber(this.stats.num_followers)
+    },
+    numFollowing() {
+      return this.formatNumber(this.stats.num_following)
+    }
   }
 }
 </script>
@@ -31,5 +55,8 @@ export default {
 <style scoped>
 table {
   table-layout: fixed;
+}
+a {
+  color: lightgray;
 }
 </style>
