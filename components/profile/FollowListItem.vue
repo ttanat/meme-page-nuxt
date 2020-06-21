@@ -9,6 +9,7 @@
     </nuxt-link>
     <small
       v-if="pathname === '/profile/followers'"
+      @click="removeFollower"
       class="text-muted pointer"
       title="Remove follower"
     >
@@ -40,6 +41,15 @@ export default {
   computed: {
     pathname() {
       return this.$route.path
+    }
+  },
+  methods: {
+    removeFollower() {
+      if (confirm(`Are you sure you want to remove ${this.user.username} as a follower?`)) {
+        this.$axios.put(`/api/remove_follower/${this.user.username}`)
+          .then(() => this.$emit("remove-follower-event", this.user.username))
+          .catch(console.log)
+      }
     }
   }
 }

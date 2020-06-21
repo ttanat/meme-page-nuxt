@@ -5,7 +5,12 @@
         <ProfileSideBar />
         <div class="col-md-8 col-xl-9">
           <h5>Followers</h5>
-          <FollowListItem v-for="follower in followers" :key="follower.username" :user="follower" />
+          <FollowListItem
+            v-for="follower in followers"
+            :key="follower.username"
+            :user="follower"
+            @remove-follower-event="removeFollower"
+          />
           <div v-if="loading" class="spinner"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
           <span v-if="noFollowers">None</span>
         </div>
@@ -19,6 +24,7 @@ import ProfileSideBar from '~/components/profile/ProfileSideBar'
 import FollowListItem from '~/components/profile/FollowListItem'
 import profileAsyncDataMixin from '~/mixins/profileAsyncDataMixin'
 import infiniteScrollMixin from '~/mixins/infiniteScrollMixin'
+import paginationOffsetMixin from '~/mixins/paginationOffsetMixin'
 
 export default {
   middleware: 'custom-auth',
@@ -26,7 +32,7 @@ export default {
     ProfileSideBar,
     FollowListItem
   },
-  mixins: [profileAsyncDataMixin, infiniteScrollMixin],
+  mixins: [profileAsyncDataMixin, infiniteScrollMixin, paginationOffsetMixin],
   head() {
     this.$store.commit("setCurrentPage", "Followers")
     return {
@@ -60,6 +66,10 @@ export default {
           .catch(console.log)
           .finally(() => this.loading = false)
       }
+    },
+    removeFollower(username) {
+      this.followers = this.followers.filter(user => user.username !== username)
+      this.increaseOffset()
     }
   }
 }
