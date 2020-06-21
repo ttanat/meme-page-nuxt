@@ -1,6 +1,12 @@
 <template>
   <div class="top px-1 py-2">
-    <nuxt-link :to="'/user/'+username">{{ username }}</nuxt-link>
+    <nuxt-link :to="'/user/'+user.username">
+      <span>
+        <img v-if="user.image" :src="user.image" class="rounded-circle" height="20" width="20">
+        <font-awesome-icon v-else :icon="['fas', 'user']" fixed-width />
+      </span>
+      &nbsp;{{ user.username }}
+    </nuxt-link>
     <small
       v-if="pathname === '/profile/followers'"
       class="text-muted pointer"
@@ -26,8 +32,8 @@ export default {
     FollowButton
   },
   props: {
-    username: {
-      type: String,
+    user: {
+      type: Object,
       required: true
     }
   },
@@ -47,6 +53,11 @@ export default {
 }
 a {
   color: lightgray;
+}
+span {
+  display: inline-block;
+  width: 20px;
+  text-align: center;
 }
 small {
   position: absolute;
