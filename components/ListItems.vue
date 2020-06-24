@@ -1,8 +1,8 @@
 <template>
   <div>
-    <ListItem v-for="(result, i) in results" :key="i" :result="result" />
+    <ListItem v-show="!$fetchState.pending" v-for="(result, i) in results" :key="i" :result="result" />
     <div v-show="loading || $fetchState.pending" class="loading"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
-    <div v-if="noResults" style="margin-top: 30px;text-align: center;">No results matching query.<br><br>Return <nuxt-link to="/">home</nuxt-link></div>
+    <div v-if="noResults && !$fetchState.pending" style="margin-top: 30px;text-align: center;">No results matching query.<br><br>Return <nuxt-link to="/">home</nuxt-link></div>
   </div>
 </template>
 
@@ -30,15 +30,14 @@ export default {
     }
   },
   watch: {
-    "$route.query.q": "$fetch"
+    query: "$fetch"
   },
   async fetch() {
-    const { data } = await this.$axios.get(`/api/search/${this.query[0] === "@" ? "users" : "pages"}/?search=${encodeURIComponent(this.query.slice(1, 64))}`, {progress: false})
-    const { results } = data
-    if (results.length) {
-      this.results = results
-      this.next = data.next
-    } else {
+    this.noResults = false // Reset showing noResults message (for watch)
+    const { data } = await this.$axios.get(`/api/search/${this.query[0] === "@" ? "users" : "pages"}/?search=${encodeURIComponent(this.query.slice(1, 64))}`)
+    this.results = data.results
+    this.next = data.next
+    if (!this.results.length) {
       this.noResults = true
       this.scrollObserver = this.scrollRoot = null
     }
@@ -48,9 +47,8 @@ export default {
       if (this.next === null || !"@^".includes(this.query[0])) return false
       this.loading = true
 
-      this.$axios.get(this.next, {progress: false})
-        .then(res => res.data)
-        .then(data => {
+      this.$axios.get(this.next)
+        .then(({ data }) => {
           if (data.results.length) {
             this.results.push(...data.results)
             this.next = data.next
