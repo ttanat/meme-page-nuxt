@@ -48,12 +48,18 @@ export default {
         this.$axios.get(`/api/follow/${this.username || this.$route.params.username}`)
           .then(({ data }) => {
             this.$emit("following-changed-event", data.following)
-            this.$setUserField({
-              stats: Object.assign({}, this.$auth.user.stats, {num_following: this.$auth.user.stats.num_following + (data.following ? 1 : -1)})
-            })
+            this.changeNumFollowing(data.following ? 1 : -1)
           })
           .catch(this.displayError)
       }
+    },
+    changeNumFollowing(change) {
+      const new_stats = Object.assign(
+        {},
+        this.$auth.user.stats,
+        {num_following: this.$auth.user.stats.num_following + change}
+      )
+      this.$setUserField({ stats: new_stats })
     }
   }
 }
