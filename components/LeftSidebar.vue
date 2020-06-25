@@ -83,5 +83,7 @@ h6 {
 }
 hr {
   background-color: #505050;
+  margin-top: .85rem;
+  margin-bottom: .85rem;
 }
 </style>
