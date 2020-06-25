@@ -17,9 +17,11 @@
     </small>
     <FollowButton
       v-else-if="pathname === '/profile/following'"
-      :is-following="true"
+      :is-following="isFollowing"
+      :username="user.username"
       :small="true"
       class="float-right"
+      @following-changed-event="changeFollow"
     />
   </div>
 </template>
@@ -38,13 +40,23 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      isFollowing: true // For '/profile/following' page
+    }
+  },
   computed: {
     pathname() {
       return this.$route.path
     }
   },
   methods: {
+    changeFollow(is_following) {
+      /* For follow button */
+      this.isFollowing = is_following
+    },
     removeFollower() {
+      /* For remove button */
       if (confirm(`Are you sure you want to remove ${this.user.username} as a follower?`)) {
         this.$axios.put(`/api/remove_follower/${this.user.username}`)
           .then(() => this.$emit("remove-follower-event", this.user.username))

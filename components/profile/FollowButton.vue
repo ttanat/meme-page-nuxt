@@ -20,6 +20,11 @@ export default {
       type: Boolean,
       required: true
     },
+    username: {
+      type: String,
+      required: false,
+      default: ""
+    },
     small: {
       type: Boolean,
       required: false,
@@ -40,7 +45,7 @@ export default {
   methods: {
     follow() {
       if (this.checkAuth()) {
-        this.$axios.get(`/api/follow/${this.$route.params.username}`)
+        this.$axios.get(`/api/follow/${this.username || this.$route.params.username}`)
           .then(res => this.$emit("following-changed-event", res.data.following))
           .catch(this.displayError)
       }
