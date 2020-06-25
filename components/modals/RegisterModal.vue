@@ -117,10 +117,12 @@ export default {
         if (formData) {
           const { data } = await this.$axios.post("/api/register", formData)
           if (data.registered) {
+            await this.$store.commit("setJustRegistered", true)
             await this.removeModal()
             await this.$auth.setUserToken(data.access)
             await this.$auth.setRefreshToken("local", data.refresh)
             this.$router.push("/profile")
+            setTimeout(() => {this.$store.commit("setJustRegistered", false)}, 5000)
           } else {
             await this.registerError(data, formData.get("username"))
           }

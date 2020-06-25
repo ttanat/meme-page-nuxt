@@ -9,7 +9,7 @@
     />
     <div v-show="loading" class="loading w-100"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     <div
-      v-if="no_content && !tiles.length"
+      v-if="noContent && !tiles.length"
       class="profile-empty"
       :class="{pointer: isProfilePage}"
       :onclick="isProfilePage ? `$('#uploadModal').modal('show')` : ''"
@@ -33,14 +33,19 @@ export default {
   },
   mixins: [infiniteScrollMixin, paginationOffsetMixin],
   created() {
-    this.loadMore()
+    if (this.$store.state.justRegistered) {
+      this.noContent = true
+      this.next = null
+    } else {
+      this.loadMore()
+    }
     this.$root.$on("newMemeUploaded", this.showNewTile)
   },
   data() {
     return {
       tiles: [],
       next: this.$route.path === "/profile" ? "/api/profile/memes/" : this.$route.path === "/profile/likes" ? "/api/profile/likes/" : `/api/user_page/memes/?u=${this.$route.params.username}`,
-      no_content: false,
+      noContent: false,
       loading: false
     }
   },
@@ -52,7 +57,7 @@ export default {
   methods: {
     showNewTile(tile) {
       this.tiles.unshift(tile)
-      this.no_content = false
+      this.noContent = false
       this.increaseOffset(1)
     },
     loadMore() {
@@ -60,11 +65,10 @@ export default {
         this.loading = true
         this.$axios.get(this.next)
           .then(({ data }) => {
-            if (data.results.length) {
-              this.tiles.push(...data.results)
-              this.next = data.next
-            } else if (!this.tiles.length) {
-              this.no_content = true
+            this.tiles.push(...data.results)
+            this.next = data.next
+            if (!data.results.length && !this.tiles.length) {
+              this.noContent = true
               this.next = null
             }
           })
@@ -80,7 +84,7 @@ export default {
     removeTile(uuid) {
       const i = this.tiles.findIndex(tile => tile.uuid === uuid)
       this.tiles.splice(i, 1)
-      if (!this.tiles.length && this.next === null) this.no_content = true
+      if (!this.tiles.length && this.next === null) this.noContent = true
     }
   },
   beforeDestroy() {

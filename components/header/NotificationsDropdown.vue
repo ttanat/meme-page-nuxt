@@ -43,13 +43,11 @@ export default {
           seen: false
       }
   },
-  mounted() {
-    if (this.$route.name !== "notifications") {
-      setTimeout(async () => {
-        const { data } = await this.$axios.get(`/api/notifications/nav`)
-        this.notifications.push(...data.list)
-        this.count = data.count
-      }, /*150*/0)
+  async mounted() {
+    if (this.$route.name !== "notifications" && !this.$store.state.justRegistered) {
+      const { data } = await this.$axios.get(`/api/notifications/nav`)
+      this.notifications.push(...data.list)
+      this.count = data.count
     }
   }
 }
