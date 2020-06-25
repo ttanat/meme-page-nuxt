@@ -58,9 +58,7 @@ export default {
     removeFollower() {
       /* For remove button */
       if (confirm(`Are you sure you want to remove ${this.user.username} as a follower?`)) {
-        this.$axios.put(`/api/remove_follower/${this.user.username}`)
-          .then(() => this.$emit("remove-follower-event", this.user.username))
-          .catch(console.log)
+        this.$emit("remove-follower-event", this.user.username)
       }
     }
   }

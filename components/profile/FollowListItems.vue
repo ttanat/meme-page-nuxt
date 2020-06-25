@@ -4,7 +4,7 @@
       v-for="user in users"
       :key="user.username"
       :user="user"
-      @remove-user-event="removeUser"
+      @remove-follower-event="removeFollower"
     />
     <div v-if="loading" class="spinner"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     <span v-if="noUsers">None</span>
@@ -49,7 +49,7 @@ export default {
           .finally(() => this.loading = false)
       }
     },
-    removeUser(username) {
+    removeFollower(username) {
       this.users = this.users.filter(user => user.username !== username)
     }
   }
