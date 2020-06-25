@@ -46,7 +46,12 @@ export default {
     follow() {
       if (this.checkAuth()) {
         this.$axios.get(`/api/follow/${this.username || this.$route.params.username}`)
-          .then(res => this.$emit("following-changed-event", res.data.following))
+          .then(({ data }) => {
+            this.$emit("following-changed-event", data.following)
+            this.$setUserField({
+              stats: Object.assign({}, this.$auth.user.stats, {num_following: this.$auth.user.stats.num_following + (data.following ? 1 : -1)})
+            })
+          })
           .catch(this.displayError)
       }
     }
