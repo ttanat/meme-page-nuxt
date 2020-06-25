@@ -117,7 +117,9 @@ export default {
         if (formData) {
           const { data } = await this.$axios.post("/api/register", formData)
           if (data.registered) {
-            await this.registerSuccess(data, formData.get("username"))
+            await this.removeModal()
+            await this.$auth.setUserToken(data.access)
+            await this.$auth.setRefreshToken("local", data.refresh)
             this.$router.push("/profile")
           } else {
             await this.registerError(data, formData.get("username"))
@@ -128,17 +130,6 @@ export default {
         this.errorToast(err)
       }
     },
-    registerSuccess(data, username) {
-      this.removeModal()
-      this.$auth.setUserToken(data.access)
-      this.$auth.setRefreshToken("local", data.refresh)
-      this.$auth.setUser({
-        username,
-        image: null,
-        moderating: [],
-        subscriptions: []
-      })
-    },
     removeModal() {
       $("#registerModal").modal("hide")
       document.body.classList.remove("modal-open")
@@ -146,12 +137,12 @@ export default {
         document.querySelector(".modal-backdrop.show").remove()
       } catch {}
     },
-    registerError(response, submitted_username) {
+    registerError(response, submittedUsername) {
       if (response.field) {
         if (response.field === "u") {
           this.usernameRed = true
           this.usernameError = response.message
-          if (response.taken) this.TAKEN_USERNAMES.push(submitted_username.get("username").toLowerCase())
+          if (response.taken) this.TAKEN_USERNAMES.push(submittedUsername.toLowerCase())
         } else if (response.field === "e") {
           this.emailRed = true
           this.emailError = response.message
