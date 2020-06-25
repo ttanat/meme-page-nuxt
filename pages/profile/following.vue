@@ -5,7 +5,8 @@
         <ProfileSideBar />
         <div class="col-md-8 col-xl-9">
           <h5>Following</h5>
-          <FollowListItems />
+          <FollowListItems v-if="$auth.user.stats.num_following" />
+          <span v-else>None</span>
         </div>
       </div>
     </div>
