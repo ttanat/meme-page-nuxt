@@ -57,7 +57,7 @@ input, button {
   font-weight: 350;
 }
 input {
-  width: 25rem;
+  width: 25rem !important;
   color: gainsboro;
   background-color: #111;
   transition: none;
