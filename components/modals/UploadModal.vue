@@ -205,8 +205,8 @@ export default {
         alert("Maximum video duration is 60 seconds")
       } else if (type.startsWith("video/") && this.videoDuration < 1) {
         alert("Minimum video duration is 1 second")
-      } else if (type.startsWith("video/") && file.size > 15728640) {
-        alert("Maximum file size for videos is 15 MB")
+      } else if (type.startsWith("video/") && file.size > 10485760) {
+        alert("Maximum video file size is 10 MB")
       } else {
         return true
       }
