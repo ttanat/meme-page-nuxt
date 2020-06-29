@@ -190,23 +190,23 @@ export default {
       const lfname = file.name.toLowerCase()
       type.startsWith("video/") ? this.setVidDuration(file) : this.videoDuration = 99
       if (!file || !input.files.length) {
-        this.errorToast("Please select a file.", duration=3000)
+        this.errorToast("Please select a file", duration=2000)
       } else if (input.files.length > 1) {
-        this.errorToast("Cannot upload multiple files together.", duration=3000)
+        this.errorToast("Cannot upload multiple files together", duration=2000)
       } else if (!["image/jpeg", "image/png", "image/gif", "video/mp4", "video/quicktime"].includes(type)
                  || (type === "image/jpeg" && (!lfname.endsWith(".jpg") && !lfname.endsWith(".jpeg")))
                  || (type === "video/quicktime" && !lfname.endsWith(".mov"))) {
-        this.errorToast("Supported media types: JPG, PNG, GIF, MP4, MOV", duration=4000)
+        alert("Supported media types: JPG, PNG, GIF, MP4, MOV")
       } else if (type === "image/gif" && file.size > 5242880) {
-        this.errorToast("Maximum file size for GIF is 5 MB", duration=3000)
+        alert("Maximum file size for GIF is 5 MB")
       } else if (type.startsWith("image/") && file.size > 3145728) {
-        this.errorToast("Maximum file size for images is 3 MB", duration=3000)
+        alert("Maximum file size for images is 3 MB")
       } else if (type.startsWith("video/") && this.videoDuration > 60) {
-        this.errorToast("Maximum video duration is 60 seconds", duration=3000)
+        alert("Maximum video duration is 60 seconds")
       } else if (type.startsWith("video/") && this.videoDuration < 3) {
-        this.errorToast("Minimum video duration is 3 seconds", duration=3000)
+        alert("Minimum video duration is 3 seconds")
       } else if (type.startsWith("video/") && file.size > 15728640) {
-        this.errorToast("Maximum file size for videos is 15 MB", duration=3000)
+        alert("Maximum file size for videos is 15 MB")
       } else {
         return true
       }
