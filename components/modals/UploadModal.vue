@@ -203,8 +203,8 @@ export default {
         alert("Maximum file size for images is 3 MB")
       } else if (type.startsWith("video/") && this.videoDuration > 60) {
         alert("Maximum video duration is 60 seconds")
-      } else if (type.startsWith("video/") && this.videoDuration < 3) {
-        alert("Minimum video duration is 3 seconds")
+      } else if (type.startsWith("video/") && this.videoDuration < 1) {
+        alert("Minimum video duration is 1 second")
       } else if (type.startsWith("video/") && file.size > 15728640) {
         alert("Maximum file size for videos is 15 MB")
       } else {
