@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-9 col-sm-12" id="left-col">
         <nuxt-link :to="'/m/'+meme" id="back">Back to meme</nuxt-link><br>
-        <video v-if="isVid" :src="url" controls id="meme"></video>
+        <video v-if="url.endsWith('.mp4')" :src="url" controls id="meme"></video>
         <img v-else :src="url" id="meme">
         <img src="~/assets/banner_light.png" id="adm">
         <img src="~/assets/banner_dark.png" id="adm2">
@@ -31,7 +31,6 @@ export default {
       const { data } = await $axios.get(`/api/full_res/${obj}/${route.query[obj]}`)
       return {
         url: data.url,
-        isVid: data.url.endsWith(".mp4") || false,
         meme: data.meme_uuid || route.query.m
       }
     } catch(err) {
