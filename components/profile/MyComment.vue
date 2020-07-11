@@ -14,7 +14,7 @@
         </nuxt-link>
         <br>
       </template>
-      <nuxt-link :to="'/m/'+comment.m_uuid" target="_blank">
+      <nuxt-link :to="'/m/'+comment.meme_uuid" target="_blank">
         <small><span class="text-muted">Go to meme</span>&nbsp;<font-awesome-icon class="small" :icon="['fas', 'external-link-alt']" /></small>
       </nuxt-link>
     </div>
