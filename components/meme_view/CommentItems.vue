@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       comments: [],
-      next: "",
+      next: `/api/comments/?u=${this.$route.params.uuid}`,
       loading: false
     }
   },
@@ -60,9 +60,8 @@ export default {
       if (this.next === null || !this.numComments) return false
       this.loading = true
 
-      this.$axios.get(this.next || `/api/comments/?u=${this.$route.params.uuid}`)
-        .then(res => res.data)
-        .then(data => {
+      this.$axios.get(this.next)
+        .then(({ data }) => {
           const l_uuids = []
           let offset = 0
           for (const r of data.results) {
