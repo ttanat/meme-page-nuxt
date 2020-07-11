@@ -11,7 +11,7 @@
           <div class="notif-left-column">
             <img
               v-if="notification.image"
-              :src="$axios.defaults.baseURL+notification.image"
+              :src="notification.image"
               height="50"
               width="50"
               style="border-radius: 3px;"
