@@ -31,8 +31,8 @@ export default {
       const { data } = await $axios.get(`/api/full_res/${obj}/${route.query[obj]}`)
       return {
         url: data.url,
-        isVid: data.isVid || data.url.endsWith(".mp4") || false,
-        meme: data.m_uuid || route.query.m
+        isVid: data.url.endsWith(".mp4") || false,
+        meme: data.meme_uuid || route.query.m
       }
     } catch(err) {
       throw "404 Not found"
