@@ -13,14 +13,24 @@
 <script>
 import formatNumberMixin from '~/mixins/formatNumberMixin'
 import voteMixin from '~/mixins/voteMixin'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'VoteButtons',
-  props: {
-    points: {
-      type: Number,
-      required: true,
-      default: 0
+  data() {
+    return {
+      isLiked: false,
+      isDisliked: false
+    }
+  },
+  computed: {
+    ...mapGetters({points: "meme/points"}),
+    meme() {
+      // This object exists only to use in voteMixin
+      return {
+        points: this.points,
+        uuid: this.$route.params.uuid
+      }
     }
   },
   mixins: [formatNumberMixin, voteMixin],
@@ -36,18 +46,9 @@ export default {
         .catch(console.log)
     }
   },
-  data() {
-    return {
-      isLiked: false,
-      isDisliked: false,
-      meme: {
-        points: this.points,
-        uuid: this.$route.params.uuid
-      }
-    }
-  },
   methods: {
     async vote(v) {
+      // New points value is emitted to parent component from within mixin
       await this.sendVote(this.meme, v, "m")
       this.meme.points = this.points
     }

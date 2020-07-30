@@ -3,8 +3,17 @@ export const state = () => ({
 })
 
 export const getters = {
+  meme: state => {
+    return state.data
+  },
+  points: state => {
+    return state.data.points
+  },
   pageName: state => {
     return state.data.pname || ""
+  },
+  numComments: state => {
+    return state.data.num_comments
   }
 }
 
@@ -14,5 +23,11 @@ export const mutations = {
   },
   destroyData(state) {
     state.data = {}
+  },
+  setPoints(state, points) {
+    state.data.points = points
+  },
+  incrementCommentCount(state) {
+    state.data.num_comments++
   }
 }

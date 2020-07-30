@@ -21,15 +21,10 @@
 
 <script>
 import checkAuthMixin from '~/mixins/checkAuthMixin'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'PostComment',
-  props: {
-    numComments: {
-      type: Number,
-      required: true
-    }
-  },
   mixins: [checkAuthMixin],
   data() {
     return {
@@ -37,6 +32,9 @@ export default {
       placeholder: "Write a comment here!",
       fname: ""
     }
+  },
+  computed: {
+    ...mapGetters({numComments: "meme/numComments"})
   },
   methods: {
     post() {
@@ -69,7 +67,7 @@ export default {
               image: data.has("image") ? URL.createObjectURL(data.get("image")) : null
             }
             this.$parent.$emit("new-comment-posted-event", new_comment)
-            this.$emit("increment-comment-count-event")
+            this.$store.commit("meme/incrementCommentCount")
           })
           .catch(err => {
             this.displayError(err)

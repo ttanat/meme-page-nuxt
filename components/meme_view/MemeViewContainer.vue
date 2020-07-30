@@ -30,7 +30,8 @@
   <table class="content-section" id="comments" style="margin-bottom: 5px;">
     <tr>
       <td>
-        <VoteButtons :points="meme.points" @set-points-event="setPoints" />
+        <!-- set-points-event called from voteMixin -->
+        <VoteButtons @set-points-event="setPoints" />
       </td>
       <td>
         <button class="btn btn-sm lower-btn" @click="copyLink">
@@ -70,25 +71,23 @@
 <script>
 import VoteButtons from './VoteButtons'
 import copy from 'copy-to-clipboard'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'MemeViewContainer',
   components: {
     VoteButtons,
   },
-  props: {
-    meme: {
-      type: Object,
-      required: true
-    }
-  },
   data() {
     return {
-      isGif: this.meme.content_type === "image/gif",
       copyLinkClicked: false
     }
   },
   computed: {
+    ...mapGetters({meme: "meme/meme"}),
+    isGif() {
+      return this.meme.content_type === "image/gif"
+    },
     isOwnMeme() {
       return this.$auth.loggedIn && this.meme.username === this.$auth.user.username
     },
@@ -104,8 +103,8 @@ export default {
         .then(res => this.$router.push(`/m/${res.data.uuid}`))
         .catch(console.log)
     },
-    setPoints(uuid, new_points_val) {
-      this.$emit("set-points-event", uuid, new_points_val)
+    setPoints(_, new_points_val) {
+      this.$store.commit("meme/setPoints", new_points_val)
     },
     copyLink() {
       copy(window.location.href)

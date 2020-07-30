@@ -11,15 +11,12 @@
 
         <div class="col-md-8 col-lg-6">
           <div class="item pt-0 w-100" :style="{paddingBottom: meme.tags.length ? '10px' : ''}">
-            <MemeViewContainer :meme="meme" @set-points-event="setPoints" />
+            <MemeViewContainer />
           </div>
           <div v-if="meme.num_comments > 3" class="my-3" id="item-mid-ad">
             <img src="~/assets/argos.jpg" style="height: 100px;width: 100%;border-radius: 5px;cursor: pointer;">
           </div>
-          <CommentSection
-            :num-comments="meme.num_comments"
-            @increment-comment-count-event="incrementCommentCount"
-          />
+          <CommentSection />
         </div>
 
         <div class="col-md-4 col-lg-3" id="right" style="text-align: center;">
@@ -57,6 +54,7 @@ import LeftSidebar from '~/components/LeftSidebar'
 import MemeViewContainer from '~/components/meme_view/MemeViewContainer'
 import CommentSection from '~/components/meme_view/CommentSection'
 import DeleteModal from '~/components/modals/DeleteModal'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -67,8 +65,11 @@ export default {
   },
   async asyncData({ $axios, store, params }) {
     const { data } = await $axios.get(`/api/m/${params.uuid}`)
-    store.commit("meme/setData", JSON.parse(JSON.stringify(data)))
-    return { meme: data }
+    store.commit("meme/setData", data)
+    return {}
+  },
+  computed: {
+    ...mapGetters({meme: "meme/meme"})
   },
   head() {
     this.$store.commit("setCurrentPage", "Meme")
@@ -78,14 +79,6 @@ export default {
         {hid: "description", name: "description", content: `${this.meme.caption} ${this.meme.tags.join(' ')}`},
         {hid: "keywords", name: "keywords", content: `Meme,Memes,Funny,Dank,${this.meme.tags.join(",")}`}
       ]
-    }
-  },
-  methods: {
-    setPoints(uuid, new_points_val) {
-      this.meme.points = new_points_val
-    },
-    incrementCommentCount() {
-      this.meme.num_comments++
     }
   }
 }

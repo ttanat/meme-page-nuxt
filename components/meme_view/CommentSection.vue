@@ -1,20 +1,15 @@
 <template>
   <div id="comment-section">
     <h6>Comments ({{ numComments }})</h6>
-    <PostComment
-      :num-comments="numComments"
-      @increment-comment-count-event="incrementCommentCount"
-    />
-    <CommentItems
-      :num-comments="numComments"
-      @increment-comment-count-event="incrementCommentCount"
-    />
+    <PostComment />
+    <CommentItems />
   </div>
 </template>
 
 <script>
 import PostComment from './PostComment'
 import CommentItems from './CommentItems'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'CommentSection',
@@ -22,17 +17,8 @@ export default {
     PostComment,
     CommentItems
   },
-  props: {
-    numComments: {
-      type: Number,
-      required: true,
-      default: 0
-    }
-  },
-  methods: {
-    incrementCommentCount() {
-      this.$emit('increment-comment-count-event')
-    }
+  computed: {
+    ...mapGetters({numComments: "meme/numComments"})
   }
 }
 </script>

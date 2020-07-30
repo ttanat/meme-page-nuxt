@@ -27,12 +27,6 @@ export default {
     CommentItem
   },
   mixins: [infiniteScrollMixin, lazyLoadMixin, loadLikesMixin, paginationOffsetMixin],
-  props: {
-    numComments: {
-      type: Number,
-      required: true
-    }
-  },
   data() {
     return {
       comments: [],
@@ -57,7 +51,7 @@ export default {
       this.comments.find(comment => comment.uuid === uuid).points = new_points_val
     },
     loadMore() {
-      if (this.next === null || !this.numComments) return false
+      if (this.next === null || !this.$store.getters["meme/numComments"]) return false
       this.loading = true
 
       this.$axios.get(this.next)
@@ -95,7 +89,7 @@ export default {
       // Increment num_replies for comment
       this.comments.find(comment => comment.uuid === uuid).num_replies++
       // Increment number of comments at top of comment section
-      this.$emit('increment-comment-count-event')
+      this.$store.commit("meme/incrementCommentCount")
     }
   },
   beforeDestroy() {
