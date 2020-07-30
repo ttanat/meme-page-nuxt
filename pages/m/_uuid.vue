@@ -65,8 +65,9 @@ export default {
     CommentSection,
     DeleteModal
   },
-  async asyncData({ $axios, params }) {
+  async asyncData({ $axios, store, params }) {
     const { data } = await $axios.get(`/api/m/${params.uuid}`)
+    store.commit("meme/setData", data)
     return { meme: data }
   },
   head() {
