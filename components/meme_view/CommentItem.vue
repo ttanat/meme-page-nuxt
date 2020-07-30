@@ -39,7 +39,10 @@
                     <font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;Delete
                   </div>
                 </template>
-                <div v-else class="dropdown-item"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
+                <template v-else>
+                  <div class="dropdown-item"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
+                  <div v-if="canRemove" @click="removeComment" class="dropdown-item"><font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;Remove</div>
+                </template>
               </div>
             </div>
           </div>
@@ -131,6 +134,7 @@ import checkAuthMixin from '~/mixins/checkAuthMixin'
 import loadLikesMixin from '~/mixins/loadLikesMixin'
 import lazyLoadMixin from '~/mixins/lazyLoadMixin'
 import formatNumberMixin from '~/mixins/formatNumberMixin'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'CommentItem',
@@ -181,6 +185,12 @@ export default {
     },
     isDeleted() {
       return !this.comment.username || (!this.comment.content && !this.comment.image)
+    },
+    ...mapGetters({
+      memePageName: 'meme/pageName'
+    }),
+    canRemove() {
+      return !!(this.isAuthenticated && this.$auth.user.moderating.find(p => p.name === this.memePageName))
     }
   },
   methods: {
@@ -262,13 +272,12 @@ export default {
         this.replyInputValue = ""
 
         this.$axios.post("/api/reply", data)
-          .then(res => res.data)
-          .then(({ uuid }) => {
+          .then(res => {
             this.typingReply = false
             this.removeReplyImage()
 
             const new_reply = {
-              uuid,
+              uuid: res.data.uuid,
               c_uuid: this.comment.uuid,
               username: this.$auth.user.username,
               dp_url: this.$auth.user.image,
@@ -313,6 +322,13 @@ export default {
     replyDeleted(uuid) {
       const reply = this.getReply(uuid)
       reply.content = reply.image = null
+    },
+    removeComment() {
+      if (confirm("Are you sure you want to remove this comment?")) {
+        this.$axios.delete(`/api/mods/remove/comment/${this.comment.uuid}`)
+          .then(() => this.$emit("comment-deleted-event", this.comment.uuid))
+          .catch(err => err.response ? this.errorToast(err.response.data) : console.log(err))
+      }
     }
   }
 }
