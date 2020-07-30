@@ -61,6 +61,7 @@
               <div class="dropdown-item" @click="copyLink"><font-awesome-icon :icon="['fas', 'link']" /> Copy Link</div>
               <!-- <div class="dropdown-item"><font-awesome-icon :icon="['fas', 'share']" /> Share</div> -->
               <div class="dropdown-item"><font-awesome-icon :icon="['far', 'flag']" /> Report</div>
+              <div v-if="canRemove" class="dropdown-item" @click="removeMeme"><font-awesome-icon :icon="['fas', 'trash-alt']" /> Remove</div>
             </div>
           </div>
         </td>
@@ -85,6 +86,11 @@
       <li v-if="$auth.loggedIn && meme.username !== $auth.user.username">
         <a href="javascript:void(0);">
           <font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report
+        </a>
+      </li>
+      <li v-if="canRemove">
+        <a href="javascript:void(0);" @click="removeMeme">
+          <font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;Remove
         </a>
       </li>
     </vue-context>
@@ -126,6 +132,17 @@ export default {
   mounted() {
     this.$emit("new-meme-event", this.$refs.memeEl, this.isVideo)
   },
+  computed: {
+    canRemove() {
+      // Check if user can remove meme from page
+      // Meme must be posted to a page and user must be an admin/moderator of that page
+      if (this.$route.path.startsWith("/page/")) {
+        return this.$auth.loggedIn && this.$auth.user.moderating.find(page => page.name === this.$route.params.name)
+      } else {
+        return this.meme.pname && this.$auth.loggedIn && this.$auth.user.moderating.find(page => page.name === this.meme.pname)
+      }
+    }
+  },
   methods: {
     memeLoaded() {this.loading = false},
     vidClick() {this.paused ? this.togglePlayback() : window.open(`/m/${this.meme.uuid}`)},
@@ -146,6 +163,26 @@ export default {
       // Close all other context menus first
       await this.$emit("context-menu-event")
       this.$refs.menu.open(e)
+    },
+    removeMeme() {
+      if (confirm("Are you sure you want to remove this meme?")) {
+        this.$axios.put(`/api/remove_meme/${this.meme.uuid}`)
+          .then(() => {
+            const pageName = this.meme.pdname || this.meme.pname || this.$route.params.name
+            this.$toast.info(pageName ? `Meme removed from ${pageName}` : "Meme removed", {
+              position: 'top-center',
+              duration: 1500
+            })
+            if (this.$route.path === `/page/${pageName}`) {
+              // Remove meme if in page
+              this.$emit("remove-meme-event", this.meme.uuid)
+            } else {
+              // Remove page name and display name
+              this.meme.pname = this.meme.pdname = ""
+            }
+          })
+          .catch(err => err.response ? this.errorToast(err.response.data) : console.log(err))
+      }
     }
   }
 }

@@ -9,6 +9,7 @@
       @toggle-sound-event="toggleSound"
       @set-points-event="setPoints"
       @context-menu-event="closeAllContextMenus"
+      @remove-meme-event="removeMeme"
     />
     <div v-show="loading || $fetchState.pending" class="loading">
       <font-awesome-icon :icon="['fas', 'circle-notch']" spin />
@@ -134,6 +135,9 @@ export default {
     },
     closeAllContextMenus() {
       this.$children.forEach(c => c.$refs.menu.close())
+    },
+    removeMeme(uuid) {
+      this.memes = this.memes.filter(m => m.uuid !== uuid)
     }
   },
   beforeDestroy() {
