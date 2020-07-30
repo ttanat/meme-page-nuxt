@@ -67,7 +67,7 @@ export default {
   },
   async asyncData({ $axios, store, params }) {
     const { data } = await $axios.get(`/api/m/${params.uuid}`)
-    store.commit("meme/setData", data)
+    store.commit("meme/setData", JSON.parse(JSON.stringify(data)))
     return { meme: data }
   },
   head() {
