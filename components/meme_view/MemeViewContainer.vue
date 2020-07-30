@@ -115,7 +115,9 @@ export default {
       window.open(`/search?q=%23${tag_name}`)
     },
     deleteMeme() {
-      if (confirm(`Are you sure you want to ${this.isOwnMeme ? "delete" : "remove"} this meme?`)) {
+      const hasPage = this.isOwnMeme ? "" : ` from ${this.meme.pdname || this.meme.pname}`
+
+      if (confirm(`Are you sure you want to ${this.isOwnMeme ? "delete" : "remove"} this meme${hasPage}?`)) {
         if (this.isOwnMeme) {
           this.$axios.delete(`/api/delete/meme/${this.tile.uuid}`)
             .then(res => {
@@ -127,7 +129,7 @@ export default {
             })
             .catch(this.displayError)
         } else {
-          this.$axios.put(`/api/remove_meme/${this.$route.params.uuid}`)
+          this.$axios.put(`/api/mods/remove/meme/${this.$route.params.uuid}`)
             .then(() => {
               this.$router.push(`/page/${this.meme.pname}`)
               this.$toast.info(`Meme removed from ${this.meme.pdname || this.meme.pname}`, {

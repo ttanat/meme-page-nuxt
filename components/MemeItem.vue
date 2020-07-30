@@ -165,11 +165,13 @@ export default {
       this.$refs.menu.open(e)
     },
     removeMeme() {
-      if (confirm("Are you sure you want to remove this meme?")) {
-        this.$axios.put(`/api/remove_meme/${this.meme.uuid}`)
+      const pageName = this.meme.pdname || this.meme.pname || this.$route.params.name
+      if (!pageName) return false
+
+      if (confirm(`Are you sure you want to remove this meme from ${pageName}?`)) {
+        this.$axios.put(`/api/mods/remove/meme/${this.meme.uuid}`)
           .then(() => {
-            const pageName = this.meme.pdname || this.meme.pname || this.$route.params.name
-            this.$toast.info(pageName ? `Meme removed from ${pageName}` : "Meme removed", {
+            this.$toast.info(`Meme removed from ${pageName}`, {
               position: 'top-center',
               duration: 1500
             })
