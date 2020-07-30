@@ -100,7 +100,7 @@ export default {
       }
       this.$axios.post(`/api/page/${this.$route.params.name}/settings`, data)
         .then(() => {
-          this.$emit("change-info-event", {...this.page})
+          this.$emit("change-info-event", {...this.page, name: this.$route.params.name})
           this.successToast("Preferences saved")
         })
         .catch(this.displayError)

@@ -71,7 +71,14 @@ export default {
   },
   methods: {
     changePageInfo(payload) {
+      // Set new page data to display in settings
       this.page = Object.assign({}, this.page, payload)
+      // Initialize new moderating data in auth user using new page data
+      const moderating = this.$auth.user.moderating.map(p =>
+        p.name === payload.name ? {name: p.name, dname: payload.display_name, private: payload.private} : p
+      )
+      // Set new page data in auth user
+      this.$setUserField({ moderating })
     },
     removeMods(mods) {
       this.page.mods = this.page.mods.filter(mod => !mods.includes(mod))
