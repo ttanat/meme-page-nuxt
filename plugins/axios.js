@@ -17,7 +17,7 @@ function refreshTokenAboutToExpire(context) {
 }
 
 function refresh(context, config, resolve, reject) {
-  context.$axios.post("/api/token/refresh/", {refresh: context.$auth.getRefreshToken('local')}, {progress: false})
+  context.$axios.post("/api/token/refresh/", {refresh: context.$auth.getRefreshToken('local')})
     .then(res => context.$auth.setUserToken(res.data.access)) // Set new access token
     .then(() => config.headers.Authorization = context.$auth.getToken('local')) // Set new access token of current axios request
     .then(() => resolve(config))

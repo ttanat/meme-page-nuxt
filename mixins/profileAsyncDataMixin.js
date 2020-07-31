@@ -1,5 +1,5 @@
 export default {
-  async asyncData({ $axios, $auth, route }) {
+  async asyncData({ $axios, $auth }) {
     if ($auth.user.bio === undefined || $auth.user.stats === undefined) {
       const { data } = await $axios.get("/api/profile")
       $auth.user.bio = data.bio

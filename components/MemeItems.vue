@@ -101,9 +101,8 @@ export default {
       if (!this.canLoadMore(true)) return false
       this.loading = true
 
-      this.$axios.get(this.next, {progress: false})
-        .then(res => res.data)
-        .then(data => {
+      this.$axios.get(this.next)
+        .then(({ data }) => {
           const { results } = data
           if (results.length) {
             const l_uuids = []
