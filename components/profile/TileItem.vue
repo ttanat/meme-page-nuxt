@@ -50,6 +50,11 @@ export default {
     }
   },
   mixins: [formatNumberMixin],
+  data() {
+    return {
+      deleting: false
+    }
+  },
   computed: {
     isProfilePage() {
       return this.$route.path.startsWith("/profile")
@@ -65,7 +70,11 @@ export default {
     async openContextMenu(e) {
       // Close all other context menus first
       await this.$emit("context-menu-event")
-      this.$refs.menu.open(e)
+      // Don't open context menu if deleting (deleting takes a few seconds and user can still do stuffs with tile)
+      this.deleting ? this.$toast.info("Deleting meme...", {
+        position: 'bottom-center',
+        duration: 1500
+      }) : this.$refs.menu.open(e)
     },
     copyLink() {
       copy(`${window.location.origin}/m/${this.tile.uuid}`)
@@ -74,17 +83,19 @@ export default {
         duration: 1000
       })
     },
-    deleteMeme() {
+    async deleteMeme() {
       if (confirm("Are you sure you want to delete this?")) {
-        this.$axios.delete(`/api/delete/meme/${this.tile.uuid}`)
-          .then(res => {
-            if (res.status === 204) {
-              this.$emit("meme-deleted-event", this.tile.uuid)
-              // Not actually an error, but using toast for errors
-              this.displayError("Meme has been deleted :(")
-            }
-          })
-          .catch(this.displayError)
+        this.deleting = true
+        try {
+          const { status } = await this.$axios.delete(`/api/delete/meme/${this.tile.uuid}`)
+          if (status !== 204) throw "Unexpected error occurred"
+          this.$emit("meme-deleted-event", this.tile.uuid)
+          // Not actually an error, but using toast for errors
+          this.displayError("Meme has been deleted :(")
+        } catch (err) {
+          this.displayError(err)
+          this.deleting = false
+        }
       }
     }
   }
