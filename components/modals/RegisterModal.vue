@@ -127,9 +127,10 @@ export default {
             await this.registerError(data, formData.get("username"))
           }
         }
-        this.loading = false
       } catch (err) {
         this.errorToast(err)
+      } finally {
+        this.loading = false
       }
     },
     removeModal() {
