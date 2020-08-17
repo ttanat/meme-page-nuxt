@@ -222,7 +222,7 @@ export default {
       const data = new FormData()
       data.set("content", val)
       data.set("uuid", uuid)
-      this.$axios.post("/api/comment/edit", data)
+      this.$axios.put("/api/comment/edit", data)
         .then(res => this.$emit("comment-edited-event", uuid, val))
         .catch(console.log)
     },
