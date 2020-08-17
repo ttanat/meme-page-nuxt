@@ -17,15 +17,6 @@
       <font-awesome-icon v-if="changingEmail" :icon="['fas', 'circle-notch']" spin />
       <template v-else>Change email</template>
     </button>
-    <button
-      @click="deleteEmail"
-      :disabled="!canDeleteEmail"
-      :class="{'not-allowed': !canDeleteEmail}"
-      class="btn btn-danger btn-sm"
-    >
-      <font-awesome-icon v-if="deletingEmail" :icon="['fas', 'circle-notch']" spin />
-      <template v-else>Delete email</template>
-    </button>
   </div>
 </template>
 
@@ -42,16 +33,12 @@ export default {
   data() {
     return {
       email: this.currentEmail,
-      changingEmail: false,
-      deletingEmail: false
+      changingEmail: false
     }
   },
   computed: {
     canChangeEmail() {
       return this.email && this.email !== this.currentEmail
-    },
-    canDeleteEmail() {
-      return !!this.currentEmail
     }
   },
   methods: {
@@ -73,20 +60,6 @@ export default {
         } else {
           this.errorToast("Please enter a valid email address")
         }
-      }
-    },
-    deleteEmail() {
-      if (confirm("Are you sure you want to remove your email from this account?")) {
-        this.deletingEmail = true
-        this.$axios.delete("/api/settings?f=email")
-          .then(r => {
-            if (r.status === 204) {
-              this.email = ""
-              this.$toast.info("Email has been removed", {position: 'top-center', duration: 1500})
-            }
-          })
-          .catch(this.displayError)
-          .finally(() => this.deletingEmail = false)
       }
     }
   }
