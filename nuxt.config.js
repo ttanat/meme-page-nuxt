@@ -88,7 +88,7 @@ export default {
       callback: false,
       home: '/feed' // If using 'auth' middleware, then must be false
     },
-    cookie: false
+    localStorage: false
   },
   /*
   ** Build configuration
