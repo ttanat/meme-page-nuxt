@@ -77,7 +77,8 @@ export default {
   props: {
     sidebarData: {
       type: Object,
-      required: false
+      required: false,
+      default: () => ({})
     }
   },
   mixins: [parseBioMixin],
