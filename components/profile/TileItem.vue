@@ -2,10 +2,9 @@
   <div class="tile" @contextmenu.prevent="openContextMenu">
     <nuxt-link :to="'/m/'+tile.uuid" target="_blank" draggable="false">
       <div v-if="$route.path === '/profile'" class="points" :class="[tile.points > 0 ? 'green' : tile.points < 0 ? 'red' : '']">{{ formatNumber(tile.points) }}</div>
-      <span v-if="!isImg && !isGif" class="play-icon"><font-awesome-icon :icon="['fas', 'play']" /></span>
+      <span v-if="isVid" class="play-icon"><font-awesome-icon :icon="['fas', 'play']" /></span>
       <h5 v-else-if="isGif" class="play-icon">GIF</h5>
-      <video v-if="!isImg" ref="vid" :src="tile.url" preload="metadata" loop class="content" draggable="false"></video>
-      <img v-else :src="tile.url" class="content" draggable="false">
+      <img :src="tile.url" class="content" draggable="false">
     </nuxt-link>
     <!-- Context menu is here because it doesn't work on TileItem component in ./TileItems.vue -->
     <vue-context ref="menu">
@@ -59,8 +58,8 @@ export default {
     isProfilePage() {
       return this.$route.path.startsWith("/profile")
     },
-    isImg() {
-      return ["image/jpeg", "image/png"].includes(this.tile.content_type)
+    isVid() {
+      return this.tile.content_type.startsWith("video/")
     },
     isGif() {
       return this.tile.content_type === "image/gif"
