@@ -252,7 +252,7 @@ export default {
               if (data.uuid && this.$route.path === "/profile") {
                 this.$root.$emit("newMemeUploaded", {
                   uuid: data.uuid,
-                  url: URL.createObjectURL(formData.get("file")),
+                  url: data.thumbnail || URL.createObjectURL(formData.get("file")),
                   points: 0,
                   content_type: formData.get("file").type
                 })
