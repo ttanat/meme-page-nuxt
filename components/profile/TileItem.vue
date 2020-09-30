@@ -1,5 +1,5 @@
 <template>
-  <div class="tile" @contextmenu.prevent="openContextMenu">
+  <div class="tile" @contextmenu.prevent="openContextMenu" :style="{opacity: deleting ? '.5' : ''}">
     <nuxt-link :to="'/m/'+tile.uuid" target="_blank" draggable="false">
       <div v-if="$route.path === '/profile'" class="points" :class="[tile.points > 0 ? 'green' : tile.points < 0 ? 'red' : '']">{{ formatNumber(tile.points) }}</div>
       <span v-if="isVid" class="play-icon"><font-awesome-icon :icon="['fas', 'play']" /></span>
@@ -70,10 +70,13 @@ export default {
       // Close all other context menus first
       await this.$emit("context-menu-event")
       // Don't open context menu if deleting (deleting takes a few seconds and user can still do stuffs with tile)
-      this.deleting ? this.$toast.info("Deleting meme...", {
+      this.deleting ? this.showDeletingMemeToast() : this.$refs.menu.open(e)
+    },
+    showDeletingMemeToast() {
+      this.$toast.info("Deleting meme...", {
         position: 'bottom-center',
         duration: 1500
-      }) : this.$refs.menu.open(e)
+      })
     },
     copyLink() {
       copy(`${window.location.origin}/m/${this.tile.uuid}`)
@@ -85,6 +88,7 @@ export default {
     async deleteMeme() {
       if (confirm("Are you sure you want to delete this?")) {
         this.deleting = true
+        this.showDeletingMemeToast()
         try {
           const { status } = await this.$axios.delete(`/api/delete/meme/${this.tile.uuid}`)
           if (status !== 204) throw "Unexpected error occurred"
