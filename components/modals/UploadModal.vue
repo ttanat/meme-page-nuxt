@@ -69,7 +69,16 @@
         <div class="modal-footer">
           <a v-show="showClearButton" @click="clearForm" href="javascript:void(0);" class="mr-3" style="color: white;">Clear</a>
           <button type="button" class="btn btn-secondary modal-btn" data-dismiss="modal" title="Cancel">Cancel</button>
-          <button ref="submitButton" @click="upload" :disabled="!canSubmit" :class="{'not-allowed': !canSubmit}" type="button" class="btn btn-primary modal-btn" title="Upload">
+          <button
+            ref="submitButton"
+            @click="upload"
+            :disabled="!canSubmit"
+            :class="{'not-allowed': !canSubmit && !uploading}"
+            :style="{'cursor': uploading ? 'progress' : ''}"
+            type="button"
+            class="btn btn-primary modal-btn"
+            title="Upload"
+          >
             <template v-if="uploading">Uploading <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></template>
             <template v-else>Upload</template>
           </button>
@@ -196,7 +205,6 @@ export default {
       const formData = this.setData()
       if (!formData || !formData.has("file")) return false
       this.canSubmit = false
-      this.$refs.submitButton.style.cursor = "progress"
       this.uploading = true
       // Start uploading
       this.$axios.post("/api/upload", formData)
@@ -224,7 +232,6 @@ export default {
         })
         .finally(() => {
           this.uploading = false
-          this.$refs.submitButton.style.cursor = null
         })
     },
     clearForm() {
