@@ -10,7 +10,6 @@
             <div class="row">
               <div v-show="uploading || canSubmit" class="col-6">
                 <div ref="fullPreview">
-                  <h5 ref="captionPreview" class="caption-preview" :style="{width: captionPreviewWidth + 'px'}">{{ caption }}</h5>
                   <img v-show="showImgPreview" ref="imgPreview" class="preview w-100">
                   <video v-show="showVidPreview" ref="vidPreview" class="preview" controls></video>
                 </div>
@@ -50,17 +49,10 @@
                 <br>
                 <label>Caption</label>
                 <br>
-                <input v-model.trim="caption" @keyup="adjustCaptionPreviewWidth" type="text" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off" style="outline: none;">
+                <input v-model.trim="caption" type="text" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off" style="outline: none;">
                 <br>
                 <small>{{ 100 - caption.length }} characters left</small>
-                <div v-show="caption && canSubmit" class="custom-control custom-checkbox custom-checkbox-sm mt-2 mb-3">
-                  <input v-model="embedCaption" :disabled="embedCaptionDisabled" type="checkbox" id="embedCaptionInput" class="custom-control-input custom-control-input-sm" autocomplete="off">
-                  <label for="embedCaptionInput" class="custom-control-label" style="font-size: 15px;">
-                    Embed caption <font-awesome-icon class="text-muted" style="font-size: 13px;" :icon="['far', 'question-circle']" data-toggle="tooltip" title="Image will be captured from the preview shown and may look worse on smaller screens. Available only for JPG and PNG images." />
-                    <small v-if="embedCaption" style="color: grey;"><br>If prompted, please allow this site to extract canvas data.</small>
-                  </label>
-                </div>
-                <div :class="{'mt-3': !(caption && canSubmit)}" class="custom-file mb-3">
+                <div class="custom-file my-3">
                   <input ref="inputFile" @change="validateForm" type="file" class="custom-file-input" accept="image/jpeg, image/png, image/gif, video/mp4, video/quicktime" autocomplete="off" required>
                   <label class="custom-file-label">{{ fname }}</label>
                 </div>
@@ -88,10 +80,6 @@
 </template>
 
 <script>
-import htmlToImage from 'html-to-image'
-import axios from 'axios' // For converting generated image to blob
-// import { saveAs } from 'file-saver'
-
 export default {
   name: 'UploadModal',
   data() {
@@ -100,7 +88,6 @@ export default {
       page: "",
       category: "",
       caption: "",
-      embedCaption: false,
       nsfw: false,
       tags: "",
       videoDuration: 99,
@@ -108,8 +95,6 @@ export default {
       uploading: false,
       showImgPreview: false,
       showVidPreview: false,
-      captionPreviewWidth: 0,
-      embedCaptionDisabled: true
     }
   },
   computed: {
@@ -136,9 +121,6 @@ export default {
       uf.files[0].type.startsWith("video/") ? this.setVidDuration(uf.files[0]) : this.videoDuration = 99
       this.fname = this.canSubmit ? uf.files[0].name : "Choose File"
       this.canSubmit ? this.createPreview() : uf.value = null
-
-      this.embedCaptionDisabled = !(uf && uf.files.length === 1 && ['image/jpeg', 'image/png'].includes(uf.files[0].type))
-      if (this.embedCaptionDisabled) this.embedCaption = false
     },
     createPreview() {
       // Revoke existing preview URLs
@@ -148,25 +130,8 @@ export default {
       const el = file.type.startsWith("image/") ? this.$refs.imgPreview : this.$refs.vidPreview
       this.showImgPreview = file.type.startsWith("image/")
       this.showVidPreview = !this.showImgPreview
-      el.onload = () => {
-        // Adjust caption width on preview once image is loaded
-        this.captionPreviewWidth = this.showImgPreview ? this.$refs.imgPreview.offsetWidth : this.$refs.vidPreview.offsetWidth
-      }
       // Create preview URL and show preview
       el.src = URL.createObjectURL(file)
-    },
-    async getCaptionedImage() {
-      /*
-        Returns promise with blob data for image file
-      */
-      this.caption = this.caption.slice(0, 100)
-      const canvas = this.$refs.fullPreview
-      const dataUrl = await htmlToImage.toJpeg(canvas, {backgroundColor: '#252525', quality: 0.92})
-      const { data } = await axios.get(dataUrl, {responseType: 'blob'})
-      return data
-    },
-    adjustCaptionPreviewWidth() {
-      this.captionPreviewWidth = this.showImgPreview ? this.$refs.imgPreview.offsetWidth : this.showVidPreview ? this.$refs.vidPreview.offsetWidth : 0
     },
     setVidDuration(file) {
       const v = document.createElement("video")
@@ -176,12 +141,6 @@ export default {
           this.videoDuration = v.duration
       }
       v.src = URL.createObjectURL(file)
-    },
-    checkEmbedCaption() {
-      const uf = this.$refs.inputFile
-      const canEmbed = uf && uf.files.length === 1 && ['image/jpeg', 'image/png'].includes(uf.files[0].type)
-      if (!canEmbed) this.embedCaption = false
-      return canEmbed
     },
     check() {
       const input = this.$refs.inputFile
@@ -212,7 +171,7 @@ export default {
       }
       return false
     },
-    async setData() {
+    setData() {
       /*
         Returns promise with FormData object
       */
@@ -221,8 +180,6 @@ export default {
       if (this.category) data.set("category", this.category)
       if (this.caption) data.set("caption", this.caption.trim().slice(0, 100))
       if (!data.get("caption") && !confirm("Are you sure you want to upload without a caption?")) return false
-      // Check that caption can be embedded then set in data
-      data.set("embed_caption", this.checkEmbedCaption() && this.embedCaption)
       // Find all tags in text area
       const tags = this.tags.match(/#[a-zA-Z]\w*/g)
       // Join all tags into one string (will be processed in backend instead)
@@ -230,54 +187,49 @@ export default {
       data.set("nsfw", this.nsfw)
       if (this.$route.path === "/profile") data.set("is_profile_page", true)
       // Add file to data
-      if (JSON.parse(data.get("embed_caption"))) {
-        // Generate captioned image if "Embed caption" is selected
-        data.set("file", await this.getCaptionedImage(), "m.jpeg") // Filename will be changed in server anyway
-      } else {
-        // Otherwise, use file from input
-        data.set("file", this.$refs.inputFile.files[0])
-      }
+      data.set("file", this.$refs.inputFile.files[0])
       return data
     },
     upload() {
       if (!this.$auth.loggedIn || !this.check() || !this.canSubmit) return false
-      this.setData().then(formData => {
-        if (!formData || !formData.has("file")) return false
-        this.canSubmit = false
-        this.$refs.submitButton.style.cursor = "progress"
-        this.uploading = true
-        this.$axios.post("/api/upload", formData)
-          .then(({ data }) => {
-            if (data.success) {
-              if (data.uuid && this.$route.path === "/profile") {
-                this.$root.$emit("newMemeUploaded", {
-                  uuid: data.uuid,
-                  url: data.thumbnail || URL.createObjectURL(formData.get("file")),
-                  points: 0,
-                  content_type: formData.get("file").type
-                })
-              }
-              $("#uploadModal").modal("hide")
-              this.successToast("Meme successfully uploaded")
-              this.clearForm()
-            } else {
-              this.canSubmit = true
-              this.errorToast(data.message)
+      // Set form data to send
+      const formData = this.setData()
+      if (!formData || !formData.has("file")) return false
+      this.canSubmit = false
+      this.$refs.submitButton.style.cursor = "progress"
+      this.uploading = true
+      // Start uploading
+      this.$axios.post("/api/upload", formData)
+        .then(({ data }) => {
+          if (data.success) {
+            if (data.uuid && this.$route.path === "/profile") {
+              this.$root.$emit("newMemeUploaded", {
+                uuid: data.uuid,
+                url: data.thumbnail || URL.createObjectURL(formData.get("file")),
+                points: 0,
+                content_type: formData.get("file").type
+              })
             }
-          })
-          .catch(err => {
+            $("#uploadModal").modal("hide")
+            this.successToast("Meme successfully uploaded")
+            this.clearForm()
+          } else {
             this.canSubmit = true
-            this.displayError(err)
-          })
-          .finally(() => {
-            this.uploading = false
-            this.$refs.submitButton.style.cursor = null
-          })
-      })
+            this.errorToast(data.message)
+          }
+        })
+        .catch(err => {
+          this.canSubmit = true
+          this.displayError(err)
+        })
+        .finally(() => {
+          this.uploading = false
+          this.$refs.submitButton.style.cursor = null
+        })
     },
     clearForm() {
       this.page = this.category = this.caption = this.tags = ""
-      this.nsfw = this.embedCaption = this.showImgPreview = this.showVidPreview = false
+      this.nsfw = this.showImgPreview = this.showVidPreview = false
       this.$refs.inputFile.value = null
       this.fname = "Choose File"
       this.canSubmit = false
@@ -289,11 +241,6 @@ export default {
 </script>
 
 <style scoped>
-.caption-preview {
-  font-weight: 400;
-  padding: 8px 10px 0 10px;
-  overflow-wrap: break-word;
-}
 .preview {
   max-width: 100%;
 }
