@@ -20,8 +20,13 @@
           <a v-if="$route.path.startsWith('/profile')" type="button" class="nav-item nav-link text-light mr-3" data-toggle="modal" data-target="#newMemePage" title="New meme page">
             <font-awesome-icon :icon="['fas', 'plus']" fixed-width /><span class="d-lg-none"> New meme page</span>
           </a>
-          <a type="button" class="nav-item nav-link text-light mr-3" data-toggle="modal" data-target="#uploadModal" title="Upload">
-            <font-awesome-icon :icon="['fas', 'file-upload']" fixed-width /><span class="d-lg-none"> Upload</span>
+          <a type="button" class="nav-item nav-link text-light mr-3" data-toggle="modal" data-target="#uploadModal" :title="uploadingMeme ? 'Uploading...' : 'Upload'">
+            <font-awesome-icon
+              :icon="['fas', uploadingMeme ? 'circle-notch' : 'file-upload']"
+              :spin="uploadingMeme"
+              fixed-width
+            />
+            <span class="d-lg-none"> {{ uploadingMeme ? "Uploading..." : "Upload" }}</span>
           </a>
           <NotificationsDropdown />
           <UserDropdown />
@@ -47,6 +52,11 @@ export default {
     SearchBar,
     NotificationsDropdown,
     UserDropdown
+  },
+  computed: {
+    uploadingMeme() {
+      return this.$store.getters.uploadingMeme
+    }
   }
 }
 </script>
