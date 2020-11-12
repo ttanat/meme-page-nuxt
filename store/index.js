@@ -3,9 +3,14 @@ export const state = () => ({
   nightMode: false,
   showOverlay: false, // For meme view
   justRegistered: false, // For preventing some api calls when user just registered (notifications, profile memes)
+  uploadingMeme: false, // For when meme is uploading (show loading icon, etc.)
 })
 
-export const getters = {}
+export const getters = {
+  uploadingMeme (state) {
+    return state.uploadingMeme
+  }
+}
 
 export const mutations = {
   setCurrentPage (state, name) {
@@ -20,5 +25,8 @@ export const mutations = {
   },
   setJustRegistered(state, bool=true) {
     state.justRegistered = bool
+  },
+  setUploadingMeme (state, uploading=false) {
+    state.uploadingMeme = uploading
   }
 }

@@ -101,12 +101,14 @@ export default {
       tags: "",
       videoDuration: 99,
       canSubmit: false,
-      uploading: false,
       showImgPreview: false,
       showVidPreview: false,
     }
   },
   computed: {
+    uploading() {
+      return this.$store.getters.uploadingMeme
+    },
     uploadToOptions() {
       return [
         ...this.$auth.user.moderating,
@@ -204,8 +206,17 @@ export default {
       // Set form data to send
       const formData = this.setData()
       if (!formData || !formData.has("file")) return false
+      // Prevent user from submitting multiple times
       this.canSubmit = false
-      this.uploading = true
+      // Set uploading in store to true
+      this.$store.commit("setUploadingMeme", true)
+      // Hide modal
+      $("#uploadModal").modal("hide")
+      // Tell user that meme is uploading
+      this.$toast.info("Uploading meme...", {
+        position: 'top-center',
+        duration: 1500
+      })
       // Start uploading
       this.$axios.post("/api/upload", formData)
         .then(({ data }) => {
@@ -218,7 +229,6 @@ export default {
                 content_type: formData.get("file").type
               })
             }
-            $("#uploadModal").modal("hide")
             this.successToast("Meme successfully uploaded")
             this.clearForm()
           } else {
@@ -231,7 +241,7 @@ export default {
           this.displayError(err)
         })
         .finally(() => {
-          this.uploading = false
+          this.$store.commit("setUploadingMeme", false)
         })
     },
     clearForm() {
