@@ -119,7 +119,7 @@ export default {
 
       if (confirm(`Are you sure you want to ${this.isOwnMeme ? "delete" : "remove"} this meme${hasPage}?`)) {
         if (this.isOwnMeme) {
-          this.$axios.delete(`/api/delete/meme/${this.tile.uuid}`)
+          this.$axios.delete(`/api/delete/meme/${this.$route.params.uuid}`)
             .then(res => {
               if (res.status === 204) {
                 this.$router.push(this.meme.pname ? `/page/${this.meme.pname}` : "/")
