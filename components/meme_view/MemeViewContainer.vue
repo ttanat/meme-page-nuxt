@@ -118,7 +118,13 @@ export default {
       const hasPage = this.isOwnMeme ? "" : ` from ${this.meme.pdname || this.meme.pname}`
 
       if (confirm(`Are you sure you want to ${this.isOwnMeme ? "delete" : "remove"} this meme${hasPage}?`)) {
+        // Show toast to user
+        this.$toast.info(`${this.isOwnMeme ? "Deleting" : "Removing"} meme...`, {
+          position: 'top-center',
+          duration: 3000
+        })
         if (this.isOwnMeme) {
+          // Delete meme
           this.$axios.delete(`/api/delete/meme/${this.$route.params.uuid}`)
             .then(res => {
               if (res.status === 204) {
@@ -129,6 +135,7 @@ export default {
             })
             .catch(this.displayError)
         } else {
+          // Remove meme from page
           this.$axios.put(`/api/mods/remove/meme/${this.$route.params.uuid}`)
             .then(() => {
               this.$router.push(`/page/${this.meme.pname}`)
