@@ -43,6 +43,11 @@ export default {
     },
     submitImage() {
       if (this.checkInput()) {
+        this.$refs.saveBtn.disabled = true
+        this.$toast.info("Changing image...", {
+          position: 'top-center',
+          duration: 1500
+        })
         const data = new FormData()
         data.set("image", this.$refs.imgInput.files[0])
         this.$axios.post(`/api/page/${this.$route.params.name}/settings`, data)
@@ -52,7 +57,10 @@ export default {
             this.$refs.newImage.src = null
             this.successToast("Page image changed")
           })
-          .catch(this.displayError)
+          .catch(err => {
+            this.displayError(err)
+            this.$refs.saveBtn.disabled = false
+          })
       }
     },
     removeInputImage() {

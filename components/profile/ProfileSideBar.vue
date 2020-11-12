@@ -8,7 +8,7 @@
         <div>
           <h5 id="profile-username" class="m-1">{{ isProfilePage ? $auth.user.username : $route.params.username }}</h5>
           <template v-if="isProfilePage">
-            <small class="text-muted pointer" @click="$refs.inputPic.click()">
+            <small class="text-muted pointer" @click="updatingPic ? '' : $refs.inputPic.click()">
               <template v-if="updatingPic">&nbsp;Updating <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></template>
               <template v-else>&nbsp;Edit profile picture</template>
             </small>
@@ -111,6 +111,7 @@ export default {
   },
   methods: {
     updateProfilePic() {
+      if (this.updatingPic) return false
       const file = this.$refs.inputPic.files[0]
       if (!file) {
         alert("Please select a file.")
