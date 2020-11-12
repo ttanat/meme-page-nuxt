@@ -268,7 +268,8 @@ export default {
       if (img) data.set("image", img)
       if (this.isAuthenticated && (data.has("content") || data.has("image"))) {
         this.submittingReply = true
-        data.set("c_uuid", this.comment.uuid)
+        data.set("root_uuid", this.comment.uuid)
+        data.set("reply_to_uuid", this.comment.uuid)
         this.replyInputValue = ""
 
         this.$axios.post("/api/reply", data)

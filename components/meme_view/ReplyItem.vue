@@ -210,7 +210,8 @@ export default {
       if (data.has("content") || data.has("image")) {
         this.submittingReply = true
         const c_uuid = this.$parent.comment.uuid
-        data.set("c_uuid", c_uuid)
+        data.set("root_uuid", c_uuid)
+        data.set("reply_to_uuid", this.reply.uuid)
         this.replyInputValue = ""
 
         this.$axios.post("/api/reply", data)
