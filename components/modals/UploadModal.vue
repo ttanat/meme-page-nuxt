@@ -167,10 +167,8 @@ export default {
                  || (type === "image/jpeg" && (!lfname.endsWith(".jpg") && !lfname.endsWith(".jpeg")))
                  || (type === "video/quicktime" && !lfname.endsWith(".mov"))) {
         alert("Supported media types: JPG, PNG, GIF, MP4, MOV")
-      } else if (type === "image/gif" && file.size > 5242880) {
-        alert("Maximum file size for GIF is 5 MB")
-      } else if (type.startsWith("image/") && file.size > 3145728) {
-        alert("Maximum file size for images is 3 MB")
+      } else if (type.startsWith("image/") && file.size > 5242880) {
+        alert("Maximum file size for images is 5 MB")
       } else if (type.startsWith("video/") && this.videoDuration > 60) {
         alert("Maximum video duration is 60 seconds")
       } else if (type.startsWith("video/") && this.videoDuration < 1) {
