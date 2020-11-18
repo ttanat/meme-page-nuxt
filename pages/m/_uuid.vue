@@ -36,7 +36,7 @@
     </div>
 
     <div
-      v-if="['image/jpeg', 'image/png'].includes(meme.content_type)"
+      v-if="checkUrlIsImage(meme.url)"
       v-show="$store.state.showOverlay"
       id="overlay"
       @click="$store.commit('setShowOverlay', false)"
@@ -55,6 +55,7 @@ import MemeViewContainer from '~/components/meme_view/MemeViewContainer'
 import CommentSection from '~/components/meme_view/CommentSection'
 import DeleteModal from '~/components/modals/DeleteModal'
 import { mapGetters } from 'vuex'
+import urlFileExtMixin from '~/mixins/urlFileExtMixin'
 
 export default {
   components: {
@@ -63,6 +64,7 @@ export default {
     CommentSection,
     DeleteModal
   },
+  mixins: [urlFileExtMixin],
   async asyncData({ $axios, store, params }) {
     const { data } = await $axios.get(`/api/m/${params.uuid}`)
     store.commit("meme/setData", data)

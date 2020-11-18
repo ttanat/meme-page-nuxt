@@ -21,9 +21,11 @@
 
 <script>
 import copy from 'copy-to-clipboard'
+import urlFileExtMixin from '~/mixins/urlFileExtMixin'
 
 export default {
   layout: 'plain',
+  mixins: [urlFileExtMixin],
   async asyncData({ $axios, route }) {
     const obj = "m" in route.query ? "m" : "c" in route.query ? "c" : null
     if (!obj) throw "Invalid URL"
@@ -44,9 +46,7 @@ export default {
   },
   computed: {
     isVideo() {
-      const url = new URL(this.url)
-      const pathname = url.pathname.toLowerCase()
-      return pathname.endsWith(".mp4") || pathname.endsWith(".mov")
+      return this.checkUrlIsVideo(this.url)
     },
     imgIsComment() {
       return 'c' in this.$route.query && data.meme

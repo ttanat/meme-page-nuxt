@@ -102,6 +102,7 @@ import voteMixin from '~/mixins/voteMixin'
 import copy from 'copy-to-clipboard'
 import VueContext from 'vue-context'
 import formatNumberMixin from '~/mixins/formatNumberMixin'
+import urlFileExtMixin from '~/mixins/urlFileExtMixin'
 
 export default {
   name: 'Meme',
@@ -118,13 +119,13 @@ export default {
       required: true
     }
   },
-  mixins: [formatNumberMixin, voteMixin],
+  mixins: [formatNumberMixin, voteMixin, urlFileExtMixin],
   data() {
     return {
       isLiked: false,
       isDisliked: false,
-      isVideo: this.meme.content_type.startsWith('video/') || this.meme.content_type === "image/gif",
-      isGif: this.meme.content_type === "image/gif",
+      isVideo: this.checkUrlIsVideo(this.meme.url),
+      isGif: this.meme.is_gif,
       paused: true,
       loading: true
     }

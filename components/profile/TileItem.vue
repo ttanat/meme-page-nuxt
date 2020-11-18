@@ -59,10 +59,10 @@ export default {
       return this.$route.path.startsWith("/profile")
     },
     isVid() {
-      return this.tile.content_type.startsWith("video/")
+      return [".mp4", ".mov"].includes(this.tile.file_ext.toLowerCase())
     },
     isGif() {
-      return this.tile.content_type === "image/gif"
+      return this.tile.file_ext.toLowerCase() === ".gif"
     }
   },
   methods: {

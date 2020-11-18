@@ -164,6 +164,7 @@ export default {
       } else if (input.files.length > 1) {
         this.errorToast("Cannot upload multiple files together", duration=2000)
       } else if (!["image/jpeg", "image/png", "image/gif", "video/mp4", "video/quicktime"].includes(type)
+                 || ![".jpg", ".jpeg", ".png", ".gif", ".mp4", ".mov"].find(ext => lfname.endsWith(ext))
                  || (type === "image/jpeg" && (!lfname.endsWith(".jpg") && !lfname.endsWith(".jpeg")))
                  || (type === "video/quicktime" && !lfname.endsWith(".mov"))) {
         alert("Supported media types: JPG, PNG, GIF, MP4, MOV")
@@ -220,11 +221,12 @@ export default {
         .then(({ data }) => {
           if (data.success) {
             if (data.uuid && this.$route.path === "/profile") {
+              const file = formData.get("file")
               this.$root.$emit("newMemeUploaded", {
                 uuid: data.uuid,
-                url: data.thumbnail || URL.createObjectURL(formData.get("file")),
+                url: data.thumbnail || URL.createObjectURL(file),
                 points: 0,
-                content_type: formData.get("file").type
+                file_ext: file.name.slice(file.name.lastIndexOf(".")).toLowerCase()
               })
             }
             this.successToast("Meme successfully uploaded")

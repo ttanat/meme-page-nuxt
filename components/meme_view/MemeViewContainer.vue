@@ -14,7 +14,7 @@
   </div>
 
   <img
-    v-if="['image/jpeg', 'image/png'].includes(meme.content_type)"
+    v-if="isImage"
     class="content w-100"
     draggable="false"
     :src="meme.url"
@@ -72,12 +72,14 @@
 import VoteButtons from './VoteButtons'
 import copy from 'copy-to-clipboard'
 import { mapGetters } from 'vuex'
+import urlFileExtMixin from '~/mixins/urlFileExtMixin'
 
 export default {
   name: 'MemeViewContainer',
   components: {
     VoteButtons,
   },
+  mixins: [urlFileExtMixin],
   data() {
     return {
       copyLinkClicked: false
@@ -85,8 +87,11 @@ export default {
   },
   computed: {
     ...mapGetters({meme: "meme/meme"}),
+    isImage() {
+      return this.checkUrlIsImage(this.meme.url)
+    },
     isGif() {
-      return this.meme.content_type === "image/gif"
+      return this.meme.is_gif
     },
     isOwnMeme() {
       return this.$auth.loggedIn && this.meme.username === this.$auth.user.username
