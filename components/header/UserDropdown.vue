@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown">
-    <a type="button" class="nav-item nav-link text-light mr-2" data-toggle="dropdown">
+    <a class="nav-item nav-link text-light mr-2 pointer" data-toggle="dropdown">
       <img v-if="$auth.user.image" class="rounded-circle" :src="$auth.user.image" height="21" width="21">
       <font-awesome-icon v-else :icon="['fas', 'user-circle']" class="ml-1" />&ensp;<font-awesome-icon :icon="['fas', 'caret-down']" />
     </a>

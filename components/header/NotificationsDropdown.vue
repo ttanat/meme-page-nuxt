@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown">
-    <a type="button" @click="seen=true" class="nav-item nav-link text-light mr-3" data-toggle="dropdown" title="Notifications">
+    <a @click="seen=true" class="nav-item nav-link text-light mr-3 pointer" data-toggle="dropdown" title="Notifications">
       <font-awesome-icon :icon="['fas', 'bell']" fixed-width /><span class="d-lg-none"> Notifications</span><!-- Comment here to remove whitespace
    --><small v-if="count && !seen"><small><small class="badge badge-pill badge-danger align-top">{{ count }}</small></small></small>
     </a>

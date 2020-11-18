@@ -17,10 +17,10 @@
           <nuxt-link class="nav-item nav-link text-light mr-3" to="/" title="Home">
             <font-awesome-icon :icon="['fas', 'home']" fixed-width /><span class="d-lg-none"> Home</span>
           </nuxt-link>
-          <a v-if="$route.path.startsWith('/profile')" type="button" class="nav-item nav-link text-light mr-3" data-toggle="modal" data-target="#newMemePage" title="New meme page">
+          <a v-if="$route.path.startsWith('/profile')" class="nav-item nav-link text-light mr-3 pointer" data-toggle="modal" data-target="#newMemePage" title="New meme page">
             <font-awesome-icon :icon="['fas', 'plus']" fixed-width /><span class="d-lg-none"> New meme page</span>
           </a>
-          <a type="button" class="nav-item nav-link text-light mr-3" data-toggle="modal" data-target="#uploadModal" :title="uploadingMeme ? 'Uploading...' : 'Upload'">
+          <a class="nav-item nav-link text-light mr-3 pointer" data-toggle="modal" data-target="#uploadModal" :title="uploadingMeme ? 'Uploading...' : 'Upload'">
             <font-awesome-icon
               :icon="['fas', uploadingMeme ? 'circle-notch' : 'file-upload']"
               :spin="uploadingMeme"
