@@ -19,7 +19,7 @@
         </a>
       </li>
       <li>
-        <a :href="isProfilePage ? tile.url : '/img?m='+tile.uuid" target="_blank">
+        <a :href="'/img?m='+tile.uuid" target="_blank">
           <font-awesome-icon :icon="['fas', 'download']" />&ensp;Download
         </a>
       </li>
