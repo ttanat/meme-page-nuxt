@@ -106,7 +106,7 @@ export default {
       return this.isProfilePage ? this.$auth.user.bio : this.sidebarData.bio
     },
     getPages() {
-      return this.isProfilePage ? this.$auth.user.moderating : this.sidebarData.userPages
+      return this.isProfilePage ? this.$auth.user.moderating : this.sidebarData.userPages || []
     }
   },
   methods: {
