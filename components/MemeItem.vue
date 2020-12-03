@@ -215,7 +215,7 @@ export default {
 }
 .header-username {
   font-size: 14px;
-  color: darkgray;
+  color: #777;
 }
 .header-page {
   font-size: 13px;
