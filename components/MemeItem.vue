@@ -133,7 +133,7 @@ export default {
       isLiked: false,
       isDisliked: false,
       isVideo: this.checkUrlIsVideo(this.meme.url),
-      isGif: this.meme.is_gif,
+      isGif: !!this.meme.is_gif,
       paused: true,
       loading: true
     }
