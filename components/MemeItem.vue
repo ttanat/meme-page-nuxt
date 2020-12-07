@@ -23,7 +23,15 @@
         <font-awesome-icon v-if="!isGif" @click="$emit('toggle-sound-event')" :icon="['fas', muted ? 'volume-mute' : 'volume-up']" class="sound-toggle" />
       </template>
       <nuxt-link v-else :to="'/m/'+meme.uuid" target="_blank" class="item-body-link" draggable="false">
-        <img ref="memeEl" @load="memeLoaded" draggable="false" :data-src="meme.url" class="content fade-in" loading="lazy">
+        <img
+          ref="memeEl"
+          @load="memeLoaded"
+          draggable="false"
+          :data-srcset="meme.fallback ? meme.url : ''"
+          :data-src="meme.fallback || meme.url"
+          class="content fade-in"
+          loading="lazy"
+        >
       </nuxt-link>
       <div v-if="loading" class="loading p-0"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     </div>
