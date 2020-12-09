@@ -18,7 +18,6 @@
 import CommentItem from './CommentItem'
 import infiniteScrollMixin from '~/mixins/infiniteScrollMixin'
 import lazyLoadMixin from '~/mixins/lazyLoadMixin'
-import loadLikesMixin from '~/mixins/loadLikesMixin'
 import paginationOffsetMixin from '~/mixins/paginationOffsetMixin'
 
 export default {
@@ -26,7 +25,7 @@ export default {
   components: {
     CommentItem
   },
-  mixins: [infiniteScrollMixin, lazyLoadMixin, loadLikesMixin, paginationOffsetMixin],
+  mixins: [infiniteScrollMixin, lazyLoadMixin, paginationOffsetMixin],
   data() {
     return {
       comments: [],
@@ -66,7 +65,6 @@ export default {
               offset++
             }
           }
-          if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids, "c")
           this.next = data.next
           if (offset) this.increaseOffset(offset)
         })

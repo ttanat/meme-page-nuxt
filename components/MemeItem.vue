@@ -130,8 +130,8 @@ export default {
   mixins: [formatNumberMixin, voteMixin, urlFileExtMixin],
   data() {
     return {
-      isLiked: false,
-      isDisliked: false,
+      isLiked: this.meme.vote === 1,
+      isDisliked: this.meme.vote === -1,
       isVideo: this.checkUrlIsVideo(this.meme.url),
       isGif: !!this.meme.is_gif,
       paused: true,

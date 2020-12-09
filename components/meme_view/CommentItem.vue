@@ -131,7 +131,6 @@ import ReplyItem from './ReplyItem'
 import voteMixin from '~/mixins/voteMixin'
 import formatDateMixin from '~/mixins/formatDateMixin'
 import checkAuthMixin from '~/mixins/checkAuthMixin'
-import loadLikesMixin from '~/mixins/loadLikesMixin'
 import lazyLoadMixin from '~/mixins/lazyLoadMixin'
 import formatNumberMixin from '~/mixins/formatNumberMixin'
 import { mapGetters } from 'vuex'
@@ -147,13 +146,13 @@ export default {
       required: true
     }
   },
-  mixins: [formatDateMixin, formatNumberMixin, voteMixin, checkAuthMixin, lazyLoadMixin, loadLikesMixin],
+  mixins: [formatDateMixin, formatNumberMixin, voteMixin, checkAuthMixin, lazyLoadMixin],
   data() {
     return {
       replies: [],
       cmnt: this.comment,
-      isLiked: false,
-      isDisliked: false,
+      isLiked: this.comment.vote === 1,
+      isDisliked: this.comment.vote === -1,
       editing: false,
       hidePoints: this.comment.points === null,
       showingReplies: false,
@@ -255,7 +254,6 @@ export default {
           }
           this.loadMoreBtnShowing = !!next
           this.repliesAPILink = next
-          if (this.isAuthenticated && l_uuids.length) this.loadLikes(l_uuids, "r")
         })
         .catch(console.log)
         .finally(() => this.loadSpinnerShowing = false)

@@ -27,7 +27,6 @@ import MemeItem from './MemeItem'
 import infiniteScrollMixin from '~/mixins/infiniteScrollMixin'
 import lazyLoadMixin from '~/mixins/lazyLoadMixin'
 import autoplayMixin from '~/mixins/autoplayMixin'
-import loadLikesMixin from '~/mixins/loadLikesMixin'
 
 export default {
   name: 'MemeItems',
@@ -40,7 +39,7 @@ export default {
   components: {
     MemeItem
   },
-  mixins: [infiniteScrollMixin, lazyLoadMixin, autoplayMixin, loadLikesMixin],
+  mixins: [infiniteScrollMixin, lazyLoadMixin, autoplayMixin],
   created() {
     window.addEventListener("blur", this.pauseAll)
   },
@@ -69,7 +68,6 @@ export default {
     this.memes = results
     this.$nextTick(() => {if (results.length) {
       const l_uuids = results.map(r => r.uuid)
-      if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids, "m")
       this.next = data.next
     } else {
       this.noMemes = true
@@ -112,7 +110,6 @@ export default {
                 l_uuids.push(r.uuid)
               }
             }
-            if (this.$auth.loggedIn && l_uuids.length) this.loadLikes(l_uuids, "m")
             this.next = data.next
           } else {
             if (this.scrollRoot) this.scrollObserver.unobserve(this.scrollRoot)

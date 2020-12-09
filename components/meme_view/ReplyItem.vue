@@ -122,8 +122,8 @@ export default {
   },
   data() {
     return {
-      isLiked: false,
-      isDisliked: false,
+      isLiked: this.reply.vote === 1,
+      isDisliked: this.reply.vote === -1,
       editing: false,
       hidePoints: this.reply.points === null,
       typingReply: false,
