@@ -5,7 +5,14 @@
     <br>
     <label>Profile picture</label>
     <input ref="imgInput" @change="inputChange" class="d-block form-control form-control-sm mb-3" type="file" name="image" accept="image/jpeg, image/png">
-    <button ref="saveBtn" @click="submitImage" :class="{'not-allowed': !inputHasImage}" class="btn btn-sm btn-primary mr-3" type="button" disabled>
+    <button
+      ref="saveBtn"
+      @click="submitImage"
+      :class="{'not-allowed': !inputHasImage}"
+      class="btn btn-sm btn-primary mr-3"
+      type="button"
+      :disabled="!inputHasImage || savingImage"
+    >
       <font-awesome-icon v-if="savingImage" :icon="['fas', 'circle-notch']" spin />
       <template v-else>Save</template>
     </button>
@@ -36,13 +43,13 @@ export default {
     },
     inputChange() {
       this.inputHasImage = this.checkInput()
-      this.showDeleteBtn = this.$refs.saveBtn.disabled = !this.inputHasImage
+      this.showDeleteBtn = !this.inputHasImage || this.savingImage
       if (this.inputHasImage) {
         this.$refs.newImage.src = URL.createObjectURL(this.$refs.imgInput.files[0])
       }
     },
     submitImage() {
-      if (this.checkInput()) {
+      if (this.checkInput() && !this.savingImage) {
         this.savingImage = true
         const data = new FormData()
         data.set("field", "image")
