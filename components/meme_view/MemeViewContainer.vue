@@ -31,7 +31,7 @@
     <tr>
       <td>
         <!-- set-points-event called from voteMixin -->
-        <VoteButtons @set-points-event="setPoints" />
+        <VoteButtons @set-points-event="setPoints" :vote-on-load="meme.vote" />
       </td>
       <td>
         <button class="btn btn-sm lower-btn" @click="copyLink">

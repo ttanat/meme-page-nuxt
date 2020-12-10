@@ -17,10 +17,17 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'VoteButtons',
+  props: {
+    voteOnLoad: {
+      type: Number,
+      required: false,
+      default: 0
+    }
+  },
   data() {
     return {
-      isLiked: false,
-      isDisliked: false
+      isLiked: this.voteOnLoad === 1,
+      isDisliked: this.voteOnLoad === -1
     }
   },
   computed: {
@@ -34,18 +41,6 @@ export default {
     }
   },
   mixins: [formatNumberMixin, voteMixin],
-  mounted() {
-    if (this.$auth.loggedIn) {
-      this.$axios.get(`/api/likes/m/?u=${this.$route.params.uuid}`)
-        .then(res => {
-          if (res.data.length) {
-            this.isLiked = res["data"][0]["point"] === 1;
-            this.isDisliked = res["data"][0]["point"] === -1;
-          }
-        })
-        .catch(console.log)
-    }
-  },
   methods: {
     async vote(v) {
       // New points value is emitted to parent component from within mixin
