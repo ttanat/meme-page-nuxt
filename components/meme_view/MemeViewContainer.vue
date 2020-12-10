@@ -91,7 +91,7 @@ export default {
       return this.checkUrlIsImage(this.meme.url)
     },
     isGif() {
-      return this.meme.is_gif
+      return !!this.meme.is_gif
     },
     isOwnMeme() {
       return this.$auth.loggedIn && this.meme.username === this.$auth.user.username
