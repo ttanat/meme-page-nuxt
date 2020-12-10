@@ -10,7 +10,7 @@
       </div>
       <div class="col-md-3" id="right-col">
         <h3 class="m-3"><nuxt-link to="/">Meme Page</nuxt-link></h3>
-        <div class="m-3">Drag and drop item to save</div>
+        <div class="m-3">Drag and drop image to save</div>
         <a @click="copyLink" href="javascript:void(0);" class="m-3">Copy link</a>
         <img src="~/assets/banner_light.png" id="ad">
         <img src="~/assets/banner_dark.png" id="ad2">
