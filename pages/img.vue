@@ -5,15 +5,13 @@
         <nuxt-link :to="'/m/'+meme" id="back">Back to meme</nuxt-link><br>
         <video v-if="isVideo" :src="url" controls id="meme"></video>
         <img v-else :src="url" id="meme">
-        <img src="~/assets/banner_light.png" id="adm">
-        <img src="~/assets/banner_dark.png" id="adm2">
+        <img src="~/assets/got_ad.png" id="adm">
       </div>
       <div class="col-md-3" id="right-col">
         <h3 class="m-3"><nuxt-link to="/">Meme Page</nuxt-link></h3>
         <div class="m-3">Drag and drop image to save</div>
         <a @click="copyLink" href="javascript:void(0);" class="m-3">Copy link</a>
-        <img src="~/assets/banner_light.png" id="ad">
-        <img src="~/assets/banner_dark.png" id="ad2">
+        <img src="~/assets/got_ad.png" id="ad">
       </div>
     </div>
   </div>
@@ -100,25 +98,25 @@ h3 > a {
   background-color: #191919;
   min-height: 100%;
 }
-#ad, #ad2 {
+#ad {
   width: 90%;
   border-radius: .2rem;
   left: 0;
   right: 0;
+  bottom: 1.5rem;
   margin: auto;
   position: absolute;
   cursor: pointer;
 }
-#ad {
-  bottom: 10rem;
-}
-#ad2 {
-  bottom: 2rem;
-}
-#adm, #adm2 {
-  width: 95%;
+#adm {
+  width: 75%;
   margin-top: 5px;
   border-radius: .2rem;
+}
+@media (min-width: 576px) {
+  #adm {
+    width: 60%;
+  }
 }
 @media (max-width: 767.98px) {
   #right-col {
@@ -134,7 +132,7 @@ h3 > a {
     position: absolute;
     bottom: 0;
   }
-  #adm, #adm2 {
+  #adm {
     display: none;
   }
 }
