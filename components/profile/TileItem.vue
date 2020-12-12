@@ -4,7 +4,8 @@
       <div v-if="$route.path === '/profile'" class="points" :class="[tile.points > 0 ? 'green' : tile.points < 0 ? 'red' : '']">{{ formatNumber(tile.points) }}</div>
       <span v-if="isVid" class="play-icon"><font-awesome-icon :icon="['fas', 'play']" /></span>
       <h5 v-else-if="isGif" class="play-icon">GIF</h5>
-      <img :src="tile.url" class="content" draggable="false">
+      <video v-if="tile.videoUploaded" :src="tile.url" class="content"></video>
+      <img v-else :src="tile.url" class="content" draggable="false">
     </nuxt-link>
     <!-- Context menu is here because it doesn't work on TileItem component in ./TileItems.vue -->
     <vue-context ref="menu">

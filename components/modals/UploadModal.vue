@@ -224,7 +224,8 @@ export default {
               const file = formData.get("file")
               this.$root.$emit("newMemeUploaded", {
                 uuid: data.uuid,
-                url: data.thumbnail || URL.createObjectURL(file),
+                url: URL.createObjectURL(file),
+                videoUploaded: file.type.startsWith("video/"),
                 points: 0,
                 file_ext: file.name.slice(file.name.lastIndexOf(".")).toLowerCase()
               })
