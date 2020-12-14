@@ -7,7 +7,7 @@
         {{ meme.username }}
       </nuxt-link>
       <template v-if="meme.pname"><span class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<nuxt-link :to="'/page/'+meme.pname" class="header-page" no-prefetch>{{ meme.pdname || meme.pname }}</nuxt-link></span></template>
-      <h6 class="mt-2 caption">{{ meme.caption }}</h6>
+      <div class="mt-2 caption">{{ meme.caption }}</div>
     </div>
 
     <div @contextmenu.prevent="openContextMenu" class="item-body" :class="{'item-body-loading': loading}" :style="{backgroundColor: isVideo ? '#111' : ''}">
@@ -231,7 +231,14 @@ export default {
 }
 .caption {
   font-weight: 450;
-  overflow-wrap: break-word;
+  overflow-wrap: break-word; /* If word is too long, it will go on new line */
+  white-space: pre-wrap; /* Show new lines (\r\n or \n) */
+
+  /* h6 styles */
+  font-size: 1rem;
+  margin-top: 0; /* will be overridden by mt-2 */
+  margin-bottom: .5rem;
+  line-height: 1.2;
 }
 .item-body {
   max-height: 30rem;
