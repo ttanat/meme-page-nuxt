@@ -10,7 +10,7 @@ export default {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       // { hid: 'description', name: 'description', content: process.env.npm_package_description || '' },
-      { hid: ' description' , name: ' description' , content: 'A place for the dankest memes and funniest content. Run your own meme page for your friends, or join existing communities and discover much more!' },
+      { hid: 'description' , name: 'description' , content: 'A place for the dankest memes and funniest content. Run your own meme page for your friends, or join existing communities and discover much more!' },
       { hid: 'keywords', name: 'keywords', content: 'Meme,Memes,Funny,Dank,Page,Posts' }
     ],
     link: [
