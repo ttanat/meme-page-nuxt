@@ -126,7 +126,7 @@ export default {
         // Show toast to user
         this.$toast.info(`${this.isOwnMeme ? "Deleting" : "Removing"} meme...`, {
           position: 'top-center',
-          duration: 3000
+          duration: 1500
         })
         if (this.isOwnMeme) {
           // Delete meme
