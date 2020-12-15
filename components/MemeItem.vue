@@ -7,7 +7,15 @@
         {{ meme.username }}
       </nuxt-link>
       <template v-if="meme.pname"><span class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<nuxt-link :to="'/page/'+meme.pname" class="header-page" no-prefetch>{{ meme.pdname || meme.pname }}</nuxt-link></span></template>
-      <div class="mt-1 caption">{{ meme.caption }}</div>
+      <h6
+        v-for="(captionFragment, i) in captionFragments"
+        :key="i"
+        :class="{'mt-2': i === 0}"
+        class="caption"
+        :style="{'margin-bottom': i === captionFragments.length - 1 ? '' : '4px'}"
+      >
+        {{ captionFragment }}
+      </h6>
     </div>
 
     <div @contextmenu.prevent="openContextMenu" class="item-body" :class="{'item-body-loading': loading}" :style="{backgroundColor: isVideo ? '#111' : ''}">
@@ -135,7 +143,8 @@ export default {
       isVideo: this.checkUrlIsVideo(this.meme.url),
       isGif: !!this.meme.is_gif,
       paused: true,
-      loading: true
+      loading: true,
+      captionFragments: this.meme.caption.split(/(?:\r\n|\r|\n)/g) // Split new lines
     }
   },
   mounted() {
@@ -206,17 +215,6 @@ export default {
   border: 1px solid #333;
   border-radius: 7px;
 }
-.caption {
-  font-weight: 450;
-  overflow-wrap: break-word; /* If word is too long, it will go on new line */
-  white-space: pre-wrap; /* Show new lines (\r\n or \n) */
-
-  /* h6 styles */
-  font-size: 1.1rem;
-  margin-top: 0; /* will be overridden by mt-2 */
-  margin-bottom: .5rem;
-  line-height: 1.3;
-}
 @media (max-width: 575.98px) {
   .item {
     border-left: none;
@@ -242,6 +240,10 @@ export default {
 .header-page {
   font-size: 13px;
   color: grey;
+}
+.caption {
+  font-weight: 420;
+  overflow-wrap: break-word; /* If word is too long, it will go on new line */
 }
 .item-body {
   max-height: 30rem;
