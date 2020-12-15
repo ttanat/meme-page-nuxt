@@ -168,7 +168,7 @@ export default {
       }
       v.src = URL.createObjectURL(file)
     },
-    check() {
+    checkFile() {
       const input = this.$refs.inputFile
       const file = input.files[0]
       const type = file.type
@@ -222,7 +222,7 @@ export default {
       return data
     },
     upload() {
-      if (!this.$auth.loggedIn || !this.check() || !this.canSubmit) return false
+      if (!this.$auth.loggedIn || !this.checkFile() || !this.canSubmit) return false
       // Set form data to send
       const formData = this.setData()
       if (!formData || !formData.has("file") || !formData.has("caption")) return false
