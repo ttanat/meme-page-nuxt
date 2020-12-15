@@ -154,11 +154,24 @@ export default {
   head() {
     const p = this.page
     this.$store.commit("setCurrentPage", p.dname && p.dname.length <= 20 ? p.dname : p.name.length <= 20 ? p.name : "")
+    const meta = [
+        {hid: "keywords", name: "keywords", content: `Meme,Memes,Funny,Dank,${p.dname || ""}${p.dname ? "," : ""}${p.name}`},
+        // Twitter meta tags
+        {hid: "twitter:card", name: "twitter:card", content: "summary"},
+        {hid: "twitter:url", name: "twitter:url", content: `${window.location.origin}${window.location.pathname}`},
+        {hid: "twitter:title", name: "twitter:title", content: `${p.dname || p.name} - Meme Page`},
+        {hid: "twitter:description", name: "twitter:description", content: p.description || ""},
+        {hid: "twitter:image", name: "twitter:image", content: p.image || p.cover || ""},
+        // Open graph meta tags
+        {hid: "og:url", property: "og:url", content: `${window.location.origin}${window.location.pathname}`},
+        {hid: "og:title", property: "og:title", content: `${p.dname || p.name} - Meme Page`},
+        {hid: "og:image", property: "og:image", content: p.image || p.cover || ""},
+        {hid: "og:description", property: "og:description", content: p.description || ""},
+    ]
+    if (p.description) meta.push({hid: "description", name: "description", content: p.description || ""})
     return {
       title: `${p.dname || p.name} - Meme Page`,
-      meta: [
-        {hid: "keywords", name: "keywords", content: `Meme,Memes,Funny,Dank,${p.dname},${p.name}`}
-      ]
+      meta,
     }
   },
   methods: {

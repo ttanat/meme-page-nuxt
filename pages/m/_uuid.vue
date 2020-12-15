@@ -36,7 +36,7 @@
     </div>
 
     <div
-      v-if="checkUrlIsImage(meme.url)"
+      v-if="isImage"
       v-show="$store.state.showOverlay"
       id="overlay"
       @click="$store.commit('setShowOverlay', false)"
@@ -71,15 +71,30 @@ export default {
     return {}
   },
   computed: {
-    ...mapGetters({meme: "meme/meme"})
+    ...mapGetters({meme: "meme/meme"}),
+    isImage() {
+      return this.checkUrlIsImage(this.meme.url)
+    }
   },
   head() {
     this.$store.commit("setCurrentPage", "Meme")
     return {
-      title: `${this.meme.caption ? `${this.meme.caption} - ` : ''}Meme Page`,
+      title: `${this.meme.caption} - Meme Page`,
       meta: [
-        {hid: "description", name: "description", content: `${this.meme.caption} ${this.meme.tags.join(' ')}`},
-        {hid: "keywords", name: "keywords", content: `Meme,Memes,Funny,Dank,${this.meme.tags.join(",")}`}
+        {hid: "keywords", name: "keywords", content: `Meme,Memes,Funny,Dank,${this.meme.tags.join(",")}`},
+        {hid: "description", name: "description", content: `${this.meme.caption} - Meme Page`},
+        {hid: "author", name: "author", content: this.meme.username},
+        // Twitter meta tags
+        {hid: "twitter:card", name: "twitter:card", content: this.isImage ? "summary_large_image" : "summary"},
+        {hid: "twitter:title", name: "twitter:title", content: this.meme.caption},
+        {hid: "twitter:description", name: "twitter:description", content: `By ${this.meme.username}${this.isImage ? "" : ". Click to see video."}`},
+        {hid: "twitter:image", name: "twitter:image", content: this.isImage ? this.meme.url : this.meme.thumbnail},
+        {hid: "twitter:image:alt", name: "twitter:image:alt", content: "Funny image here. Now laugh."},
+        // Open graph meta tags
+        {hid: "og:url", property: "og:url", content: `${window.location.origin}${window.location.pathname}`},
+        {hid: "og:title", property: "og:title", content: this.meme.caption},
+        {hid: "og:image", property: "og:image", content: this.isImage ? this.meme.url : this.meme.thumbnail},
+        {hid: "og:description", property: "og:description", content: `By ${this.meme.username}${this.isImage ? "" : ". Click to see video."}`},
       ]
     }
   }

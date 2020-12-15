@@ -6,7 +6,7 @@
         <img v-else-if="!isProfilePage && sidebarData.image" class="rounded-circle mt-1 ml-1 mr-2" :src="sidebarData.image" height="60" width="60">
         <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 60px;margin: 5px;" />
         <div>
-          <h5 id="profile-username" class="m-1">{{ isProfilePage ? $auth.user.username : $route.params.username }}</h5>
+          <h5 id="profile-username" class="m-1">{{ getUsername }}</h5>
           <template v-if="isProfilePage">
             <small class="text-muted pointer" @click="updatingPic ? '' : $refs.inputPic.click()">
               <template v-if="updatingPic">&nbsp;Updating <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></template>
@@ -83,12 +83,22 @@ export default {
   },
   mixins: [parseBioMixin],
   head() {
-    return {
-      meta: [
-        {hid: "description", name: "description", content: this.bio},
-        {hid: "keywords", name: "keywords", content: "Meme,Memes,Funny,Profile"}
-      ]
-    }
+    const meta = [
+      // Twitter meta tags
+      {hid: "twitter:card", name: "twitter:card", content: "summary"},
+      {hid: "twitter:url", name: "twitter:url", content: `${window.location.origin}/user/${this.getUsername}`}, // Ensure not /profile
+      {hid: "twitter:title", name: "twitter:title", content: `${this.getUsername} - Meme Page`},
+      {hid: "twitter:description", name: "twitter:description", content: this.getBio},
+      {hid: "twitter:image", name: "twitter:image", content: this.getImage},
+      // Open graph meta tags
+      {hid: "og:url", property: "og:url", content: `${window.location.origin}/user/${this.getUsername}`}, // Ensure not /profile
+      {hid: "og:type", property: "og:type", content: "profile"},
+      {hid: "og:title", property: "og:title", content: `${this.getUsername} - Meme Page`},
+      {hid: "og:image", property: "og:image", content: this.getImage},
+      {hid: "og:description", property: "og:description", content: this.getBio},
+    ]
+    if (this.getBio) meta.push({hid: "description", name: "description", content: this.getBio})
+    return { meta }
   },
   data() {
     return {
@@ -102,8 +112,14 @@ export default {
     isProfilePage() {
       return this.$auth.loggedIn && this.pathname.startsWith("/profile")
     },
+    getUsername() {
+      return this.isProfilePage ? this.$auth.user.username : this.$route.params.username
+    },
+    getImage() {
+      return (this.isProfilePage ? this.$auth.user.image : this.sidebarData.image) || ""
+    },
     getBio() {
-      return this.isProfilePage ? this.$auth.user.bio : this.sidebarData.bio
+      return (this.isProfilePage ? this.$auth.user.bio : this.sidebarData.bio) || ""
     },
     getPages() {
       return this.isProfilePage ? this.$auth.user.moderating : this.sidebarData.userPages || []
