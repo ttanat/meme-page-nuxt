@@ -9,7 +9,7 @@
           <div class="container-fluid px-0">
             <div class="row">
               <div v-show="uploading || canSubmit" class="col-6">
-                <div ref="fullPreview">
+                <div ref="fullPreview" class="preview-box">
                   <img v-show="showImgPreview" ref="imgPreview" class="preview w-100">
                   <video v-show="showVidPreview" ref="vidPreview" class="preview" controls></video>
                 </div>
@@ -280,7 +280,13 @@ export default {
 </script>
 
 <style scoped>
+.preview-box {
+  display: flex;
+  justify-content: center;
+}
 .preview {
   max-width: 100%;
+  max-height: max(500px, 70vh);
+  object-fit: scale-down; /* For image preview */
 }
 </style>
