@@ -47,7 +47,7 @@
                   </div>
                 </div>
                 <br>
-                <textarea v-model.trim="caption" type="text" rows="2" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off" style="outline: none;line-height: 1.8;"></textarea>
+                <textarea @keyup.enter="newLineCheck" v-model="caption" type="text" rows="2" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off" style="outline: none;line-height: 1.8;"></textarea>
                 <br>
                 <small>{{ 100 - caption.length }} characters left</small>
                 <div class="custom-file my-3">
@@ -124,6 +124,23 @@ export default {
     }
   },
   methods: {
+    newLineCheck() {
+      // Count number of "\n" found in caption and ensure no more than 4 used
+      if ((this.caption.match(/\n/g) || []).length > 4) {
+        let index = -1
+        for (
+          let i = 0, n = this.caption.length, newLinesFound = 0; // newLinesFound is number of "\n" in caption
+          i < n, newLinesFound < 5; // If 5th "\n" found, i < n makes sure for loop ends
+          i++, newLinesFound++
+        ) {
+          // Keep finding next index of "\n"
+          index = this.caption.indexOf("\n", index + 1)
+        }
+        // Slice caption from start to 5th "\n" (but not including it)
+        this.caption = this.caption.slice(0, index)
+        alert("Maximum new lines reached")
+      }
+    },
     validateForm() {
       const uf = this.$refs.inputFile
       this.canSubmit = uf.files.length === 1 && ["image/jpeg", "image/png", "image/gif", "video/mp4", "video/quicktime"].includes(uf.files[0].type)
@@ -180,13 +197,16 @@ export default {
       return false
     },
     setData() {
-      /*
-        Returns promise with FormData object
-      */
       const data = new FormData()
       if (this.page) data.set("page", this.page)
       if (this.category) data.set("category", this.category)
       if (this.caption) data.set("caption", this.caption.trim().slice(0, 100))
+      // Ensure caption only has maximum of 4 new lines
+      if ((data.get("caption").match(/\n/g) || []).length > 4) {
+        alert("Maximum new lines reached")
+        return false
+      }
+      // Ensure there is a caption
       if (!data.get("caption")) {
         alert("Please write a caption")
         return false
