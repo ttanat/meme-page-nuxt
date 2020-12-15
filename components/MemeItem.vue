@@ -206,6 +206,17 @@ export default {
   border: 1px solid #333;
   border-radius: 7px;
 }
+.caption {
+  font-weight: 450;
+  overflow-wrap: break-word; /* If word is too long, it will go on new line */
+  white-space: pre-wrap; /* Show new lines (\r\n or \n) */
+
+  /* h6 styles */
+  font-size: 1.1rem;
+  margin-top: 0; /* will be overridden by mt-2 */
+  margin-bottom: .5rem;
+  line-height: 1.2;
+}
 @media (max-width: 575.98px) {
   .item {
     border-left: none;
@@ -214,6 +225,9 @@ export default {
   }
   .content {
     object-fit: unset;
+  }
+  .caption {
+    font-size: 1rem;
   }
 }
 .item-header {
@@ -228,17 +242,6 @@ export default {
 .header-page {
   font-size: 13px;
   color: grey;
-}
-.caption {
-  font-weight: 450;
-  overflow-wrap: break-word; /* If word is too long, it will go on new line */
-  white-space: pre-wrap; /* Show new lines (\r\n or \n) */
-
-  /* h6 styles */
-  font-size: 1rem;
-  margin-top: 0; /* will be overridden by mt-2 */
-  margin-bottom: .5rem;
-  line-height: 1.2;
 }
 .item-body {
   max-height: 30rem;
