@@ -187,7 +187,10 @@ export default {
       if (this.page) data.set("page", this.page)
       if (this.category) data.set("category", this.category)
       if (this.caption) data.set("caption", this.caption.trim().slice(0, 100))
-      if (!data.get("caption") && !confirm("Are you sure you want to upload without a caption?")) return false
+      if (!data.get("caption")) {
+        alert("Please write a caption")
+        return false
+      }
       // Find all tags in text area
       const tags = this.tags.match(/#[a-zA-Z]\w*/g)
       // Join all tags into one string (will be processed in backend instead)
@@ -202,7 +205,7 @@ export default {
       if (!this.$auth.loggedIn || !this.check() || !this.canSubmit) return false
       // Set form data to send
       const formData = this.setData()
-      if (!formData || !formData.has("file")) return false
+      if (!formData || !formData.has("file") || !formData.has("caption")) return false
       // Prevent user from submitting multiple times
       this.canSubmit = false
       // Set uploading in store to true
