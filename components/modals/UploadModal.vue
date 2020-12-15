@@ -47,9 +47,7 @@
                   </div>
                 </div>
                 <br>
-                <label>Caption</label>
-                <br>
-                <input v-model.trim="caption" type="text" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off" style="outline: none;">
+                <textarea v-model.trim="caption" type="text" rows="2" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off" style="outline: none;line-height: 1.8;"></textarea>
                 <br>
                 <small>{{ 100 - caption.length }} characters left</small>
                 <div class="custom-file my-3">
