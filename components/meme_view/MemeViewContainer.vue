@@ -35,7 +35,8 @@
     v-if="isImage"
     class="content w-100 mt-1"
     draggable="false"
-    :src="meme.url"
+    :srcset="meme.fallback ? meme.url : ''"
+    :src="meme.fallback || meme.url"
     @click="$store.commit('setShowOverlay', true)"
     @contextmenu.prevent
     style="cursor: zoom-in;"

@@ -42,7 +42,12 @@
       @click="$store.commit('setShowOverlay', false)"
       @contextmenu.prevent
     >
-      <img :src="meme.url" draggable="false" @contextmenu.prevent>
+      <img
+        :srcset="meme.fallback ? meme.url : ''"
+        :src="meme.fallback || meme.url"
+        draggable="false"
+        @contextmenu.prevent
+      >
     </div>
 
     <DeleteModal />
