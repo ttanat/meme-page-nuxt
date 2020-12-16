@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-right: 20px;">
+  <div style="padding-right: 10px;">
     <button @click="vote('l')" :class="{green: isLiked}" class="btn btn-sm lower-btn thumbs like">
       <font-awesome-icon :icon="[isLiked ? 'fas' : 'far', 'thumbs-up']" />
     </button>
