@@ -64,13 +64,13 @@
         <VoteButtons @set-points-event="setPoints" :vote-on-load="meme.vote" />
       </td>
       <td>
-        <button @click="copyLink" :class="[copyLinkBtnMR]" class="btn btn-sm lower-btn">
+        <button @click="copyLink" class="btn btn-sm lower-btn mr-2">
           <template v-if="copyLinkClicked"><font-awesome-icon :icon="['fas', 'check']" />&ensp;Copied</template>
           <template v-else><font-awesome-icon :icon="['fas', 'link']" />&ensp;Copy Link</template>
         </button>
       </td>
       <td>
-        <SocialButtons @change-mr="changeCopyLinkBtnMR" />
+        <SocialButtons :meme="meme" />
       </td>
     </tr>
   </table>
@@ -104,7 +104,7 @@ export default {
   data() {
     return {
       copyLinkClicked: false,
-      copyLinkBtnMR: "mr-2", // MR is margin right
+      showSocial: false
     }
   },
   computed: {
@@ -140,9 +140,6 @@ export default {
       copy(`${window.location.origin}${window.location.pathname}`)
       this.copyLinkClicked = true
       setTimeout(() => this.copyLinkClicked = false, 1500)
-    },
-    changeCopyLinkBtnMR(margin) {
-      this.copyLinkBtnMR = `mr-${margin}`
     },
     copyLinkDropdown() {
       copy(`${window.location.origin}${window.location.pathname}`)
