@@ -200,7 +200,7 @@ export default {
       const data = new FormData()
       if (this.page) data.set("page", this.page)
       if (this.category) data.set("category", this.category)
-      if (this.caption) data.set("caption", this.caption.trim().slice(0, 100))
+      if (this.caption.trim()) data.set("caption", this.caption.trim().slice(0, 100).trim())
       // Ensure caption only has maximum of 4 new lines
       if ((data.get("caption").match(/\n/g) || []).length > 4) {
         alert("Maximum new lines reached")
