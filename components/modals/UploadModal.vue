@@ -206,11 +206,6 @@ export default {
         alert("Maximum new lines reached")
         return false
       }
-      // Ensure there is a caption
-      if (!data.get("caption")) {
-        alert("Please write a caption")
-        return false
-      }
       // Find all tags in text area
       const tags = this.tags.match(/#[a-zA-Z]\w*/g)
       // Join all tags into one string (will be processed in backend instead)
@@ -225,7 +220,7 @@ export default {
       if (!this.$auth.loggedIn || !this.checkFile() || !this.canSubmit) return false
       // Set form data to send
       const formData = this.setData()
-      if (!formData || !formData.has("file") || !formData.has("caption")) return false
+      if (!formData || !formData.has("file")) return false
       // Prevent user from submitting multiple times
       this.canSubmit = false
       // Set uploading in store to true
