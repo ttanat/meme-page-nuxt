@@ -38,7 +38,7 @@ export default function (context) {
       } else {
         if (accessTokenAboutToExpire(context)) {
           if (refreshTokenAboutToExpire(context)) {
-            reject(new Error("Session expired. Please log in again."))
+            reject(new Error("refresh_token_about_to_expire"))
           } else {
             // Else, get new access token
             refresh(context, config, resolve, reject)
@@ -63,12 +63,9 @@ export default function (context) {
         // Will happen when opening new tab (invalid access token used to get user info)
         refresh(context, err.response.config, resolve, reject)
       } else {
-        // If refresh failed or refresh token isn't valid
-        if (err.message === "Session expired. Please log in again."
-            || (err.response && err.response.status === 401
-                && !["/api/token/", "/api/register"].includes(err.response.config.url))) {
-          // If token refresh failed or not authenticated, logout
-          // Or if 401 response not from logging in
+        // If refresh token isn't valid or refresh failed
+        if (err.message === "refresh_token_about_to_expire"
+            || (err.response && err.response.data && err.response.data.code === "token_not_valid")) {
           alert("Session expired. Please log in again.")
           context.$auth.logout()
           // If logged out when navigating to '/', then memes will not load
