@@ -58,7 +58,8 @@ export default function (context) {
         context.$auth.logout()
         reject(err)
       } else if (err.response && err.response.data && err.response.data.code === "token_not_valid"
-                && err.response.data.messages && err.response.data.messages[0].token_type === "access") {
+                && err.response.data.messages && err.response.data.messages[0]
+                && err.response.data.messages[0].token_type === "access") {
         // Refresh when access token invalid
         // Will happen when opening new tab (invalid access token used to get user info)
         refresh(context, err.response.config, resolve, reject)
