@@ -52,7 +52,12 @@ export default function (context) {
 
   context.$axios.onError(err => {
     return new Promise((resolve, reject) => {
-      if (err.response && err.response.status === 401
+      if (err.response && err.response.data && err.response.data.code === "user_not_found") {
+        // Logout if user not found (e.g. if token incorrect)
+        alert(err.response.data.detail)
+        context.$auth.logout()
+        reject(err)
+      } else if (err.response && err.response.status === 401
         && err.response.config.url !== "/api/token/refresh/"
         && context.$auth.getRefreshToken('local')
         && !refreshTokenAboutToExpire(context)) {
