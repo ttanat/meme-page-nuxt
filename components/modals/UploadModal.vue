@@ -116,8 +116,8 @@ export default {
       ]
     },
     displayTags() {
-      const tags = this.tags.match(/#[a-zA-Z]\w*/g)
-      return tags ? tags.slice(0, 20).join(" ") : ""
+      const tags = this.getTags()
+      return tags.slice(0, 20).join(" ")
     },
     showClearButton() {
       return this.page || this.category || this.caption || this.nsfw || this.tags || this.canSubmit
@@ -140,6 +140,20 @@ export default {
         this.caption = this.caption.slice(0, index)
         alert("Maximum new lines reached")
       }
+    },
+    getTags() {
+      const tags = this.tags.match(/#[a-zA-Z]\w*/g)
+      if (!Array.isArray(tags)) return []
+      const [marker, result] = [new Set(), []]
+      // Remove duplicates (case-insensitive)
+      tags.slice(0, 20).forEach(tag => {
+        const tmp = tag.toLowerCase()
+        if (!marker.has(tmp)) {
+          marker.add(tmp)
+          result.push(tag)
+        }
+      })
+      return result
     },
     validateForm() {
       const uf = this.$refs.inputFile
@@ -206,10 +220,8 @@ export default {
         alert("Maximum new lines reached")
         return false
       }
-      // Find all tags in text area
-      const tags = this.tags.match(/#[a-zA-Z]\w*/g)
       // Join all tags into one string (will be processed in backend instead)
-      data.set("tags", tags ? tags.slice(0, 20).join("") : "")
+      data.set("tags", this.getTags().slice(0, 20).join(""))
       data.set("nsfw", this.nsfw)
       if (this.$route.path === "/profile") data.set("is_profile_page", true)
       // Add file to data
