@@ -28,6 +28,7 @@ export default {
   mixins: [infiniteScrollMixin, lazyLoadMixin, paginationOffsetMixin],
   data() {
     return {
+      firstComment: !this.$store.getters["meme/numComments"], // True if 0 comments (prevent loadMore() if user posts first comment)
       comments: [],
       next: `/api/comments/?u=${this.$route.params.uuid}`,
       loading: false
@@ -50,7 +51,7 @@ export default {
       this.comments.find(comment => comment.uuid === uuid).points = new_points_val
     },
     loadMore() {
-      if (this.next === null || !this.$store.getters["meme/numComments"]) return false
+      if (this.next === null || this.firstComment || !this.$store.getters["meme/numComments"]) return false
       this.loading = true
 
       this.$axios.get(this.next)
