@@ -57,15 +57,10 @@ export default function (context) {
         alert(err.response.data.detail)
         context.$auth.logout()
         reject(err)
-      } else if (err.response && err.response.status === 401
-        && err.response.config.url !== "/api/token/refresh/"
-        && context.$auth.getRefreshToken('local')
-        && !refreshTokenAboutToExpire(context)) {
-        /*
-          Case: Access token is expired and link is opened in new tab
-          Default behaviour: Users are automatically logged out
-          This 'if' clause refreshes the access token if the refresh token is not expired
-        */
+      } else if (err.response && err.response.data && err.response.data.code === "token_not_valid"
+                && err.response.data.messages[0].token_type === "access") {
+        // Refresh when access token invalid
+        // Will happen when opening new tab (invalid access token used to get user info)
         refresh(context, err.response.config, resolve, reject)
       } else {
         // If refresh failed or refresh token isn't valid
