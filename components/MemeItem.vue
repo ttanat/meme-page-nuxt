@@ -84,6 +84,9 @@
             </div>
           </div>
         </td>
+        <td>
+          <SocialButtons :meme="meme" />
+        </td>
       </tr>
     </table>
     <vue-context ref="menu">
@@ -122,11 +125,13 @@ import copy from 'copy-to-clipboard'
 import VueContext from 'vue-context'
 import formatNumberMixin from '~/mixins/formatNumberMixin'
 import urlFileExtMixin from '~/mixins/urlFileExtMixin'
+import SocialButtons from '~/components/meme_view/SocialButtons'
 
 export default {
   name: 'Meme',
   components: {
-    VueContext
+    VueContext,
+    SocialButtons,
   },
   props: {
     meme: {
