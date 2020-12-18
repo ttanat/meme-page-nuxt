@@ -32,20 +32,21 @@ export default {
     }
   },
   computed: {
+    getUrl() {
+      return encodeURIComponent(`${window.location.origin}/m/${this.meme.uuid}`)
+    },
     redditUrl() {
-      return `https://www.reddit.com/submit?url=${this.encodedUrlWithoutParams}`
+      return `https://www.reddit.com/submit?url=${this.getUrl}`
     },
     twitterUrl() {
       const title = encodeURIComponent(this.meme.caption)
-      const hashtags = this.meme.tags.join(",")
-      return `https://twitter.com/intent/tweet?text=${title}&url=${this.encodedUrlWithoutParams}&hashtags=${hashtags}`
+      const hashtags = this.meme.tags ? this.meme.tags.join(",") : null
+      const url = `https://twitter.com/intent/tweet?text=${title}&url=${this.getUrl}`
+      return hashtags ? `${url}&hashtags=${hashtags}` : url
     },
     facebookUrl() {
-      return `https://www.facebook.com/sharer/sharer.php?u=${this.encodedUrlWithoutParams}`
+      return `https://www.facebook.com/sharer/sharer.php?u=${this.getUrl}`
     },
-    encodedUrlWithoutParams() {
-      return encodeURIComponent(`${window.location.origin}${window.location.pathname}`)
-    }
   },
   methods: {
     toggleSocial() {
