@@ -55,7 +55,7 @@ export default function (context) {
       if (err.response && err.response.data && err.response.data.code === "user_not_found") {
         // Logout if user not found (e.g. if token incorrect)
         alert(err.response.data.detail)
-        context.$auth.logout()
+        context.$auth.logout()  // If logged out when navigating to '/', then memes will not load
         reject(err)
       } else if (err.response && err.response.data && err.response.data.code === "token_not_valid"
                 && err.response.data.messages && err.response.data.messages[0]
@@ -68,8 +68,7 @@ export default function (context) {
         if (err.message === "refresh_token_about_to_expire"
             || (err.response && err.response.data && err.response.data.code === "token_not_valid")) {
           alert("Session expired. Please log in again.")
-          context.$auth.logout()
-          // If logged out when navigating to '/', then memes will not load
+          context.$auth.logout()  // If logged out when navigating to '/', then memes will not load
         }
         reject(err)
       }
