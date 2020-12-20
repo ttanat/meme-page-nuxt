@@ -111,7 +111,7 @@ export default {
 .item {
   background-color: #171717;
   border: 1px solid #444444;
-  border-radius: 5px;
+  border-radius: 8px;
 }
 .right-fixed {
   text-align: center;
