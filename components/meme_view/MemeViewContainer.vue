@@ -58,7 +58,7 @@
   </video>
 
   <!-- ID is "comments" for scrolling to when URL has #comments hash -->
-  <table class="content-section" id="comments" style="margin-bottom: 8px;">
+  <table class="content-section" id="comments" :style="{marginBottom: meme.tags.length ? '' : '4px'}">
     <tr>
       <td>
         <!-- set-points-event called from voteMixin -->
@@ -75,16 +75,16 @@
       </td>
     </tr>
   </table>
-  <span v-if="meme.tags.length" class="text-muted content-section pl-2">
+  <div v-if="meme.tags.length" class="text-muted content-section pl-2">
     <button
       v-for="tag_name in meme.tags"
       :key="tag_name"
       @click="openLink(tag_name)"
-      class="tag btn btn-sm btn-outline-primary mr-2"
+      class="tag btn btn-sm btn-outline-primary mr-2 mt-2"
     >
       #{{ tag_name }}
     </button>
-  </span>
+  </div>
 </div>
 </template>
 
