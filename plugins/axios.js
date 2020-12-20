@@ -52,21 +52,18 @@ export default function (context) {
 
   context.$axios.onError(err => {
     return new Promise((resolve, reject) => {
-      if (err.response && err.response.data && err.response.data.code === "user_not_found") {
+      if (userNotFound(err)) {
         // Logout if user not found (e.g. if token incorrect)
         alert(err.response.data.detail)
         context.$auth.logout()  // If logged out when navigating to '/', then memes will not load
         reject(err)
-      } else if (err.response && err.response.data && err.response.data.code === "token_not_valid"
-                && err.response.data.messages && err.response.data.messages[0]
-                && err.response.data.messages[0].token_type === "access") {
+      } else if (accessTokenInvalid(err)) {
         // Refresh when access token invalid
         // Will happen when opening new tab (invalid access token used to get user info)
         refresh(context, err.response.config, resolve, reject)
       } else {
-        // If refresh token isn't valid or refresh failed
-        if (err.message === "refresh_token_about_to_expire"
-            || (err.response && err.response.data && err.response.data.code === "token_not_valid")) {
+        if (err.message === "refresh_token_about_to_expire" || tokenInvalid(err)) {
+          // Log user out if refresh token isn't valid or refresh failed
           alert("Session expired. Please log in again.")
           context.$auth.logout()  // If logged out when navigating to '/', then memes will not load
         }
@@ -75,4 +72,18 @@ export default function (context) {
     })
       .then(() => Promise.resolve()) // Resolve and reject both work
   })
+}
+
+/* Functions to check types of errors */
+function userNotFound(err) {
+  return err.response && err.response.data && err.response.data.code === "user_not_found"
+}
+
+function tokenInvalid(err) {
+  return err.response && err.response.data && err.response.data.code === "token_not_valid"
+}
+
+function accessTokenInvalid(err) {
+  return tokenInvalid(err) && err.response.data.messages && err.response.data.messages[0]
+          && err.response.data.messages[0].token_type === "access"
 }
