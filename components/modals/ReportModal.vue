@@ -20,6 +20,7 @@
           <textarea
             v-if="reason==='other'||reason==='illegal'"
             v-model.trim="description"
+            maxlength="500"
             placeholder="Please specify"
             class="mt-3 form-control p-1"
           ></textarea>
