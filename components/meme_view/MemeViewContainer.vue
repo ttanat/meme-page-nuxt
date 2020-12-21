@@ -20,7 +20,7 @@
         <div class="dropdown-menu bg-dark dropdown-dark">
           <nuxt-link class="dropdown-item" :to="'/img?m='+meme.uuid" target="_blank"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link>
           <a class="dropdown-item" @click="copyLinkDropdown"><font-awesome-icon :icon="['fas', 'link']" /> Copy link</a>
-          <a class="dropdown-item" href="javascript:void(0);"><font-awesome-icon :icon="['far', 'flag']" /> Report</a>
+          <a class="dropdown-item" @click="report"><font-awesome-icon :icon="['far', 'flag']" /> Report</a>
           <a v-if="isOwnMeme || hasModPermissions" @click="deleteMeme" class="dropdown-item" href="javascript:void(0);">
             <font-awesome-icon :icon="['fas', 'trash-alt']" /> {{ isOwnMeme ? "Delete" : "Remove" }}
           </a>
@@ -147,6 +147,12 @@ export default {
       this.$toast.success("Copied", {
         position: 'top-center',
         duration: 1500
+      })
+    },
+    report() {
+      this.$store.commit("report/setNewReport", {
+        reportObject: "meme",
+        objectUid: this.meme.uuid
       })
     },
     openLink(tag_name) {

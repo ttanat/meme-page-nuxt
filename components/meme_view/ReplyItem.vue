@@ -38,7 +38,7 @@
                   <font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;Delete
                 </div>
               </template>
-              <div v-else class="dropdown-item"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
+              <div v-else class="dropdown-item" @click="report"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
             </div>
           </div>
         </div>
@@ -160,6 +160,12 @@ export default {
     toggleEdit() {
       this.editing = !this.editing
       if (this.editing) this.$nextTick(() => this.$refs.editReplyInput.focus())
+    },
+    report() {
+      this.$store.commit("report/setNewReport", {
+        reportObject: "reply",
+        objectUid: this.reply.uuid
+      })
     },
     confirmDelete() {
       $("#deleteModal")[0].querySelector(".modal-body").querySelector("span").textContent = "reply"

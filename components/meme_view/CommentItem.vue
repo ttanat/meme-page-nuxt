@@ -40,7 +40,7 @@
                   </div>
                 </template>
                 <template v-else>
-                  <div class="dropdown-item"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
+                  <div class="dropdown-item" @click="report"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
                   <div v-if="canRemove" @click="removeComment" class="dropdown-item"><font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;Remove</div>
                 </template>
               </div>
@@ -197,6 +197,12 @@ export default {
     toggleEdit() {
       this.editing = !this.editing
       if (this.editing) this.$nextTick(() => this.$refs.editCommentInput.focus())
+    },
+    report() {
+      this.$store.commit("report/setNewReport", {
+        reportObject: "comment",
+        objectUid: this.comment.uuid
+      })
     },
     confirmDelete() {
       $("#deleteModal")[0].querySelector(".modal-body").querySelector("span").textContent = "comment"
