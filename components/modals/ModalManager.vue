@@ -3,6 +3,7 @@
     <template v-if="$auth.loggedIn">
       <NewPageModal />
       <UploadModal />
+      <ReportModal />
     </template>
     <template v-else>
       <LoginModal />
@@ -14,6 +15,7 @@
 <script>
 import NewPageModal from './NewPageModal'
 import UploadModal from './UploadModal'
+import ReportModal from './ReportModal'
 import LoginModal from './LoginModal'
 import RegisterModal from './RegisterModal'
 
@@ -22,6 +24,7 @@ export default {
   components: {
     NewPageModal,
     UploadModal,
+    ReportModal,
     LoginModal,
     RegisterModal
   }
