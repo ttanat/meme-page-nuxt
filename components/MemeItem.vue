@@ -78,7 +78,7 @@
             <div class="dropdown-menu bg-dark dropdown-dark" @contextmenu.prevent>
               <nuxt-link class="dropdown-item" :to="'/img?m='+meme.uuid" target="_blank"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link>
               <div class="dropdown-item" @click="copyLink"><font-awesome-icon :icon="['fas', 'link']" /> Copy Link</div>
-              <div v-if="!isOwnMeme" class="dropdown-item" @click="report"><font-awesome-icon :icon="['far', 'flag']" /> Report</div>
+              <div v-if="$auth.loggedIn && !isOwnMeme" class="dropdown-item" @click="report"><font-awesome-icon :icon="['far', 'flag']" /> Report</div>
               <div v-if="canRemove" class="dropdown-item" @click="removeMeme"><font-awesome-icon :icon="['fas', 'trash-alt']" /> Remove</div>
             </div>
           </div>

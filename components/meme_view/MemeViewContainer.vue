@@ -20,7 +20,7 @@
         <div class="dropdown-menu bg-dark dropdown-dark">
           <nuxt-link class="dropdown-item" :to="'/img?m='+meme.uuid" target="_blank"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link>
           <a class="dropdown-item" @click="copyLinkDropdown"><font-awesome-icon :icon="['fas', 'link']" /> Copy link</a>
-          <a v-if="!isOwnMeme" class="dropdown-item" @click="report"><font-awesome-icon :icon="['far', 'flag']" /> Report</a>
+          <a v-if="$auth.loggedIn && !isOwnMeme" class="dropdown-item" @click="report"><font-awesome-icon :icon="['far', 'flag']" /> Report</a>
           <a v-if="isOwnMeme || hasModPermissions" @click="deleteMeme" class="dropdown-item" href="javascript:void(0);">
             <font-awesome-icon :icon="['fas', 'trash-alt']" /> {{ isOwnMeme ? "Delete" : "Remove" }}
           </a>
