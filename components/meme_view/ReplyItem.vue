@@ -34,11 +34,13 @@
                 <div class="dropdown-item" ref="toggleEditButton" @click="toggleEdit">
                   <font-awesome-icon :icon="['fas', editing ? 'times' : 'pen']" />&ensp;{{ editing ? "Cancel" : "Edit"}}
                 </div>
-                <div class="dropdown-item" @click="confirmDelete">
-                  <font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;Delete
-                </div>
               </template>
-              <div v-else class="dropdown-item" @click="report"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
+              <!-- Report button -->
+              <div v-if="!canDelete && !isModCanRemove" class="dropdown-item" @click="report"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
+              <!-- Delete/remove button for meme OP, comment OP, or mod -->
+              <div v-if="canDelete || isModCanRemove" class="dropdown-item" @click="confirmDelete">
+                <font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;{{ isOwnReply ? "Delete" : "Remove" }}
+              </div>
             </div>
           </div>
         </div>
@@ -107,6 +109,7 @@ import voteMixin from '~/mixins/voteMixin'
 import formatDateMixin from '~/mixins/formatDateMixin'
 import checkAuthMixin from '~/mixins/checkAuthMixin'
 import formatNumberMixin from '~/mixins/formatNumberMixin'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ReplyItem',
@@ -154,6 +157,22 @@ export default {
     },
     isDeleted() {
       return !this.reply.username || (!this.reply.content && !this.reply.image)
+    },
+    ...mapGetters({
+      memeUsername: 'meme/username',
+      memePageName: 'meme/pageName',
+    }),
+    isModCanRemove() {
+      // Can remove reply if user is a moderator of the page that meme was posted to
+      return this.isAuthenticated && this.$auth.user.moderating.find(p => p.name === this.memePageName)
+    },
+    isMemeOp() {
+      // Check if user posted the meme
+      return this.isAuthenticated && this.memeUsername === this.$auth.user.username
+    },
+    canDelete() {
+      // Can delete reply if user posted the reply or meme
+      return this.isOwnReply || this.isMemeOp
     }
   },
   methods: {
@@ -168,19 +187,31 @@ export default {
       })
     },
     confirmDelete() {
-      $("#deleteModal")[0].querySelector(".modal-body").querySelector("span").textContent = "reply"
-      $("#deleteModal")[0].querySelector("#deleteModalBtn").onclick = () => {
-        this.deleteReply()
-        $("#deleteModal").modal('hide')
+      if (this.canDelete) {
+        /* Can delete meme if user posted meme or user posted reply */
+        $("#deleteModal")[0].querySelector(".modal-body").querySelector("span").textContent = "reply"
+        $("#deleteModal")[0].querySelector("#deleteModalBtn").onclick = () => {
+          this.deleteReply()
+          $("#deleteModal").modal('hide')
+        }
+        $("#deleteModal").modal('show')
+      } else if (this.isModCanRemove) {
+        /* Can delete reply if meme posted to page and user is mod of that page */
+        if (confirm("Are you sure you want to remove this comment?")) this.deleteReplyMod()
       }
-      $("#deleteModal").modal('show')
     },
     deleteReply() {
-      this.$axios.delete(`/api/comment/delete?u=${this.reply.uuid}`)
+      const meme_uuid = this.isMemeOp && !this.isOwnReply ? `&mu=${this.$route.params.uuid}` : ""
+      this.$axios.delete(`/api/comment/delete?u=${this.reply.uuid}${meme_uuid}`)
         .then(res => {
           if (res.status === 204) this.$emit("reply-deleted-event", this.reply.uuid)
         })
-        .catch(this.displayError)
+        .catch(console.log)
+    },
+    deleteReplyMod() {
+      this.$axios.delete(`/api/mods/remove/comment/${this.reply.uuid}`)
+        .then(() => this.$emit("reply-deleted-event", this.reply.uuid))
+        .catch(err => err.response ? this.errorToast(err.response.data) : console.log(err))
     },
     editReply() {
       const uuid = this.reply.uuid
