@@ -19,6 +19,9 @@
             <span>
               <span v-if="isDeleted" class="comment-username">[REDACTED]</span>
               <nuxt-link v-else :to="'/user/'+comment.username" class="comment-username" no-prefetch>{{ comment.username }}</nuxt-link>&nbsp;
+              <span v-if="comment.username===memeUsername" class="op-comment" title="Original Poster">
+                <font-awesome-icon :icon="['fas', 'user-alt']" />&nbsp;
+              </span>
               <span class="comment-date">{{ formatDate(comment.post_date) }}{{ comment.edited && !isDeleted ? " (edited)" : "" }}</span>
             </span>
 
@@ -352,3 +355,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.op-comment {
+  font-size: 12px;
+  color: #0077ff
+}
+</style>
