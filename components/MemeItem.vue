@@ -78,7 +78,7 @@
             <div class="dropdown-menu bg-dark dropdown-dark" @contextmenu.prevent>
               <nuxt-link class="dropdown-item" :to="'/img?m='+meme.uuid" target="_blank"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link>
               <div class="dropdown-item" @click="copyLink"><font-awesome-icon :icon="['fas', 'link']" /> Copy Link</div>
-              <div class="dropdown-item" @click="report"><font-awesome-icon :icon="['far', 'flag']" /> Report</div>
+              <div v-if="!isOwnMeme" class="dropdown-item" @click="report"><font-awesome-icon :icon="['far', 'flag']" /> Report</div>
               <div v-if="canRemove" class="dropdown-item" @click="removeMeme"><font-awesome-icon :icon="['fas', 'trash-alt']" /> Remove</div>
             </div>
           </div>
@@ -104,7 +104,7 @@
           <font-awesome-icon :icon="['fas', 'download']" />&ensp;Download
         </a>
       </li>
-      <li v-if="$auth.loggedIn && meme.username !== $auth.user.username">
+      <li v-if="!isOwnMeme">
         <a href="javascript:void(0);">
           <font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report
         </a>
@@ -158,6 +158,9 @@ export default {
     this.$emit("new-meme-event", this.$refs.memeEl, this.isVideo)
   },
   computed: {
+    isOwnMeme() {
+      return this.$auth.loggedIn && this.meme.username === this.$auth.user.username
+    },
     canRemove() {
       // Check if user can remove meme from page
       // Meme must be posted to a page and user must be an admin/moderator of that page
