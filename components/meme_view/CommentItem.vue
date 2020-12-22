@@ -35,14 +35,13 @@
                   <div class="dropdown-item" @click="toggleEdit" ref="toggleEditButton">
                     <font-awesome-icon :icon="['fas', editing ? 'times' : 'pen']" />&ensp;{{ editing ? "Cancel" : "Edit" }}
                   </div>
-                  <div class="dropdown-item" @click="confirmDelete">
-                    <font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;Delete
-                  </div>
                 </template>
-                <template v-else>
-                  <div class="dropdown-item" @click="report"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
-                  <div v-if="canRemove" @click="removeComment" class="dropdown-item"><font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;Remove</div>
-                </template>
+                <!-- Report button -->
+                <div v-if="!canDelete && !isModCanRemove" class="dropdown-item" @click="report"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
+                <!-- Delete/remove button for meme OP, comment OP, or mod -->
+                <div v-if="canDelete || isModCanRemove" class="dropdown-item" @click="confirmDelete">
+                  <font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;{{ isOwnComment ? "Delete" : "Remove" }}
+                </div>
               </div>
             </div>
           </div>
@@ -186,10 +185,20 @@ export default {
       return !this.comment.username || (!this.comment.content && !this.comment.image)
     },
     ...mapGetters({
-      memePageName: 'meme/pageName'
+      memeUsername: 'meme/username',
+      memePageName: 'meme/pageName',
     }),
-    canRemove() {
-      return !!(this.isAuthenticated && this.$auth.user.moderating.find(p => p.name === this.memePageName))
+    isModCanRemove() {
+      // Can remove comment if user is a moderator of the page that meme was posted to
+      return this.isAuthenticated && this.$auth.user.moderating.find(p => p.name === this.memePageName)
+    },
+    isMemeOp() {
+      // Check if user posted the meme
+      return this.isAuthenticated && this.memeUsername === this.$auth.user.username
+    },
+    canDelete() {
+      // Can delete comment if user posted the comment or meme
+      return this.isOwnComment || this.isMemeOp
     }
   },
   methods: {
@@ -205,19 +214,31 @@ export default {
       })
     },
     confirmDelete() {
-      $("#deleteModal")[0].querySelector(".modal-body").querySelector("span").textContent = "comment"
-      $("#deleteModal")[0].querySelector("#deleteModalBtn").onclick = () => {
-        this.deleteComment()
-        $("#deleteModal").modal('hide')
+      if (this.canDelete) {
+        /* Can delete meme if user posted meme or user posted comment */
+        $("#deleteModal")[0].querySelector(".modal-body").querySelector("span").textContent = "comment"
+        $("#deleteModal")[0].querySelector("#deleteModalBtn").onclick = () => {
+          this.deleteComment()
+          $("#deleteModal").modal('hide')
+        }
+        $("#deleteModal").modal('show')
+      } else if (this.isModCanRemove) {
+        /* Can delete comment if meme posted to page and user is mod of that page */
+        if (confirm("Are you sure you want to remove this comment?")) this.deleteCommentMod()
       }
-      $("#deleteModal").modal('show')
     },
     deleteComment() {
-      this.$axios.delete(`/api/comment/delete?u=${this.comment.uuid}`)
+      const meme_uuid = this.isMemeOp && !this.isOwnComment ? `&mu=${this.$route.params.uuid}` : ""
+      this.$axios.delete(`/api/comment/delete?u=${this.comment.uuid}${meme_uuid}`)
         .then(res => {
           if (res.status === 204) this.$emit("comment-deleted-event", this.comment.uuid)
         })
         .catch(console.log)
+    },
+    deleteCommentMod() {
+      this.$axios.delete(`/api/mods/remove/comment/${this.comment.uuid}`)
+        .then(() => this.$emit("comment-deleted-event", this.comment.uuid))
+        .catch(err => err.response ? this.errorToast(err.response.data) : console.log(err))
     },
     editComment() {
       const uuid = this.comment.uuid
@@ -327,13 +348,6 @@ export default {
     replyDeleted(uuid) {
       const reply = this.getReply(uuid)
       reply.content = reply.image = null
-    },
-    removeComment() {
-      if (confirm("Are you sure you want to remove this comment?")) {
-        this.$axios.delete(`/api/mods/remove/comment/${this.comment.uuid}`)
-          .then(() => this.$emit("comment-deleted-event", this.comment.uuid))
-          .catch(err => err.response ? this.errorToast(err.response.data) : console.log(err))
-      }
     }
   }
 }

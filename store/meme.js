@@ -6,6 +6,9 @@ export const getters = {
   meme: state => {
     return state.data
   },
+  username: state => {
+    return state.data.username
+  },
   points: state => {
     return state.data.points
   },
