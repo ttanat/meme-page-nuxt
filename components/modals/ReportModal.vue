@@ -18,7 +18,6 @@
             <option value="other">Other</option>
           </select>
           <textarea
-            v-if="reason==='other'||reason==='illegal'"
             v-model.trim="info"
             maxlength="500"
             placeholder="Additional info"
