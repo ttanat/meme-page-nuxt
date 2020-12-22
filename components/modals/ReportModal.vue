@@ -19,9 +19,9 @@
           </select>
           <textarea
             v-if="reason==='other'||reason==='illegal'"
-            v-model.trim="description"
+            v-model.trim="info"
             maxlength="500"
-            placeholder="Please specify"
+            placeholder="Additional info"
             class="mt-3 form-control p-1"
           ></textarea>
         </div>
@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       reason: 0,
-      description: "",
+      info: "",
     }
   },
   mounted() {
@@ -64,7 +64,7 @@ export default {
       objectUid: "report/objectUid"
     }),
     reportBtnDisabled() {
-      return this.reason === 0 || (this.reason === "other" && !this.description)
+      return this.reason === 0 || (this.reason === "other" && !this.info)
     }
   },
   methods: {
@@ -73,13 +73,13 @@ export default {
       data.append("reportObject", this.reportObject)
       data.append("objectUid", this.objectUid)
       data.append("reason", this.reason)
-      data.append("description", this.description)
+      data.append("info", this.info)
       this.$axios.post("/api/reports/", data).finally(() => alert("Thank you for reporting"))
       $("#reportModal").modal("hide")
     },
     clearReport() {
       this.reason = 0
-      this.description = ""
+      this.info = ""
       this.$store.commit("report/clearReport")
     }
   }
