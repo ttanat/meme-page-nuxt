@@ -17,7 +17,7 @@
                   {{ page.name }}<template v-if="!page.permissions || page.private">&ensp;<font-awesome-icon :icon="['fas', 'lock']" :title="page.private ? 'Page is private' : 'Only admin can post'" style="font-size: .9em;" /></template>
                 </h6>
               </div>
-              <div class="col mt-1 px-0">
+              <div :class="{'mt-1': page.image}" class="px-0">
                 <span v-if="!is_page_admin" id="follow-btn" class="float-right float-lg-none">
                   <SubscribeButton
                     :is-subscribed="is_subscribed"
