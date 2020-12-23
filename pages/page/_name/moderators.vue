@@ -99,7 +99,7 @@ export default {
   },
   async fetch() {
     const { data } = await this.$axios.get(`/api/mods/get_mods/${this.$route.params.name}`)
-    if (this.$auth.loggedIn && !!data.pending) {
+    if (this.$auth.loggedIn && data.admin) {
       this.pending.push(...data.pending)
       this.adminView = true
       // this.current.push(...["max", "jane", "moseby", "kevin", "allison"])
