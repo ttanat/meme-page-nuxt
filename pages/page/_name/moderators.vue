@@ -54,6 +54,14 @@
             @remove-mods-event="removeMods"
           />
           <div v-if="!current.length">None</div>
+
+          <button
+            v-if="isModerating && !adminView"
+            @click="stopModerating"
+            class="btn btn-sm btn-danger"
+          >
+            Stop moderating
+          </button>
         </div>
 
       </div>
@@ -116,6 +124,16 @@ export default {
     addPending(mods) {
       this.modsToAdd = []
       this.pending.push(...mods)
+    },
+    stopModerating() {
+      if (confirm(`Are you sure you want to stop being a moderator of ${this.$route.params.name}?`)) {
+        this.$axios.delete(`/api/mods/leave/${this.$route.params.name}`)
+          .then(() => {
+            this.$popUserFieldArray("moderating", this.$route.params.name)
+            this.current = this.current.filter(user => user !== this.$auth.user.username)
+          })
+          .catch(() => this.errorToast("Unexpected error occurred. Please try again later."))
+      }
     }
   }
 }
