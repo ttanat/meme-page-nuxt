@@ -50,8 +50,8 @@ export default {
             this.$auth.setRefreshToken("local", res.data.refresh)
           })
           .catch(err => {
-            const e401 = err.response && err.response.status === 401
-            const message = e401 ? "Username or password incorrect" : "Unexpected error occurred. Please try again"
+            const status = err.response ? err.response.status : null
+            const message = status === 401 ? "Username or password incorrect" : status === 403 ? "You have been banned" : "Unexpected error occurred. Please try again"
             this.errorToast(message)
           })
           .finally(() => this.loading = false)
