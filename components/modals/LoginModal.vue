@@ -42,12 +42,15 @@ export default {
       } else {
         this.loading = true
 
-        this.$auth.loginWith("local", {
-          data: this.login
-        })
-          .then(res => {
+        const loginData = new FormData()
+        loginData.set("username", this.login.username)
+        loginData.set("password", this.login.password)
+
+        this.$axios.post("/api/token/", loginData)
+          .then(({ data }) => {
             this.removeModal()
-            this.$auth.setRefreshToken("local", res.data.refresh)
+            this.$auth.setUserToken(data.access)
+            this.$auth.setRefreshToken("local", data.refresh)
           })
           .catch(err => {
             const status = err.response ? err.response.status : null
