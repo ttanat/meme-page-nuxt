@@ -15,7 +15,7 @@
             <input v-show="false" type="file" ref="inputPic" accept="image/jpeg, image/png" @change="updateProfilePic">
           </template>
           <FollowButton
-            v-else
+            v-else-if="!banned"
             :is-following="sidebarData.isFollowing"
             @following-changed-event="changeFollow"
           />
@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    <div class="mt-2">
+    <div v-if="!banned" class="mt-2">
       <BioDescription
         v-if="isProfilePage"
         add-text="bio"
@@ -32,7 +32,7 @@
     </div>
     <hr class="mb-2" style="background: grey;">
 
-    <UserStats :stats="isProfilePage ? $auth.user.stats : sidebarData.stats" />
+    <UserStats v-if="!banned" :stats="isProfilePage ? $auth.user.stats : sidebarData.stats" />
 
     <div class="mt-4 mb-5">
       <h5>Profile</h5>
@@ -75,6 +75,11 @@ export default {
     BioDescription
   },
   props: {
+    banned: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     sidebarData: {
       type: Object,
       required: false,

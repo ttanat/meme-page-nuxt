@@ -16,7 +16,7 @@
     >
       <template v-if="$route.path === '/profile/likes'">No likes yet :(</template>
       <template v-else-if="$route.path === '/profile'"><font-awesome-icon :icon="['fas', 'plus']" /> Upload your first meme!</template>
-      <template v-else>No memes yet :(</template>
+      <template v-else>{{ banned ? "User is banned" : "No memes yet :(" }}</template>
     </div>
   </div>
 </template>
@@ -31,9 +31,16 @@ export default {
   components: {
     TileItem
   },
+  props: {
+    banned: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
   mixins: [infiniteScrollMixin, paginationOffsetMixin],
   created() {
-    if (this.$store.state.justRegistered) {
+    if (this.$store.state.justRegistered || this.banned) {
       this.noContent = true
       this.next = null
     } else {
