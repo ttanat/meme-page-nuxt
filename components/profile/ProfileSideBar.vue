@@ -2,11 +2,14 @@
   <div class="col-md-4 col-xl-3" id="profile-col">
     <div class="container-fluid">
       <div class="row">
+        <!-- Profile picture -->
         <img v-if="isProfilePage && $auth.user.image" ref="profilePic" id="profile-pic" class="rounded-circle" :src="$auth.user.image" height="55" width="55">
         <img v-else-if="!isProfilePage && sidebarData.image" class="rounded-circle mt-1 ml-1 mr-2" :src="sidebarData.image" height="60" width="60">
         <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 60px;margin: 5px;" />
         <div>
+          <!-- Username -->
           <h5 id="profile-username" class="m-1">{{ getUsername }}</h5>
+          <!-- Button for updating profile picture -->
           <template v-if="isProfilePage">
             <small class="text-muted pointer" @click="updatingPic ? '' : $refs.inputPic.click()">
               <template v-if="updatingPic">&nbsp;Updating <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></template>
@@ -14,11 +17,23 @@
             </small>
             <input v-show="false" type="file" ref="inputPic" accept="image/jpeg, image/png" @change="updateProfilePic">
           </template>
-          <FollowButton
-            v-else-if="!banned"
-            :is-following="sidebarData.isFollowing"
-            @following-changed-event="changeFollow"
-          />
+          <div v-else-if="!banned" class="row ml-0">
+            <!-- Follow button -->
+            <FollowButton
+              :is-following="sidebarData.isFollowing"
+              @following-changed-event="changeFollow"
+            />
+            <!-- Dropdown for copying link and reporting -->
+            <div class="dropdown">
+              <button class="btn lower-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <font-awesome-icon :icon="['fas', 'ellipsis-h']" />
+              </button>
+              <div class="dropdown-menu bg-dark dropdown-dark" @contextmenu.prevent>
+                <div class="dropdown-item" @click="copyLink"><font-awesome-icon :icon="['fas', 'link']" /> Copy Link</div>
+                <div v-if="$auth.loggedIn && !isProfilePage" class="dropdown-item" @click="report"><font-awesome-icon :icon="['far', 'flag']" /> Report</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -66,6 +81,7 @@ import UserStats from './UserStats'
 import FollowButton from './FollowButton'
 import BioDescription from './BioDescription'
 import parseBioMixin from '~/mixins/parseBioMixin'
+import copy from 'copy-to-clipboard'
 
 export default {
   name: 'ProfileSideBar',
@@ -156,6 +172,16 @@ export default {
     },
     changeFollow(is_following) {
       this.$emit('following-changed-event', is_following)
+    },
+    copyLink() {
+      copy(`${window.location.origin}${window.location.pathname}`)
+      this.successToast("Copied")
+    },
+    report() {
+      this.$store.commit("report/setNewReport", {
+        reportObject: "user",
+        objectUid: this.$route.params.username
+      })
     }
   }
 }
@@ -187,6 +213,10 @@ export default {
     overflow-y: auto;
     max-height: 90vh;
   }
+}
+.dropdown-item {
+  cursor: pointer;
+  font-size: 14px;
 }
 .bio {
   font-size: 14px;
