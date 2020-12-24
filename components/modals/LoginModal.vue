@@ -30,12 +30,15 @@ export default {
         username: "",
         password: ""
       },
-      loading: false
+      loading: false,
+      banned: [],
     }
   },
   methods: {
     submit() {
-      if (!this.login.username || !this.login.password ||
+      if (this.banned.includes(this.login.username.toLowerCase())) {
+        this.errorToast("You have been banned")
+      } else if (!this.login.username || !this.login.password ||
           this.login.username.length > 32 ||
           !this.login.username.match(/^[a-z0-9_]+$/i)) {
         this.errorToast("Username or password incorrect.")
@@ -56,6 +59,9 @@ export default {
             const status = err.response ? err.response.status : null
             const message = status === 401 ? "Username or password incorrect" : status === 403 ? "You have been banned" : "Unexpected error occurred. Please try again"
             this.errorToast(message)
+            if (status === 403) {
+              this.banned.push(this.login.username.toLowerCase())
+            }
           })
           .finally(() => this.loading = false)
       }
