@@ -5,7 +5,7 @@
 
         <div class="comment-left-column">
           <!-- Commenter image or icon -->
-          <font-awesome-icon v-if="isDeleted" :icon="['fas', 'user-circle']" style="color: grey;" />
+          <font-awesome-icon v-if="isDeleted||!comment.username" :icon="['fas', 'user-circle']" style="color: grey;" />
           <nuxt-link v-else :to="'/u/'+comment.username" no-prefetch>
             <img v-if="comment.dp_url" class="rounded-circle" :src="comment.dp_url" height="40" width="40">
             <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="color: lightgrey;" />
@@ -17,7 +17,7 @@
           <div>
             <!-- Username and date -->
             <span>
-              <span v-if="isDeleted" class="comment-username">[REDACTED]</span>
+              <span v-if="isDeleted||!comment.username" class="comment-username">[REDACTED]</span>
               <nuxt-link v-else :to="'/u/'+comment.username" class="comment-username" no-prefetch>{{ comment.username }}</nuxt-link>&nbsp;
               <span v-if="comment.username===memeUsername" class="op-comment" title="Original Poster">
                 <font-awesome-icon :icon="['fas', 'user-alt']" />&nbsp;
@@ -61,7 +61,7 @@
           </nuxt-link>
 
           <!-- Like/dislike/reply buttons under comment -->
-          <div v-if="!isDeleted" class="container-fluid">
+          <div v-if="!isDeleted && comment.username" class="container-fluid">
             <div class="row comment-buttons">
               <button @click="vote('l')" :class="{green: isLiked}" class="btn btn-sm c-thumbs like mr-0"><font-awesome-icon :icon="[isLiked ? 'fas' : 'far', 'thumbs-up']" style="margin-left: 0;" /></button>
               <button class="btn btn-sm comment-points" style="cursor: text;">{{ displayPoints }}</button>
@@ -95,7 +95,7 @@
             <div v-show="loadSpinnerShowing" style="font-size: 20px;"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
           </div>
 
-          <div v-if="!isDeleted" v-show="typingReply && isAuthenticated" class="container-fluid">
+          <div v-if="!isDeleted && comment.username && isAuthenticated" v-show="typingReply" class="container-fluid">
             <div class="row">
               <!-- Profile picture or user icon -->
               <img v-if="hasDP" :src="hasDP" class="reply-field-dp rounded-circle" height="25" width="25">
@@ -185,7 +185,7 @@ export default {
       return this.comment.points && !this.hidePoints ? this.formatNumber(this.comment.points) : ""
     },
     isDeleted() {
-      return !this.comment.username || (!this.comment.content && !this.comment.image)
+      return !this.comment.content && !this.comment.image
     },
     ...mapGetters({
       memeUsername: 'meme/username',

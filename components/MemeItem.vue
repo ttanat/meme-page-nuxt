@@ -2,11 +2,15 @@
   <div class="item">
     <div class="item-header">
       <!-- Username -->
-      <nuxt-link :to="'/u/'+meme.username" class="header-username" no-prefetch>
+      <nuxt-link v-if="meme.username" :to="'/u/'+meme.username" class="header-username" no-prefetch>
         <img v-if="meme.dp_url" class="rounded-circle" :src="meme.dp_url" height="18" width="18">
         <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 15px;" />
         {{ meme.username }}
       </nuxt-link>
+      <span v-else class="header-username">
+        <font-awesome-icon :icon="['fas', 'user-circle']" style="font-size: 15px;" />
+        [REDACTED]
+      </span>
       <!-- Page name and display name if applicable -->
       <template v-if="meme.pname"><span class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<nuxt-link :to="'/p/'+meme.pname" class="header-page" no-prefetch>{{ meme.pdname || meme.pname }}</nuxt-link></span></template>
       <!-- Caption -->

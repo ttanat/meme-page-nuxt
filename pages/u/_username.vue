@@ -3,12 +3,12 @@
     <div class="container-fluid">
       <div class="row justify-content-center">
         <ProfileSideBar
-          :banned="banned"
+          :banned="banned||deleted"
           :sidebar-data="sidebarData"
           @following-changed-event="changeIsFollowing"
         />
         <div class="col-md-8 col-xl-9">
-          <TileItems :banned="banned" />
+          <TileItems :banned="banned" :deleted="deleted" />
         </div>
       </div>
     </div>
@@ -33,9 +33,8 @@ export default {
   },
   async asyncData({ $axios, route }) {
     const { data } = await $axios.get(`/api/user/${route.params.username}`)
-    if (data.banned) return { banned: true }
     return {
-      sidebarData: {
+      sidebarData: data.banned || data.deleted ? {} : {
         bio: data.bio,
         stats: {
           clout: data.clout,
@@ -45,7 +44,9 @@ export default {
         image: data.image,
         isFollowing: data.is_following,
         userPages: data.moderating
-      }
+      },
+      banned: !!data.banned,
+      deleted: !!data.deleted
     }
   },
   methods: {

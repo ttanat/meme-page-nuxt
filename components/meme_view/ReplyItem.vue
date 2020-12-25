@@ -4,7 +4,7 @@
 
       <div class="reply-left-column">
         <!-- Replier image or icon -->
-        <font-awesome-icon v-if="isDeleted" :icon="['fas', 'user-circle']" class="mt-2" style="color: grey;" />
+        <font-awesome-icon v-if="isDeleted||!reply.username" :icon="['fas', 'user-circle']" class="mt-2" style="color: grey;" />
         <nuxt-link v-else :to="'/u/'+reply.username" no-prefetch>
           <img v-if="reply.dp_url" class="rounded-circle" :src="reply.dp_url" height="25" width="25">
           <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="color: lightgrey;" />
@@ -16,7 +16,7 @@
         <div>
           <!-- Username and date -->
           <span>
-            <span v-if="isDeleted" class="comment-username">[REDACTED]</span>
+            <span v-if="isDeleted||!reply.username" class="comment-username">[REDACTED]</span>
             <nuxt-link v-else :to="'/u/'+reply.username" class="comment-username" no-prefetch>{{ reply.username }}</nuxt-link>&nbsp;
             <span v-if="reply.username===memeUsername" class="op-reply" title="Original Poster">
               <font-awesome-icon :icon="['fas', 'user-alt']" />&nbsp;
@@ -64,7 +64,7 @@
         </nuxt-link>
 
         <!-- Like/dislike/reply buttons under reply -->
-        <div v-if="!isDeleted" class="container-fluid">
+        <div v-if="!isDeleted && reply.username" class="container-fluid">
           <div class="row comment-buttons">
             <button @click="vote('l')" :class="{green: isLiked}" class="btn btn-sm c-thumbs like"><font-awesome-icon :icon="[isLiked ? 'fas' : 'far', 'thumbs-up']" /></button>
             <button class="btn btn-sm comment-points text-muted" style="cursor: text;">{{ displayPoints }}</button>
@@ -73,7 +73,7 @@
           </div>
         </div>
 
-        <div v-if="!isDeleted" v-show="typingReply && isAuthenticated" class="container-fluid">
+        <div v-if="!isDeleted && reply.username && isAuthenticated" v-show="typingReply" class="container-fluid">
           <div class="row">
             <!-- Profile picture or user icon -->
             <img v-if="hasDP" :src="hasDP" class="reply-field-dp rounded-circle" height="23" width="23" style="padding: 0;">
@@ -159,7 +159,7 @@ export default {
       return this.reply.points && !this.hidePoints ? this.formatNumber(this.reply.points) : ""
     },
     isDeleted() {
-      return !this.reply.username || (!this.reply.content && !this.reply.image)
+      return !this.reply.content && !this.reply.image
     },
     ...mapGetters({
       memeUsername: 'meme/username',

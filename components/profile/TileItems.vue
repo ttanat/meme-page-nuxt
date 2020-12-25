@@ -16,7 +16,7 @@
     >
       <template v-if="$route.path === '/profile/likes'">No likes yet :(</template>
       <template v-else-if="$route.path === '/profile'"><font-awesome-icon :icon="['fas', 'plus']" /> Upload your first meme!</template>
-      <template v-else>{{ banned ? "User is banned" : "No memes yet :(" }}</template>
+      <template v-else>{{ banned ? "User is banned" : deleted ? "User deleted" : "No memes yet :(" }}</template>
     </div>
   </div>
 </template>
@@ -36,11 +36,16 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    deleted: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   mixins: [infiniteScrollMixin, paginationOffsetMixin],
   created() {
-    if (this.$store.state.justRegistered || this.banned) {
+    if (this.$store.state.justRegistered || this.banned || this.deleted) {
       this.noContent = true
       this.next = null
     } else {
