@@ -34,7 +34,7 @@ export default {
     subscribe() {
       this.$axios.put(`/api/invite/${this.$route.params.uuid}`)
         .then(res => {
-          this.$router.push(`/page/${res.data.name}`)
+          this.$router.push(`/p/${res.data.name}`)
           this.successToast("You are now subscribed")
           this.addNewPage()
         })

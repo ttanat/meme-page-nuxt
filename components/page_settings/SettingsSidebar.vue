@@ -1,7 +1,7 @@
 <template>
   <div class="col-md-2 mt-1 mb-5">
     <nuxt-link
-      :to="'/page/'+$route.params.name"
+      :to="'/p/'+$route.params.name"
       class="btn btn-sm btn-secondary mb-3 p-0"
       id="back-btn"
       no-prefetch
@@ -10,7 +10,7 @@
     </nuxt-link>
     <nuxt-link
       v-if="adminView"
-      :to="'/page/'+$route.params.name+'/settings'"
+      :to="'/p/'+$route.params.name+'/settings'"
       :class="{'sl-active': $route.path.endsWith('/settings')}"
       class="sidebar"
       no-prefetch
@@ -18,7 +18,7 @@
       Settings
     </nuxt-link>
     <nuxt-link
-      :to="'/page/'+$route.params.name+'/moderators'"
+      :to="'/p/'+$route.params.name+'/moderators'"
       :class="{'sl-active': $route.path.endsWith('/moderators')}"
       class="sidebar"
       no-prefetch
@@ -27,7 +27,7 @@
     </nuxt-link>
     <nuxt-link
       v-if="pagePrivate"
-      :to="'/page/'+$route.params.name+'/requests'"
+      :to="'/p/'+$route.params.name+'/requests'"
       :class="{'sl-active': $route.path.endsWith('/requests')}"
       class="sidebar"
       no-prefetch

@@ -8,7 +8,7 @@
         {{ meme.username }}
       </nuxt-link>
       <!-- Page name and display name if applicable -->
-      <template v-if="meme.pname"><span class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<nuxt-link :to="'/page/'+meme.pname" class="header-page" no-prefetch>{{ meme.pdname || meme.pname }}</nuxt-link></span></template>
+      <template v-if="meme.pname"><span class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<nuxt-link :to="'/p/'+meme.pname" class="header-page" no-prefetch>{{ meme.pdname || meme.pname }}</nuxt-link></span></template>
       <!-- Caption -->
       <h6
         v-for="(captionFragment, i) in captionFragments"
@@ -164,7 +164,7 @@ export default {
     canRemove() {
       // Check if user can remove meme from page
       // Meme must be posted to a page and user must be an admin/moderator of that page
-      if (this.$route.path.startsWith("/page/")) {
+      if (this.$route.path.startsWith("/p/")) {
         return this.$auth.loggedIn && this.$auth.user.moderating.find(page => page.name === this.$route.params.name)
       } else {
         return this.meme.pname && this.$auth.loggedIn && this.$auth.user.moderating.find(page => page.name === this.meme.pname)
@@ -209,7 +209,7 @@ export default {
               position: 'top-center',
               duration: 1500
             })
-            if (this.$route.path === `/page/${pageName}`) {
+            if (this.$route.path === `/p/${pageName}`) {
               // Remove meme if in page
               this.$emit("remove-meme-event", this.meme.uuid)
             } else {

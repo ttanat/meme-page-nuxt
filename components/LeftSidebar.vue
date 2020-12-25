@@ -8,14 +8,14 @@
     <template v-if="getModerating.length">
       <hr>
       <h6>Pages</h6>
-      <nuxt-link v-for="page in getModerating" :key="'m-'+page.name" :to="'/page/'+page.name" no-prefetch>
+      <nuxt-link v-for="page in getModerating" :key="'m-'+page.name" :to="'/p/'+page.name" no-prefetch>
         <font-awesome-icon :icon="['fas', page.private ? 'lock' : 'star']" fixed-width />&ensp;{{ page.dname || page.name }}
       </nuxt-link>
     </template>
     <template v-if="getSubscriptions.length">
       <hr>
       <h6>Subscriptions</h6>
-      <nuxt-link v-for="page in getSubscriptions" :key="'s-'+page.name" :to="'/page/'+page.name" no-prefetch>
+      <nuxt-link v-for="page in getSubscriptions" :key="'s-'+page.name" :to="'/p/'+page.name" no-prefetch>
         <font-awesome-icon :icon="['fas', page.private ? 'lock' : 'star']" fixed-width />&ensp;{{ page.dname || page.name }}
       </nuxt-link>
     </template>

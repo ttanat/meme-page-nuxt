@@ -8,7 +8,7 @@
             Moderators
             <nuxt-link
               v-if="!isModerating && !$fetchState.pending"
-              :to="'/page/'+$route.params.name"
+              :to="'/p/'+$route.params.name"
               class="btn btn-sm btn-secondary float-right d-none d-lg-inline"
               no-prefetch
             >

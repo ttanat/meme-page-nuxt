@@ -112,7 +112,7 @@ export default {
           if (data.success) {
             $("#newMemePage").modal('hide')
             await this.addPageToAuthUser(formData)
-            this.$router.push(`/page/${data.name}`)
+            this.$router.push(`/p/${data.name}`)
           } else {
             if (data.taken) {
               this.TAKEN_PAGE_NAMES.push(formData.get("name").toLowerCase())

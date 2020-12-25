@@ -90,8 +90,8 @@ export default {
       // check_next_url is false when called from async fetch at the start
       // ensure that memes are loaded during async fetch even though this.next is null
       if (check_next_url && this.next === null) return false
-      if ((this.pathname.startsWith("/page/") && (!this.pageConfig.show || !this.pageConfig.num_posts))
-          || (!["/", "/all", "/feed", "/search"].includes(this.pathname) && !this.pathname.match(/^\/page\/[a-zA-Z0-9_]+$/)
+      if ((this.pathname.startsWith("/p/") && (!this.pageConfig.show || !this.pageConfig.num_posts))
+          || (!["/", "/all", "/feed", "/search"].includes(this.pathname) && !this.pathname.match(/^\/p\/[a-zA-Z0-9_]+$/)
           && !this.pathname.match(/^\/browse\/[a-zA-Z0-9_]+$|^\/browse\/tv-shows$/))) return false
       return true
     },
@@ -121,7 +121,7 @@ export default {
     },
     getNewURL() {
       return this.pathname === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(this.$route.query.q.slice(0, 64))}`
-           : this.pathname.startsWith("/page/") && this.$auth.loggedIn && this.pageConfig.private && this.pageConfig.show ? `/api/memes/pv/?n=${encodeURIComponent(this.$route.params.name)}`
+           : this.pathname.startsWith("/p/") && this.$auth.loggedIn && this.pageConfig.private && this.pageConfig.show ? `/api/memes/pv/?n=${encodeURIComponent(this.$route.params.name)}`
            : `/api/memes/?p=${encodeURIComponent(this.pathname.slice(1))}`
     },
     pauseAll() {

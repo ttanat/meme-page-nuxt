@@ -5,8 +5,8 @@
 
         <div class="col-md-11 mb-2">
           <h4 class="mb-3">
-            Settings - <nuxt-link :to="'/page/'+page.name" style="color: inherit;">{{ page.display_name || page.name }}</nuxt-link>
-            <nuxt-link class="btn btn-sm btn-secondary float-right d-none d-lg-inline" :to="'/page/'+page.name">Go back</nuxt-link>
+            Settings - <nuxt-link :to="'/p/'+page.name" style="color: inherit;">{{ page.display_name || page.name }}</nuxt-link>
+            <nuxt-link class="btn btn-sm btn-secondary float-right d-none d-lg-inline" :to="'/p/'+page.name">Go back</nuxt-link>
           </h4>
         </div>
 

@@ -81,7 +81,7 @@
             <img v-if="page.num_posts && show" class="ad" src="~/assets/ad.png" alt="Advertisement">
             <div v-if="show" class="list-group mt-4 mb-5">
               <nuxt-link
-                :to="'/page/'+page.name+'/moderators'"
+                :to="'/p/'+page.name+'/moderators'"
                 class="list-group-item list-group-item-action py-2"
                 style="background: darkgreen;color: white;"
                 no-prefetch

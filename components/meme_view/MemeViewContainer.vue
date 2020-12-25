@@ -10,7 +10,7 @@
       <!-- Page if applicable -->
       <span v-if="meme.pname" class="text-muted" style="font-size: 15px;">
         &ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />
-        &nbsp;<nuxt-link class="text-muted" :to="'/page/'+meme.pname">{{ meme.pdname || meme.pname }}</nuxt-link>
+        &nbsp;<nuxt-link class="text-muted" :to="'/p/'+meme.pname">{{ meme.pdname || meme.pname }}</nuxt-link>
       </span>
       <!-- Dropdown -->
       <div class="dropdown float-right" style="margin-top: -4px">
@@ -172,7 +172,7 @@ export default {
           this.$axios.delete(`/api/delete/meme/${this.$route.params.uuid}`)
             .then(res => {
               if (res.status === 204) {
-                this.$router.push(this.meme.pname ? `/page/${this.meme.pname}` : "/")
+                this.$router.push(this.meme.pname ? `/p/${this.meme.pname}` : "/")
                 // Not actually an error, but using toast for errors
                 this.errorToast("Meme has been deleted :(")
               }
@@ -182,7 +182,7 @@ export default {
           // Remove meme from page
           this.$axios.put(`/api/mods/remove/meme/${this.$route.params.uuid}`)
             .then(() => {
-              this.$router.push(`/page/${this.meme.pname}`)
+              this.$router.push(`/p/${this.meme.pname}`)
               this.$toast.info(`Meme removed from ${this.meme.pdname || this.meme.pname}`, {
                 position: 'top-center',
                 duration: 1500

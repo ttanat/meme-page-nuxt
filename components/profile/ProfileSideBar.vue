@@ -68,7 +68,7 @@
       <template v-if="getPages.length">
         <br>
         <h5>Meme Pages</h5>
-        <nuxt-link v-for="p in getPages" :key="p.name" :to="'/page/'+p.name">
+        <nuxt-link v-for="p in getPages" :key="p.name" :to="'/p/'+p.name">
           <font-awesome-icon :icon="['fas', p.private ? 'lock' : 'star']" />&ensp;{{ p.dname || p.name }}
         </nuxt-link>
       </template>
