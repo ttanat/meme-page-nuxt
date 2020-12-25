@@ -3,7 +3,7 @@
   <div class="container-fluid content-section" style="width: 98%;margin-bottom: 5px;">
     <div style="margin-top: .65rem;">
       <!-- Username -->
-      <nuxt-link :to="'/user/' + meme.username" style="color: #aaa;">
+      <nuxt-link :to="'/u/'+meme.username" style="color: #aaa;">
         <img v-if="meme.dp_url" class="rounded-circle" :src="meme.dp_url" height="24" width="24">
         <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 20px;" />&ensp;{{ meme.username }}
       </nuxt-link>

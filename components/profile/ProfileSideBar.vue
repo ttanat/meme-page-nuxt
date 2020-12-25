@@ -111,12 +111,12 @@ export default {
     const meta = [
       // Twitter meta tags
       {hid: "twitter:card", name: "twitter:card", content: "summary"},
-      {hid: "twitter:url", name: "twitter:url", content: `${window.location.origin}/user/${this.getUsername}`}, // Ensure not /profile
+      {hid: "twitter:url", name: "twitter:url", content: `${window.location.origin}/u/${this.getUsername}`}, // Ensure not /profile
       {hid: "twitter:title", name: "twitter:title", content: `${this.getUsername} - Meme Page`},
       {hid: "twitter:description", name: "twitter:description", content: this.getBio},
       {hid: "twitter:image", name: "twitter:image", content: this.getImage},
       // Open graph meta tags
-      {hid: "og:url", property: "og:url", content: `${window.location.origin}/user/${this.getUsername}`}, // Ensure not /profile
+      {hid: "og:url", property: "og:url", content: `${window.location.origin}/u/${this.getUsername}`}, // Ensure not /profile
       {hid: "og:type", property: "og:type", content: "profile"},
       {hid: "og:title", property: "og:title", content: `${this.getUsername} - Meme Page`},
       {hid: "og:image", property: "og:image", content: this.getImage},
@@ -178,7 +178,7 @@ export default {
       this.$emit('following-changed-event', is_following)
     },
     copyLink() {
-      copy(`${window.location.origin}${this.isProfilePage ? `/user/${this.$auth.user.username}` : window.location.pathname}`)
+      copy(`${window.location.origin}${this.isProfilePage ? `/u/${this.$auth.user.username}` : window.location.pathname}`)
       this.successToast("Copied")
     },
     report() {

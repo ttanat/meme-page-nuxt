@@ -6,7 +6,7 @@
         <div class="comment-left-column">
           <!-- Commenter image or icon -->
           <font-awesome-icon v-if="isDeleted" :icon="['fas', 'user-circle']" style="color: grey;" />
-          <nuxt-link v-else :to="'/user/'+comment.username" no-prefetch>
+          <nuxt-link v-else :to="'/u/'+comment.username" no-prefetch>
             <img v-if="comment.dp_url" class="rounded-circle" :src="comment.dp_url" height="40" width="40">
             <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="color: lightgrey;" />
           </nuxt-link>
@@ -18,7 +18,7 @@
             <!-- Username and date -->
             <span>
               <span v-if="isDeleted" class="comment-username">[REDACTED]</span>
-              <nuxt-link v-else :to="'/user/'+comment.username" class="comment-username" no-prefetch>{{ comment.username }}</nuxt-link>&nbsp;
+              <nuxt-link v-else :to="'/u/'+comment.username" class="comment-username" no-prefetch>{{ comment.username }}</nuxt-link>&nbsp;
               <span v-if="comment.username===memeUsername" class="op-comment" title="Original Poster">
                 <font-awesome-icon :icon="['fas', 'user-alt']" />&nbsp;
               </span>

@@ -27,7 +27,7 @@ export default {
         if (currentValue.match(/(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*))/)) {
           newVal = `<a href="${currentValue}" target="_blank">${currentValue}</a>`
         } else if (currentValue.match(/@[a-zA-Z0-9_]+/)) {
-          newVal = `<a href="/user/${currentValue.slice(1)}" target="_blank">${currentValue}</a>`
+          newVal = `<a href="/u/${currentValue.slice(1)}" target="_blank">${currentValue}</a>`
         } else if (currentValue.match(/#[a-zA-Z][a-zA-Z0-9_]*/)) {
           newVal = `<a href="/search?q=%23${currentValue.slice(1)}" target="_blank">${currentValue}</a>`
         } else {

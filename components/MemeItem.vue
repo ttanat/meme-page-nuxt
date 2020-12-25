@@ -2,7 +2,7 @@
   <div class="item">
     <div class="item-header">
       <!-- Username -->
-      <nuxt-link :to="'/user/'+meme.username" class="header-username" no-prefetch>
+      <nuxt-link :to="'/u/'+meme.username" class="header-username" no-prefetch>
         <img v-if="meme.dp_url" class="rounded-circle" :src="meme.dp_url" height="18" width="18">
         <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 15px;" />
         {{ meme.username }}

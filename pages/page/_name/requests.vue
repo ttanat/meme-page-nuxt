@@ -13,7 +13,7 @@
           <div>
             <h5>Requests</h5>
             <div v-for="req in requests" :key="req.id" :req="req" class="request py-2 pl-2">
-              <nuxt-link :to="'/user/'+req.username" target="_blank" no-prefetch>{{ req.username }}</nuxt-link> wants to subscribe
+              <nuxt-link :to="'/u/'+req.username" target="_blank" no-prefetch>{{ req.username }}</nuxt-link> wants to subscribe
               &ensp;<small class="text-muted mr-2">{{ new Date(req.timestamp).toUTCString() }}</small>
               <button @click="acceptRequest(req.id)" class="btn btn-sm btn-primary buttons mr-2">Accept</button>
               <button @click="deleteRequest(req.id)" class="btn btn-sm btn-secondary buttons">Delete</button>
