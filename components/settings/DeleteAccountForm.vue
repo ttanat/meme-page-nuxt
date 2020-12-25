@@ -4,11 +4,12 @@
     <input v-model="confirmPassword" type="password" class="form-control form-control-sm mb-3" id="delPassword" placeholder="Confirm password">
     <button
       @click="deleteAccount"
-      :disabled="!confirmPassword.length"
+      :disabled="!confirmPassword.length || loading"
       :class="{'not-allowed': !confirmPassword.length}"
       class="btn btn-danger btn-sm"
     >
-      Delete account
+      <font-awesome-icon v-if="loading" :icon="['fas', 'circle-notch']" spin />
+      <template v-else>Delete account</template>
     </button>
   </div>
 </template>
@@ -18,7 +19,8 @@ export default {
   name: 'DeleteAccountForm',
   data() {
     return {
-      confirmPassword: ""
+      confirmPassword: "",
+      loading: false
     }
   },
   methods: {
@@ -27,6 +29,7 @@ export default {
         this.errorToast("Password incorrect")
       } else {
         if (confirm("Are you sure you want to delete your account?")) {
+          this.loading = true
           const data = new FormData()
           data.set("password", this.confirmPassword)
           this.$axios.post("/api/delete/user", data)
@@ -36,6 +39,7 @@ export default {
               this.$router.push('/')
             })
             .catch(err => err.response.data ? this.errorToast(err.response.data) : console.log(err))
+            .finally(() => this.loading = false)
         }
       }
     }
