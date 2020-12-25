@@ -49,7 +49,7 @@
 
     <UserStats v-if="!banned" :stats="isProfilePage ? $auth.user.stats : sidebarData.stats" />
 
-    <div class="mt-4 mb-5">
+    <div class="mt-4" :class="[isProfilePage ? 'mb-4' : 'mb-5']">
       <h5>Profile</h5>
       <template v-if="isProfilePage">
         <nuxt-link :class="{'sl-active': pathname === '/profile'}" to="/profile">
@@ -65,13 +65,17 @@
       <nuxt-link v-else class="sidebar-link sl-active" to="">
         <font-awesome-icon :icon="['fas', 'box-open']" />&ensp;Memes
       </nuxt-link>
-      <br>
       <template v-if="getPages.length">
+        <br>
         <h5>Meme Pages</h5>
         <nuxt-link v-for="p in getPages" :key="p.name" :to="'/page/'+p.name">
           <font-awesome-icon :icon="['fas', p.private ? 'lock' : 'star']" />&ensp;{{ p.dname || p.name }}
         </nuxt-link>
       </template>
+    </div>
+
+    <div v-if="isProfilePage" class="text-muted pointer mb-5" @click="copyLink" title="Copy link" style="font-size: 14px;">
+      Copy link <font-awesome-icon :icon="['fas', 'link']" />
     </div>
   </div>
 </template>
@@ -174,7 +178,7 @@ export default {
       this.$emit('following-changed-event', is_following)
     },
     copyLink() {
-      copy(`${window.location.origin}${window.location.pathname}`)
+      copy(`${window.location.origin}${this.isProfilePage ? `/user/${this.$auth.user.username}` : window.location.pathname}`)
       this.successToast("Copied")
     },
     report() {
