@@ -108,8 +108,8 @@
           <font-awesome-icon :icon="['fas', 'download']" />&ensp;Download
         </a>
       </li>
-      <li v-if="!isOwnMeme">
-        <a href="javascript:void(0);">
+      <li v-if="$auth.loggedIn && !isOwnMeme">
+        <a href="javascript:void(0);" @click="report">
           <font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report
         </a>
       </li>
