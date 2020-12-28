@@ -184,10 +184,7 @@ export default {
     },
     copyLink() {
       copy(`${window.location.origin}/m/${this.meme.uuid}`)
-      this.$toast.success("Copied", {
-        position: 'bottom-center',
-        duration: 1000
-      })
+      this.successToast("Copied")
     },
     report() {
       this.$store.commit("report/setNewReport", {
