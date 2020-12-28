@@ -10,8 +10,10 @@
           <MemeItems v-else />
         </div>
         <div id="right" class="col-md-4 col-lg-3 col-xl-3">
+          <img class="ad" src="~/assets/got_ad.png" alt="Advertisement">
+          <TrendingList />
           <div class="right-fixed">
-            <img class="ad" src="~/assets/got_ad.png" alt="Advertisement">
+            <img class="ad" src="~/assets/ad_two.png" alt="Advertisement">
             <img class="ad" src="~/assets/ad.png" alt="Advertisement">
           </div>
         </div>
@@ -24,13 +26,15 @@
 import LeftSidebar from '~/components/LeftSidebar'
 import ListItems from '~/components/ListItems'
 import MemeItems from '~/components/MemeItems'
+import TrendingList from '~/components/TrendingList'
 
 export default {
   name: 'ScrollView',
   components: {
     LeftSidebar,
     ListItems,
-    MemeItems
+    MemeItems,
+    TrendingList
   },
   props: {
     searchListView: {
