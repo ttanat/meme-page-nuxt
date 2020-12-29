@@ -11,9 +11,9 @@
         <font-awesome-icon :icon="['fas', 'user-circle']" style="font-size: 20px;" />&ensp;[REDACTED]
       </span>
       <!-- Page if applicable -->
-      <span v-if="meme.pname" class="text-muted" style="font-size: 15px;">
+      <span v-if="meme.page" class="text-muted" style="font-size: 15px;">
         &ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />
-        &nbsp;<nuxt-link class="text-muted" :to="'/p/'+meme.pname">{{ meme.pdname || meme.pname }}</nuxt-link>
+        &nbsp;<nuxt-link class="text-muted" :to="'/p/'+meme.page.name">{{ meme.page.dname || meme.page.name }}</nuxt-link>
       </span>
       <!-- Dropdown -->
       <div class="dropdown float-right" style="margin-top: -4px">
@@ -21,7 +21,7 @@
           <font-awesome-icon :icon="['fas', 'ellipsis-h']" />
         </button>
         <div class="dropdown-menu bg-dark dropdown-dark">
-          <nuxt-link class="dropdown-item" :to="'/img?m='+meme.uuid" target="_blank"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link>
+          <nuxt-link class="dropdown-item" :to="'/img?m='+meme.uuid"><font-awesome-icon :icon="['fas', 'download']" /> Download</nuxt-link>
           <a class="dropdown-item" @click="copyLinkDropdown"><font-awesome-icon :icon="['fas', 'link']" /> Copy link</a>
           <a v-if="$auth.loggedIn && !isOwnMeme" class="dropdown-item" @click="report"><font-awesome-icon :icon="['far', 'flag']" /> Report</a>
           <a v-if="isOwnMeme || hasModPermissions" @click="deleteMeme" class="dropdown-item" href="javascript:void(0);">
@@ -123,9 +123,9 @@ export default {
       return this.$auth.loggedIn && this.meme.username === this.$auth.user.username
     },
     hasModPermissions() {
-      return (this.meme.pname
+      return (this.meme.page.name
               && this.$auth.loggedIn
-              && this.$auth.user.moderating.find(p => p.name === this.meme.pname))
+              && this.$auth.user.moderating.find(p => p.name === this.meme.page.name))
     },
     captionFragments() {
       return this.meme.caption.split(/(?:\r\n|\r|\n)/g) // Split new lines
@@ -162,7 +162,7 @@ export default {
       window.open(`/search?q=%23${tag_name}`)
     },
     deleteMeme() {
-      const hasPage = this.isOwnMeme ? "" : ` from ${this.meme.pdname || this.meme.pname}`
+      const hasPage = this.isOwnMeme ? "" : ` from ${this.meme.page.dname || this.meme.page.name}`
 
       if (confirm(`Are you sure you want to ${this.isOwnMeme ? "delete" : "remove"} this meme${hasPage}?`)) {
         // Show toast to user
@@ -175,7 +175,7 @@ export default {
           this.$axios.delete(`/api/delete/meme/${this.$route.params.uuid}`)
             .then(res => {
               if (res.status === 204) {
-                this.$router.push(this.meme.pname ? `/p/${this.meme.pname}` : "/")
+                this.$router.push(this.meme.page.name ? `/p/${this.meme.page.name}` : "/")
                 // Not actually an error, but using toast for errors
                 this.errorToast("Meme has been deleted :(")
               }
@@ -185,8 +185,8 @@ export default {
           // Remove meme from page
           this.$axios.put(`/api/mods/remove/meme/${this.$route.params.uuid}`)
             .then(() => {
-              this.$router.push(`/p/${this.meme.pname}`)
-              this.$toast.info(`Meme removed from ${this.meme.pdname || this.meme.pname}`, {
+              this.$router.push(`/p/${this.meme.page.name}`)
+              this.$toast.info(`Meme removed from ${this.meme.page.dname || this.meme.page.name}`, {
                 position: 'top-center',
                 duration: 1500
               })

@@ -19,11 +19,24 @@
           <CommentSection />
         </div>
 
-        <div class="col-md-4 col-lg-3" id="right" style="text-align: center;">
-          <img class="ad" src="~/assets/got_ad.png" alt="Advertisement">
-          <div style="padding: 10px;margin-bottom: 20px;">
-            <img src="~/assets/google_play.png" style="width: 70%;overflow: hidden;">
-            <img src="~/assets/app_store.png" style="width: 64%;overflow: hidden;border: solid 1px grey;border-radius: 10px;">
+        <div class="col-md-4 col-lg-3 justify-content-center" id="right">
+          <div v-if="meme.page" class="page-container mb-4 p-3">
+            <nuxt-link :to="meme.page.name">
+              <span v-if="meme.page.image"><img :src="meme.page.image" class="rounded-circle" height="40" width="40">&nbsp;</span>
+              <span style="color: lightgrey;">{{ meme.page.dname || meme.page.name }}</span>
+            </nuxt-link>
+            <div class="my-2" style="font-size: 14px;">{{ meme.page.description }}</div>
+            <table class="w-100">
+              <tr>
+                <!-- Plus one to include admin -->
+                <td>{{ formatNumber(meme.page.num_subs + 1) }}</td>
+                <td>{{ formatNumber(meme.page.num_posts) }}</td>
+              </tr>
+              <tr style="line-height: 1;">
+                <td><small>members</small></td>
+                <td><small>posts</small></td>
+              </tr>
+            </table>
           </div>
 
           <div class="right-fixed">
@@ -61,6 +74,7 @@ import CommentSection from '~/components/meme_view/CommentSection'
 import DeleteModal from '~/components/modals/DeleteModal'
 import { mapGetters } from 'vuex'
 import urlFileExtMixin from '~/mixins/urlFileExtMixin'
+import formatNumberMixin from '~/mixins/formatNumberMixin'
 
 export default {
   components: {
@@ -69,7 +83,7 @@ export default {
     CommentSection,
     DeleteModal
   },
-  mixins: [urlFileExtMixin],
+  mixins: [urlFileExtMixin, formatNumberMixin],
   async asyncData({ $axios, store, params }) {
     const { data } = await $axios.get(`/api/m/${params.uuid}`)
     store.commit("meme/setData", data)
@@ -111,13 +125,18 @@ export default {
 .item {
   background-color: #171717;
   border: 1px solid #444444;
-  border-radius: 8px;
+  border-radius: 7px;
+}
+.page-container {
+  /* width: 100%; */
+  width: 270px;
+  margin: 0 auto;
+  background-color: #171717;
+  border: 1px solid #444;
+  border-radius: 7px;
 }
 .right-fixed {
   text-align: center;
-  top: 4rem;
-  position: sticky;
-  position: -webkit-sticky;
 }
 #overlay {
   position: fixed;
