@@ -51,13 +51,13 @@
                 <br>
                 <small>{{ 100 - caption.length }} characters left</small>
                 <div class="custom-file my-3">
-                  <input ref="inputFile" @change="validateForm" type="file" class="custom-file-input" accept="image/jpeg, image/png, image/gif, video/mp4, video/quicktime" autocomplete="off" required>
-                  <label class="custom-file-label">{{ fname }}</label>
+                  <input ref="inputFile" @change="validateForm" type="file" class="custom-file-input pointer" accept="image/jpeg, image/png, image/gif, video/mp4, video/quicktime" autocomplete="off" required>
+                  <label class="custom-file-label pointer">{{ fname }}</label>
                 </div>
-                <div class="custom-control custom-checkbox custom-checkbox-sm mb-3">
+                <!-- <div class="custom-control custom-checkbox custom-checkbox-sm mb-3">
                   <input v-model="nsfw" type="checkbox" id="uploadNsfw" class="custom-control-input custom-control-input-sm" autocomplete="off">
                   <label for="uploadNsfw" class="custom-control-label" style="color: tomato;font-size: 15px;">NSFW</label>
-                </div>
+                </div> -->
                 <textarea v-model="tags" class="form-control" rows="2" placeholder="#tags (optional)" autocomplete="off" style="resize: none;padding: .15em;padding-left: 4px;"></textarea>
                 <div style="color: royalblue;">{{ displayTags }}</div>
               </div>
@@ -95,7 +95,7 @@ export default {
       page: "",
       category: "",
       caption: "",
-      nsfw: false,
+      // nsfw: false,
       tags: "",
       videoDuration: 99,
       canSubmit: false,
@@ -120,7 +120,8 @@ export default {
       return tags.slice(0, 20).join(" ")
     },
     showClearButton() {
-      return this.page || this.category || this.caption || this.nsfw || this.tags || this.canSubmit
+      // return this.page || this.category || this.caption || this.nsfw || this.tags || this.canSubmit
+      return this.page || this.category || this.caption || this.tags || this.canSubmit
     }
   },
   methods: {
@@ -222,7 +223,7 @@ export default {
       }
       // Join all tags into one string (will be processed in backend instead)
       data.set("tags", this.getTags().slice(0, 20).join(""))
-      data.set("nsfw", this.nsfw)
+      // data.set("nsfw", this.nsfw)
       if (this.$route.path === "/profile") data.set("is_profile_page", true)
       // Add file to data
       data.set("file", this.$refs.inputFile.files[0])
@@ -275,7 +276,8 @@ export default {
     },
     clearForm() {
       this.page = this.category = this.caption = this.tags = ""
-      this.nsfw = this.showImgPreview = this.showVidPreview = false
+      // this.nsfw = this.showImgPreview = this.showVidPreview = false
+      this.showImgPreview = this.showVidPreview = false
       this.$refs.inputFile.value = null
       this.fname = "Choose File"
       this.canSubmit = false
