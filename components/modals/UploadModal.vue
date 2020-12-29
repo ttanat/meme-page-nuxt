@@ -47,7 +47,7 @@
                   </div>
                 </div>
                 <br>
-                <textarea @keyup.enter="newLineCheck" v-model="caption" type="text" rows="2" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off" style="outline: none;line-height: 1.8;"></textarea>
+                <textarea @keyup.enter="newLineCheck" v-model="caption" type="text" rows="3" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off" style="outline: none;line-height: 1.8;"></textarea>
                 <br>
                 <small>{{ 100 - caption.length }} characters left</small>
                 <div class="custom-file my-3">
@@ -58,6 +58,10 @@
                   <input v-model="nsfw" type="checkbox" id="uploadNsfw" class="custom-control-input custom-control-input-sm" autocomplete="off">
                   <label for="uploadNsfw" class="custom-control-label" style="color: tomato;font-size: 15px;">NSFW</label>
                 </div> -->
+                <div class="custom-control custom-checkbox custom-checkbox-sm mb-3">
+                  <input v-model="isPrivate" type="checkbox" id="uploadPrivate" class="custom-control-input custom-control-input-sm" autocomplete="off">
+                  <label for="uploadPrivate" class="custom-control-label" style="color: tomato;font-size: 15px;">Private</label>
+                </div>
                 <textarea v-model="tags" class="form-control" rows="2" placeholder="#tags (optional)" autocomplete="off" style="resize: none;padding: .15em;padding-left: 4px;"></textarea>
                 <div style="color: royalblue;">{{ displayTags }}</div>
               </div>
@@ -96,6 +100,7 @@ export default {
       category: "",
       caption: "",
       // nsfw: false,
+      isPrivate: false,
       tags: "",
       videoDuration: 99,
       canSubmit: false,
@@ -121,7 +126,7 @@ export default {
     },
     showClearButton() {
       // return this.page || this.category || this.caption || this.nsfw || this.tags || this.canSubmit
-      return this.page || this.category || this.caption || this.tags || this.canSubmit
+      return this.page || this.category || this.caption || this.private || this.tags || this.canSubmit
     }
   },
   methods: {
@@ -224,6 +229,7 @@ export default {
       // Join all tags into one string (will be processed in backend instead)
       data.set("tags", this.getTags().slice(0, 20).join(""))
       // data.set("nsfw", this.nsfw)
+      data.set("private", this.isPrivate)
       if (this.$route.path === "/profile") data.set("is_profile_page", true)
       // Add file to data
       data.set("file", this.$refs.inputFile.files[0])
@@ -277,7 +283,7 @@ export default {
     clearForm() {
       this.page = this.category = this.caption = this.tags = ""
       // this.nsfw = this.showImgPreview = this.showVidPreview = false
-      this.showImgPreview = this.showVidPreview = false
+      this.isPrivate = this.showImgPreview = this.showVidPreview = false
       this.$refs.inputFile.value = null
       this.fname = "Choose File"
       this.canSubmit = false

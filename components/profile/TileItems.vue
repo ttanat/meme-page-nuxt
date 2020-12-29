@@ -11,11 +11,12 @@
     <div
       v-if="noContent && !tiles.length"
       class="profile-empty"
-      :class="{pointer: isProfilePage}"
-      :onclick="isProfilePage ? `$('#uploadModal').modal('show')` : ''"
+      :class="{pointer: $route.path === '/profile'}"
+      :onclick="$route.path === '/profile' ? `$('#uploadModal').modal('show')` : ''"
     >
       <template v-if="$route.path === '/profile/likes'">No likes yet :(</template>
       <template v-else-if="$route.path === '/profile'"><font-awesome-icon :icon="['fas', 'plus']" /> Upload your first meme!</template>
+      <template v-else-if="$route.path === '/profile/private'">No memes here :(</template>
       <template v-else>{{ banned ? "User is banned" : deleted ? "User deleted" : "No memes yet :(" }}</template>
     </div>
   </div>
@@ -56,7 +57,10 @@ export default {
   data() {
     return {
       tiles: [],
-      next: this.$route.path === "/profile" ? "/api/profile/memes/" : this.$route.path === "/profile/likes" ? "/api/profile/likes/" : `/api/user_page/memes/?u=${this.$route.params.username}`,
+      next: this.$route.path === "/profile" ? "/api/profile/memes/"
+                              : this.$route.path === "/profile/likes" ? "/api/profile/likes/"
+                              : this.$route.path === "/profile/private" ? "/api/profile/private/"
+                              : `/api/user_page/memes/?u=${this.$route.params.username}`,
       noContent: false,
       loading: false
     }

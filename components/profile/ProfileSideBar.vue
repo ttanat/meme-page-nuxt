@@ -61,6 +61,9 @@
         <nuxt-link :class="{'sl-active': pathname === '/profile/comments'}" to="/profile/comments">
           <font-awesome-icon :icon="['fas', 'comment']" />&ensp;Comments
         </nuxt-link>
+        <nuxt-link :class="{'sl-active': pathname === '/profile/private'}" to="/profile/private">
+          <font-awesome-icon :icon="['fas', 'lock']" />&ensp;Private
+        </nuxt-link>
       </template>
       <nuxt-link v-else class="sidebar-link sl-active" to="">
         <font-awesome-icon :icon="['fas', 'box-open']" />&ensp;Memes
@@ -74,7 +77,7 @@
       </template>
     </div>
 
-    <div v-if="isProfilePage" class="text-muted pointer mb-5" @click="copyLink" title="Copy link" style="font-size: 14px;">
+    <div v-if="isProfilePage" class="text-muted pointer mb-5" @click="copyLink" title="Copy profile link" style="font-size: 14px;">
       Copy link <font-awesome-icon :icon="['fas', 'link']" />
     </div>
   </div>
