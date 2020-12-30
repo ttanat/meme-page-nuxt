@@ -7,23 +7,30 @@
     <div class="dropdown-menu dropdown-menu-right dropdown-dark">
       <h5 class="dropdown-header m-0">Notifications</h5>
       <div v-if="notifications" id="notifications" class="w-100">
-        <nuxt-link v-for="(notification, index) in notifications" :key="index" :to="notification.link" class="notification row" no-prefetch>
+        <nuxt-link
+          v-for="(notif, index) in notifications"
+          :key="index"
+          :to="notif.link"
+          class="notification row"
+          no-prefetch
+        >
           <div class="notif-left-column">
             <img
-              v-if="notification.image"
-              :src="notification.image"
+              v-if="notif.image"
+              :src="notif.image"
+              :class="{'rounded-circle': isUserImage(notif.message)}"
+              :style="{borderRadius: isUserImage(notif.message) ? '' : '3px'}"
               height="50"
               width="50"
-              style="border-radius: 3px;"
             >
             <font-awesome-icon
-              v-else-if="notification.message.includes('your comment')"
+              v-else-if="notif.message.includes('your comment')"
               :icon="['fas', 'comment']"
               style="font-size: 25px;"
             />
             <font-awesome-icon v-else :icon="['fas', 'user-circle']" class="notif-icon" />
           </div>
-          <div class="notif-right-column">{{ notification.message }}</div>
+          <div class="notif-right-column">{{ notif.message }}</div>
         </nuxt-link>
       </div>
       <div v-else>None</div>
@@ -37,17 +44,22 @@
 export default {
   name: 'NotificationsDropdown',
   data() {
-      return {
-          notifications: [],
-          count: 0,
-          seen: false
-      }
+    return {
+      notifications: [],
+      count: 0,
+      seen: false
+    }
   },
   async mounted() {
     if (this.$route.name !== "notifications" && !this.$store.state.justRegistered) {
       const { data } = await this.$axios.get(`/api/notifications/nav`)
-      this.notifications.push(...data.list)
+      this.notifications.push(...data.results)
       this.count = data.count
+    }
+  },
+  methods: {
+    isUserImage(message) {
+      return message.match(/^[a-zA-Z0-9_]{1,32} (followed you$|replied to your comment$|subscribed to [a-zA-Z0-9_]{1,32}$)/)
     }
   }
 }
