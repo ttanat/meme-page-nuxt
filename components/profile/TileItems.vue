@@ -80,10 +80,10 @@ export default {
       if (this.next) {
         this.loading = true
         this.$axios.get(this.next)
-          .then(({ data }) => {
-            this.tiles.push(...data.results)
-            this.next = data.next
-            if (!data.results.length && !this.tiles.length) {
+          .then(({ data: { results, next } }) => {
+            this.tiles.push(...results)
+            this.next = next
+            if (!results.length && !this.tiles.length) {
               this.noContent = true
               this.next = null
             }
@@ -98,9 +98,9 @@ export default {
       })
     },
     removeTile(uuid) {
-      const i = this.tiles.findIndex(tile => tile.uuid === uuid)
-      this.tiles.splice(i, 1)
+      this.tiles = this.tiles.filter(tile => tile.uuid !== uuid)
       if (!this.tiles.length && this.next === null) this.noContent = true
+      // Cannot decrease offset to negative value so next page will be missing some memes
     }
   },
   beforeDestroy() {
