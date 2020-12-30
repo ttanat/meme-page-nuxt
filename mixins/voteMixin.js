@@ -33,7 +33,8 @@ export default {
           progress: false
         })
           .catch(err => {
-            this.displayError(err.response.data || err)
+            this.displayError(err.message === "Network Error" ? err : "Unexpected error occurred")
+            console.log(err)
             this.isLiked = old_state[0]
             this.isDisliked = old_state[1]
             if (!hide) this.$emit("set-points-event", item.uuid, old_state[2])
