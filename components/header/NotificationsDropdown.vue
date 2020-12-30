@@ -6,7 +6,7 @@
     </a>
     <div class="dropdown-menu dropdown-menu-right dropdown-dark">
       <h5 class="dropdown-header m-0">Notifications</h5>
-      <div v-if="notifications" id="notifications" class="w-100">
+      <div v-if="notifications.length" id="notifications" class="w-100">
         <nuxt-link
           v-for="(notif, index) in notifications"
           :key="index"
@@ -33,7 +33,10 @@
           <div class="notif-right-column">{{ notif.message }}</div>
         </nuxt-link>
       </div>
-      <div v-else>None</div>
+      <div v-else class="no-notifs">
+        <nuxt-link v-if="count" to="/notifications">See invites</nuxt-link>
+        <template v-else>None</template>
+      </div>
       <div class="dropdown-divider"></div>
       <nuxt-link class="dropdown-item" to="/notifications" no-prefetch>View all</nuxt-link>
     </div>
@@ -70,6 +73,10 @@ export default {
   width: 335px;
   background-color: #252525;
   color: lightgrey;
+}
+.no-notifs {
+  font-size: 14px;
+  padding: 5px 14px 5px 24px;
 }
 .notification {
   width: 100%;

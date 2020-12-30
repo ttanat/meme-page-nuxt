@@ -38,9 +38,7 @@ export default {
     submit() {
       if (this.banned.includes(this.login.username.toLowerCase())) {
         this.errorToast("You have been banned")
-      } else if (!this.login.username || !this.login.password ||
-          this.login.username.length > 32 ||
-          !this.login.username.match(/^[a-z0-9_]+$/i)) {
+      } else if (!this.login.username.match(/^[a-z0-9_]{1,32}$/i) || !this.login.password) {
         this.errorToast("Username or password incorrect.")
       } else {
         this.loading = true

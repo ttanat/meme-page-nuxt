@@ -7,9 +7,9 @@
         </div>
         <form @submit.prevent="submit">
           <div class="modal-body" style="border: none;">
-            <input v-model.trim="username" @keyup="checkUsername" :class="[usernameRed ? 'is-invalid' : 'mb-3']" type="text" pattern="[a-zA-Z0-9_]+" class="form-control" placeholder="Username" maxlength="32">
+            <input v-model.trim="username" @keyup="checkUsername" :class="[usernameRed ? 'is-invalid' : 'mb-3']" type="text" pattern="^[a-zA-Z0-9_]{1,32}$" class="form-control" placeholder="Username" maxlength="32">
             <small>{{ usernameError }}</small>
-            <input v-model.trim="email" @keydown="clearEmailField" :class="[emailRed ? 'is-invalid' : 'mb-3']" type="email" class="form-control" placeholder="Email">
+            <input v-model.trim="email" @keydown="clearEmailField" :class="[emailRed ? 'is-invalid' : 'mb-3']" type="email" pattern="^\S+@\S+\.[a-zA-Z]+$" class="form-control" placeholder="Email">
             <small>{{ emailError }}</small>
             <input v-model="password1" @keydown="clearPass1Field" :class="[password1Red ? 'is-invalid' : 'mb-3']" type="password" class="form-control" placeholder="Password">
             <small>{{ password1Error }}</small>

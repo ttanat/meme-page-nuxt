@@ -6,8 +6,8 @@
       &ensp;<small class="text-muted">Accept to become a moderator of this page</small>
       &ensp;<nuxt-link :to="'/p/'+pname" class="ext-link" target="_blank" no-prefetch><font-awesome-icon :icon="['fas', 'external-link-alt']" /></nuxt-link>
       <div class="float-right">
-        <button @click="acceptModInvite(pname)" class="btn btn-sm btn-primary buttons mr-2">Accept</button>
-        <button @click="declineModInvite(pname)" class="btn btn-sm btn-secondary buttons">Decline</button>
+        <button @click="acceptModInvite(pname)" class="btn btn-sm btn-primary buttons mr-2" title="Accept">Accept</button>
+        <button @click="declineModInvite(pname)" class="btn btn-sm btn-secondary buttons" title="Decline">Decline</button>
       </div>
     </div>
     <div v-for="(notif, i) in notifications" :key="i" :class="{'not-seen': !notif.seen}" class="notif py-2 pl-2">
@@ -17,6 +17,7 @@
     </div>
     <div v-if="loading" id="spinner" class="mt-3"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
     <div v-else-if="next"><small class="pointer ml-2" @click="loadMore">Load more</small></div>
+    <div v-else-if="!notifications.length && !modInvites.length" class="mt-3">None</div>
   </main>
 </template>
 
@@ -33,7 +34,7 @@ export default {
     return {
       modInvites: [],
       notifications: [],
-      next: `${this.$axios.defaults.baseURL}/api/notifications?page=1`, // Need baseURL to parse URL in loadMore
+      next: `${this.$axios.defaults.baseURL}/api/notifications/?page=1`, // Need baseURL to parse URL in loadMore
       loading: false
     }
   },

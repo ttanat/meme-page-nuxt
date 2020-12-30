@@ -8,11 +8,11 @@
         <div class="modal-body">
           <label>Page Name</label>
           <br>
-          <input v-model.trim="pageName" @keyup="pageNameValid" :class="{'is-invalid': turnRed}" type="text" class="input-form" maxlength="64" autocomplete="off">
+          <input v-model.trim="pageName" @keyup="pageNameValid" :class="{'is-invalid': turnRed}" type="text" class="input-form" maxlength="32" autocomplete="off">
           <small ref="smallPageName" :class="{red: turnRed}">{{ smallPageNameText }}</small>
           <br><br>
           <label>Display Name <span class="text-muted" style="font-size: 14px;"><i class="far fa-question-circle" data-toggle="tooltip" title="Page name will be shown if display name is empty"></i></span></label>
-          <input v-model.trim="pageDisplayName" type="text" class="input-form" maxlength="64" placeholder="(Optional)" autocomplete="off">
+          <input v-model.trim="pageDisplayName" type="text" class="input-form" maxlength="32" placeholder="(Optional)" autocomplete="off">
           <br><br>
           <div class="form-row">
             <div class="col-sm-5 mb-2">
