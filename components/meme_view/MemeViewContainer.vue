@@ -3,7 +3,7 @@
   <div class="container-fluid content-section" style="width: 98%;margin-bottom: 5px;">
     <div style="margin-top: .65rem;">
       <!-- Username -->
-      <nuxt-link v-if="meme.username" :to="'/u/'+meme.username" style="color: #aaa;">
+      <nuxt-link v-if="meme.username" :to="'/u/'+meme.username" style="color: #aaa;" no-prefetch>
         <img v-if="meme.dp_url" class="rounded-circle" :src="meme.dp_url" height="24" width="24">
         <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 20px;" />&ensp;{{ meme.username }}
       </nuxt-link>
@@ -13,7 +13,7 @@
       <!-- Page if applicable -->
       <span v-if="meme.page" class="text-muted" style="font-size: 15px;">
         &ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />
-        &nbsp;<nuxt-link class="text-muted" :to="'/p/'+meme.page.name">{{ meme.page.dname || meme.page.name }}</nuxt-link>
+        &nbsp;<nuxt-link class="text-muted" :to="'/p/'+meme.page.name" no-prefetch>{{ meme.page.dname || meme.page.name }}</nuxt-link>
       </span>
       <!-- Dropdown -->
       <div class="dropdown float-right" style="margin-top: -4px">

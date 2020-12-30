@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark justify-content-between" :class="{'sticky-top': !$store.state.showOverlay}">
-    <nuxt-link class="navbar-brand ml-xl-4" to="/">Meme Page</nuxt-link>
+    <nuxt-link class="navbar-brand ml-xl-4" to="/" no-prefetch>Meme Page</nuxt-link>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -14,7 +14,7 @@
 
       <div class="navbar-nav ml-auto mr-lg-0 mr-xl-3">
         <template v-if="$auth.loggedIn">
-          <nuxt-link class="nav-item nav-link text-light mr-3" to="/" title="Home">
+          <nuxt-link class="nav-item nav-link text-light mr-3" to="/" title="Home" no-prefetch>
             <font-awesome-icon :icon="['fas', 'home']" fixed-width /><span class="d-lg-none"> Home</span>
           </nuxt-link>
           <a v-if="$route.path.startsWith('/profile')" class="nav-item nav-link text-light mr-3 pointer" data-toggle="modal" data-target="#newMemePage" title="New meme page">

@@ -7,7 +7,7 @@
     <div class="dropdown-menu dropdown-menu-right dropdown-dark">
       <h5 class="dropdown-header m-0">Notifications</h5>
       <div v-if="notifications" id="notifications" class="w-100">
-        <nuxt-link v-for="(notification, index) in notifications" :key="index" :to="notification.link" class="notification row">
+        <nuxt-link v-for="(notification, index) in notifications" :key="index" :to="notification.link" class="notification row" no-prefetch>
           <div class="notif-left-column">
             <img
               v-if="notification.image"
@@ -28,7 +28,7 @@
       </div>
       <div v-else>None</div>
       <div class="dropdown-divider"></div>
-      <nuxt-link class="dropdown-item" to="/notifications">View all</nuxt-link>
+      <nuxt-link class="dropdown-item" to="/notifications" no-prefetch>View all</nuxt-link>
     </div>
   </div>
 </template>

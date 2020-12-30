@@ -21,7 +21,7 @@
 
         <div class="col-md-4 col-lg-3 justify-content-center" id="right">
           <div v-if="meme.page" class="page-container mb-4 p-3">
-            <nuxt-link :to="meme.page.name">
+            <nuxt-link :to="meme.page.name" no-prefetch>
               <span v-if="meme.page.image"><img :src="meme.page.image" class="rounded-circle" height="40" width="40">&nbsp;</span>
               <span style="color: lightgrey;">{{ meme.page.dname || meme.page.name }}</span>
             </nuxt-link>

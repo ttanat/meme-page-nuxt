@@ -3,11 +3,11 @@
     <tr>
       <td title="Total points">{{ formatNumber(stats.clout) }}</td>
       <td>
-        <nuxt-link v-if="isProfilePage" to="/profile/followers">{{ numFollowers }}</nuxt-link>
+        <nuxt-link v-if="isProfilePage" to="/profile/followers" no-prefetch>{{ numFollowers }}</nuxt-link>
         <span v-else>{{ numFollowers }}</span>
       </td>
       <td>
-        <nuxt-link v-if="isProfilePage" to="/profile/following">{{ numFollowing }}</nuxt-link>
+        <nuxt-link v-if="isProfilePage" to="/profile/following" no-prefetch>{{ numFollowing }}</nuxt-link>
         <span v-else>{{ numFollowing }}</span>
       </td>
     </tr>
@@ -15,11 +15,11 @@
     <tr>
       <td title="Total points"><small>clout</small></td>
       <td>
-        <nuxt-link v-if="isProfilePage" to="/profile/followers"><small>followers</small></nuxt-link>
+        <nuxt-link v-if="isProfilePage" to="/profile/followers" no-prefetch><small>followers</small></nuxt-link>
         <small v-else>followers</small>
       </td>
       <td>
-        <nuxt-link v-if="isProfilePage" to="/profile/following"><small>following</small></nuxt-link>
+        <nuxt-link v-if="isProfilePage" to="/profile/following" no-prefetch><small>following</small></nuxt-link>
         <small v-else>following</small>
       </td>
     </tr>

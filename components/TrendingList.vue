@@ -6,6 +6,7 @@
       :key="tag"
       :to="'/search?q=%23'+tag"
       class="tag list-group-item list-group-item-action bg-dark"
+      no-prefetch
     >
       #{{ tag }}
     </nuxt-link>

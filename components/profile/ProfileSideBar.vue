@@ -55,13 +55,13 @@
         <nuxt-link :class="{'sl-active': pathname === '/profile'}" to="/profile">
           <font-awesome-icon :icon="['fas', 'box-open']" />&ensp;Your memes
         </nuxt-link>
-        <nuxt-link :class="{'sl-active': pathname === '/profile/likes'}" to="/profile/likes">
+        <nuxt-link :class="{'sl-active': pathname === '/profile/likes'}" to="/profile/likes" no-prefetch>
           <font-awesome-icon :icon="['fas', 'thumbs-up']" />&ensp;Likes
         </nuxt-link>
-        <nuxt-link :class="{'sl-active': pathname === '/profile/comments'}" to="/profile/comments">
+        <nuxt-link :class="{'sl-active': pathname === '/profile/comments'}" to="/profile/comments" no-prefetch>
           <font-awesome-icon :icon="['fas', 'comment']" />&ensp;Comments
         </nuxt-link>
-        <nuxt-link :class="{'sl-active': pathname === '/profile/private'}" to="/profile/private">
+        <nuxt-link :class="{'sl-active': pathname === '/profile/private'}" to="/profile/private" no-prefetch>
           <font-awesome-icon :icon="['fas', 'lock']" />&ensp;Private
         </nuxt-link>
       </template>
@@ -71,7 +71,7 @@
       <template v-if="getPages.length">
         <br>
         <h5>Meme Pages</h5>
-        <nuxt-link v-for="p in getPages" :key="p.name" :to="'/p/'+p.name">
+        <nuxt-link v-for="p in getPages" :key="p.name" :to="'/p/'+p.name" no-prefetch>
           <font-awesome-icon :icon="['fas', p.private ? 'lock' : 'star']" />&ensp;{{ p.dname || p.name }}
         </nuxt-link>
       </template>
