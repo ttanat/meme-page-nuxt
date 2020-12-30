@@ -6,8 +6,11 @@ export default {
         try {
           const url = new URL(this.next)
           const oldOffset = url.searchParams.get("offset")
-          url.searchParams.set("offset", increment + (parseInt(oldOffset) || 0))
-          this.next = url.href
+          const newOffset = increment + (parseInt(oldOffset) || 0)
+          if (newOffset > 0) {
+            url.searchParams.set("offset", newOffset)
+            this.next = url.href
+          }
         } catch (err) {
           this.next = tmp
           console.log(err)
