@@ -152,7 +152,7 @@ export default {
   data() {
     return {
       replies: [],
-      cmnt: this.comment,
+      currentReplyUuids: new Set(),
       isLiked: this.comment.vote === 1,
       isDisliked: this.comment.vote === -1,
       editing: false,
@@ -273,15 +273,15 @@ export default {
       if (!this.repliesAPILink) return false
       this.loadSpinnerShowing = true
       this.$axios.get(this.repliesAPILink)
-        .then(res => res.data)
-        .then(({ results, next }) => {
-          const l_uuids = []
+        .then(({ data: { results, next } }) => {
+          const newReplies = []
           for (const r of results) {
-            if (this.replies.findIndex(r2 => r2.uuid === r.uuid) === -1) {
-              this.replies.push(r)
-              if (r.points !== null) l_uuids.push(r.uuid)
+            if (!this.currentReplyUuids.has(r.uuid)) {
+              newReplies.push(r)
+              this.currentReplyUuids.add(r.uuid)
             }
           }
+          this.replies.push(...newReplies)
           this.loadMoreBtnShowing = !!next
           this.repliesAPILink = next
         })

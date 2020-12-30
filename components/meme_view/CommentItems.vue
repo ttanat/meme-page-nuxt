@@ -30,6 +30,7 @@ export default {
     return {
       firstComment: !this.$store.getters["meme/numComments"], // True if 0 comments (prevent loadMore() if user posts first comment)
       comments: [],
+      currentUuids: new Set(),
       next: `/api/comments/?u=${this.$route.params.uuid}`,
       loading: false
     }
@@ -55,18 +56,19 @@ export default {
       this.loading = true
 
       this.$axios.get(this.next)
-        .then(({ data }) => {
-          const l_uuids = []
+        .then(({ data: { results, next } }) => {
           let offset = 0
-          for (const r of data.results) {
-            if (!this.comments.find(c => c.uuid === r.uuid)) {
-              this.comments.push(r)
-              l_uuids.push(r.uuid)
+          const newComments = []
+          for (const r of results) {
+            if (!this.currentUuids.has(r.uuid)) {
+              newComments.push(r)
+              this.currentUuids.add(r.uuid)
             } else {
               offset++
             }
           }
-          this.next = data.next
+          this.comments.push(...newComments)
+          this.next = next
           if (offset) this.increaseOffset(offset)
         })
         .catch(console.log)

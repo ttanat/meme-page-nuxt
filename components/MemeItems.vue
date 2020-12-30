@@ -46,6 +46,7 @@ export default {
   data() {
     return {
       memes: [],
+      currentUuids: null, // Will be a set (go to fetch)
       muted: true,
       next: null,
       loading: false,
@@ -63,12 +64,11 @@ export default {
   async fetch() {
     if (!this.canLoadMore()) return false
     this.noMemes = false
-    const { data } = await this.$axios.get(this.getNewURL())
-    const { results } = data
+    const { data: { results, next } } = await this.$axios.get(this.getNewURL())
     this.memes = results
     this.$nextTick(() => {if (results.length) {
-      const l_uuids = results.map(r => r.uuid)
-      this.next = data.next
+      this.next = next
+      this.currentUuids = new Set(results.map(r => r.uuid))
     } else {
       this.noMemes = true
       this.scrollObserver = this.scrollRoot = null
@@ -100,17 +100,17 @@ export default {
       this.loading = true
 
       this.$axios.get(this.next)
-        .then(({ data }) => {
-          const { results } = data
+        .then(({ data: { results, next } }) => {
           if (results.length) {
-            const l_uuids = []
+            const newMemes = []
             for (const r of results) {
-              if (!this.memes.find(m => m.uuid === r.uuid)) {
-                this.memes.push(r)
-                l_uuids.push(r.uuid)
+              if (!this.currentUuids.has(r.uuid)) {
+                newMemes.push(r)
+                this.currentUuids.add(r.uuid)
               }
             }
-            this.next = data.next
+            this.memes.push(...newMemes)
+            this.next = next
           } else {
             if (this.scrollRoot) this.scrollObserver.unobserve(this.scrollRoot)
             this.scrollObserver = this.scrollRoot = this.next = null
