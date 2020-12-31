@@ -13,7 +13,7 @@ export const getters = {
     return state.data.points
   },
   pageName: state => {
-    return state.data.pname || ""
+    return state.data.page.name
   },
   numComments: state => {
     return state.data.num_comments
@@ -22,6 +22,10 @@ export const getters = {
 
 export const mutations = {
   setData(state, data) {
+    data.hasPage = !!data.page
+    if (!data.page) {
+      data.page = {name: "", dname: "", image: "", description: ""}
+    }
     state.data = data
   },
   destroyData(state) {

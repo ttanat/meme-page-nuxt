@@ -20,7 +20,7 @@
         </div>
 
         <div class="col-md-4 col-lg-3 justify-content-center" id="right">
-          <PageSidebar v-if="meme.page" :page="meme.page" />
+          <PageSidebar v-if="meme.hasPage" :page="meme.page" />
           <div class="right-fixed">
             <img class="ad" src="~/assets/ad.png" alt="Advertisement">
             <img class="ad" src="~/assets/ad_two.png" alt="Advertisement">

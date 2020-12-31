@@ -11,7 +11,7 @@
         <font-awesome-icon :icon="['fas', 'user-circle']" style="font-size: 20px;" />&ensp;[REDACTED]
       </span>
       <!-- Page if applicable -->
-      <span v-if="meme.page" class="text-muted" style="font-size: 15px;">
+      <span v-if="meme.hasPage" class="text-muted" style="font-size: 15px;">
         &ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />
         &nbsp;<nuxt-link class="text-muted" :to="'/p/'+meme.page.name" no-prefetch>{{ meme.page.dname || meme.page.name }}</nuxt-link>
       </span>
