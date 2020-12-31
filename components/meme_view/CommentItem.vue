@@ -42,7 +42,7 @@
                 <!-- Report button -->
                 <div v-if="!canDelete && !isModCanRemove" class="dropdown-item" @click="report"><font-awesome-icon :icon="['fas', 'flag']" />&ensp;Report</div>
                 <!-- Delete/remove button for meme OP, comment OP, or mod -->
-                <div v-if="canDelete || isModCanRemove" class="dropdown-item" @click="confirmDelete">
+                <div v-if="canDelete || isModCanRemove" v-show="!editing" class="dropdown-item" @click="confirmDelete">
                   <font-awesome-icon :icon="['fas', 'trash-alt']" />&ensp;{{ isOwnComment ? "Delete" : "Remove" }}
                 </div>
               </div>
