@@ -4,8 +4,8 @@
       <!-- Username -->
       <nuxt-link v-if="meme.username" :to="'/u/'+meme.username" class="header-username" no-prefetch>
         <img v-if="meme.dp_url" class="rounded-circle" :src="meme.dp_url" height="18" width="18">
-        <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 15px;" />
-        {{ meme.username }}
+        <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 15px;" /><!-- Comment here to remove whitespace
+     -->&nbsp;{{ meme.username }}
       </nuxt-link>
       <span v-else class="header-username">
         <font-awesome-icon :icon="['fas', 'user-circle']" style="font-size: 15px;" />
@@ -57,7 +57,7 @@
           <button @click="vote('l')" :class="{green: isLiked}" class="btn btn-sm lower-btn thumbs like pr-0">
             <font-awesome-icon :icon="[isLiked ? 'fas' : 'far', 'thumbs-up']" />
           </button>
-          <span class="text-muted">&nbsp;<span class="points">{{ formatNumber(meme.points) }}</span></span>
+          <span style="color: #888;">&nbsp;<span class="points">{{ formatNumber(meme.points) }}</span></span>
         </td>
         <td>
           <button @click="vote('d')" :class="{red: isDisliked}" class="btn btn-sm lower-btn thumbs dislike">
@@ -252,15 +252,17 @@ export default {
 }
 .header-username {
   font-size: 14px;
-  color: #777;
+  color: #888;
 }
 .header-page {
   font-size: 13px;
-  color: grey;
+  color: #888;
 }
 .caption {
+  /* font-size: 1.1rem; */
   font-weight: 420;
   overflow-wrap: break-word; /* If word is too long, it will go on new line */
+  color: gainsboro;
 }
 .item-body {
   max-height: 30rem;

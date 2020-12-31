@@ -111,6 +111,7 @@ export default {
   background-color: whitesmoke;
 }
 #no-comments {
+  color: #ddd;
   text-align: center;
   padding: 40px;
   background-color: #090909;

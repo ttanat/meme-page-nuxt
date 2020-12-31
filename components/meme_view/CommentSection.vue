@@ -28,6 +28,7 @@ export default {
   padding-bottom: 50px;
 }
 h6 {
+  color: #ddd;
   border-bottom: 1px solid lightgrey;
   padding-bottom: 5px;
 }

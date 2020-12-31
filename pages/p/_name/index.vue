@@ -67,7 +67,7 @@
 
         <!-- Right column -->
         <div class="col-md-4 col-lg-3 col-xl-3" id="right">
-          <div v-if="show" style="width: 260px;">
+          <div v-if="show" id="right-child">
             <div v-if="is_page_admin || page.description" class="mb-4 p-2" id="page-description">
               <BioDescription
                 v-if="is_page_admin"
@@ -215,9 +215,9 @@ main {
 .thumbs {
   margin-left: 5px;
 }
-.list-group-item {
+/* .list-group-item {
   width: 260px;
-}
+} */
 .mod-list {
   font-size: 14px;
 }
@@ -249,6 +249,7 @@ main {
     top: 4rem;
     height: 100%;
     min-height: calc(100vh - 5rem);
+    padding-left: unset;
   }
   #left-lower-btns {
     bottom: 0;

@@ -37,8 +37,8 @@ export default {
 <style scoped>
 .page-container {
   /* width: 100%; */
-  width: 270px;
-  margin: 0 auto;
+  /* width: 270px; */
+  /* margin: 0 auto; */
   background-color: #171717;
   border: 1px solid #444;
   border-radius: 7px;

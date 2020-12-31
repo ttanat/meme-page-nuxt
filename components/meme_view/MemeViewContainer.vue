@@ -1,19 +1,20 @@
 <template>
 <div>
   <div class="container-fluid content-section" style="width: 98%;margin-bottom: 5px;">
-    <div style="margin-top: .65rem;">
+    <div class="mb-2" style="margin-top: .65rem;">
       <!-- Username -->
-      <nuxt-link v-if="meme.username" :to="'/u/'+meme.username" style="color: #aaa;" no-prefetch>
+      <nuxt-link v-if="meme.username" :to="'/u/'+meme.username" class="username-page-header" no-prefetch>
         <img v-if="meme.dp_url" class="rounded-circle" :src="meme.dp_url" height="24" width="24">
-        <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 20px;" />&ensp;{{ meme.username }}
+        <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 20px;" /><!-- Comment here to remove whitespace
+     -->&ensp;{{ meme.username }}
       </nuxt-link>
-      <span v-else style="color: #aaa;">
+      <span v-else class="username-page-header">
         <font-awesome-icon :icon="['fas', 'user-circle']" style="font-size: 20px;" />&ensp;[REDACTED]
       </span>
       <!-- Page if applicable -->
-      <span v-if="meme.hasPage" class="text-muted" style="font-size: 15px;">
+      <span v-if="meme.hasPage" class="username-page-header">
         &ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />
-        &nbsp;<nuxt-link class="text-muted" :to="'/p/'+meme.page.name" no-prefetch>{{ meme.page.dname || meme.page.name }}</nuxt-link>
+        &nbsp;<nuxt-link style="color: inherit;" :to="'/p/'+meme.page.name" no-prefetch>{{ meme.page.dname || meme.page.name }}</nuxt-link>
       </span>
       <!-- Dropdown -->
       <div class="dropdown float-right" style="margin-top: -4px">
@@ -78,7 +79,7 @@
       </td>
     </tr>
   </table>
-  <div v-if="meme.tags.length" class="text-muted content-section pl-2">
+  <div v-if="meme.tags.length" class="content-section pl-2">
     <button
       v-for="tag_name in meme.tags"
       :key="tag_name"
@@ -200,8 +201,12 @@ export default {
 </script>
 
 <style scoped>
+.username-page-header {
+  color: #999;
+  font-size: 15px;
+}
 .caption {
-  color: lightgrey;
+  color: gainsboro;
   font-weight: 420;
   margin-bottom: 4px;
 }

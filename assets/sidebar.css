@@ -1,6 +1,6 @@
 a {
   line-height: 2;
-  color: lightgrey;
+  color: #ddd;
   padding-left: 5px;
   padding-right: 5px;
   overflow: hidden;
@@ -9,7 +9,8 @@ a {
   margin-bottom: 5px;
   display: block;
   border-radius: 5px;
-  font-size: 0.95rem;
+  /* font-size: 0.95rem; */
+  font-size: 0.975rem;
 }
 a:hover {
   color: green;

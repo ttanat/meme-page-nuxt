@@ -3,7 +3,7 @@
     <button @click="vote('l')" :class="{green: isLiked}" class="btn btn-sm lower-btn thumbs like">
       <font-awesome-icon :icon="[isLiked ? 'fas' : 'far', 'thumbs-up']" />
     </button>
-    <span class="text-muted" :title="points > 999 ? points.toLocaleString() : ''">{{ formatNumber(points) }} point{{ points === 1 ? "" : "s" }}</span>
+    <span style="color: #888;" :title="points > 999 ? points.toLocaleString() : ''">{{ formatNumber(points) }} point{{ points === 1 ? "" : "s" }}</span>
     <button @click="vote('d')" :class="{red: isDisliked}" class="btn btn-sm lower-btn thumbs dislike ml-3">
       <font-awesome-icon :icon="[isDisliked ? 'fas' : 'far', 'thumbs-down']" />
     </button>
