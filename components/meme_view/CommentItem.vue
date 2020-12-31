@@ -53,7 +53,7 @@
           <span v-show="!editing" :class="{'d-block': !editing, 'comment-deleted': isDeleted}" class="comment-content mr-2">{{ isDeleted ? "Comment has been REDACTED" : comment.content }}</span>
 
           <!-- Input for editing comment -->
-          <input v-model.trim="editCommentValue" v-if="!isDeleted" v-show="editing && isAuthenticated && isOwnComment" ref="editCommentInput" class="edit-comment-field" maxlength="150">
+          <input v-model.trim="editCommentValue" v-if="editing && isOwnComment && !isDeleted && isAuthenticated" ref="editCommentInput" class="edit-comment-field" maxlength="150">
 
           <!-- Comment image -->
           <nuxt-link v-if="comment.image" :to="'/img?c='+comment.uuid" target="_blank" no-prefetch>
@@ -95,7 +95,7 @@
             <div v-show="loadSpinnerShowing" style="font-size: 20px;"><font-awesome-icon :icon="['fas', 'circle-notch']" spin /></div>
           </div>
 
-          <div v-if="!isDeleted && comment.username && isAuthenticated" v-show="typingReply" class="container-fluid">
+          <div v-if="typingReply && !isDeleted && comment.username && isAuthenticated" class="container-fluid">
             <div class="row">
               <!-- Profile picture or user icon -->
               <img v-if="hasDP" :src="hasDP" class="reply-field-dp rounded-circle" height="25" width="25">

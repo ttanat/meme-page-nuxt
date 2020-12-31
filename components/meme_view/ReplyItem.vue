@@ -56,7 +56,7 @@
         </span>
 
         <!-- Input for editing reply -->
-        <input v-model="editReplyValue" v-if="!isDeleted" v-show="editing && isOwnReply" ref="editReplyInput" class="edit-comment-field" maxlength="150">
+        <input v-model="editReplyValue" v-if="editing && isOwnReply && !isDeleted && isAuthenticated" ref="editReplyInput" class="edit-comment-field" maxlength="150">
 
         <!-- Reply image -->
         <nuxt-link v-if="reply.image" :to="'/img?c='+reply.uuid" target="_blank">
@@ -73,7 +73,7 @@
           </div>
         </div>
 
-        <div v-if="!isDeleted && reply.username && isAuthenticated" v-show="typingReply" class="container-fluid">
+        <div v-if="typingReply && !isDeleted && reply.username && isAuthenticated" class="container-fluid">
           <div class="row">
             <!-- Profile picture or user icon -->
             <img v-if="hasDP" :src="hasDP" class="reply-field-dp rounded-circle" height="23" width="23" style="padding: 0;">
