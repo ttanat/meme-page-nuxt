@@ -73,8 +73,9 @@ export default {
       data.append("objectUid", this.objectUid)
       data.append("reason", this.reason)
       data.append("info", this.info)
-      this.$axios.post("/api/reports/", data).finally(() => alert("Thank you for reporting"))
+      this.$axios.post("/api/reports/", data).catch(console.log)
       $("#reportModal").modal("hide")
+      alert("Thank you for reporting")
     },
     clearReport() {
       this.reason = 0
