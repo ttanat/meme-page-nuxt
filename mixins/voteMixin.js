@@ -12,22 +12,30 @@ export default {
           new_points_val: new points value already calculated
       */
       if (this.$auth.loggedIn) {
-        const old_state = [this.isLiked, this.isDisliked, item.points]
-        var btn
+        const old_state = [this.isLiked, this.isDisliked, item.points] // for reverting if error occurs
+        let method
         if (v === "l") {
           this.isLiked = !this.isLiked
-          if (this.isLiked && this.isDisliked) this.isDisliked = false
+          if (this.isLiked && this.isDisliked) {
+            this.isDisliked = false
+            method = "PUT"
+          } else {
+            method = this.isLiked ? "POST" : "DELETE"
+          }
           if (!hide) this.$emit("set-points-event", item.uuid, item.points + (this.isLiked && old_state[1] ? 2 : this.isLiked ? 1 : -1))
-          btn = this.isLiked
         } else if (v === "d") {
           this.isDisliked = !this.isDisliked
-          if (this.isLiked && this.isDisliked) this.isLiked = false
+          if (this.isLiked && this.isDisliked) {
+            this.isLiked = false
+            method = "PUT"
+          } else {
+            method = this.isDisliked ? "POST" : "DELETE"
+          }
           if (!hide) this.$emit("set-points-event", item.uuid, item.points - (this.isDisliked && old_state[0] ? 2 : this.isDisliked ? 1 : -1))
-          btn = this.isDisliked
         }
 
         this.$axios({
-          method: btn ? "PUT" : "DELETE",
+          method,
           url: "/api/like",
           params: {u: item.uuid, t, v},
           progress: false
