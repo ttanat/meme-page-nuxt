@@ -144,7 +144,7 @@ export default {
         }
         // Slice caption from start to 5th "\n" (but not including it)
         this.caption = this.caption.slice(0, index)
-        alert("Maximum new lines reached")
+        alert("Maximum of 5 lines reached")
       }
     },
     getTags() {
@@ -221,9 +221,9 @@ export default {
       if (this.page) data.set("page", this.page)
       if (this.category) data.set("category", this.category)
       data.set("caption", this.caption.trim().slice(0, 100).trim())
-      // Ensure caption only has maximum of 4 new lines
+      // Ensure caption only has maximum of 5 lines (4 new lines)
       if ((data.get("caption").match(/\n/g) || []).length > 4) {
-        alert("Maximum new lines reached")
+        alert("Maximum of 5 lines reached")
         return false
       }
       // Join all tags into one string (will be processed in backend instead)
