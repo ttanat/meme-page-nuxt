@@ -27,7 +27,10 @@ export default {
   head() {
     this.$store.commit("setCurrentPage", "Private")
     return {
-      title: `${this.$auth.user.username} - Private Memes`
+      title: `${this.$auth.user.username} - Private Memes`,
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex, nofollow, noimageindex'},
+      ]
     }
   }
 }

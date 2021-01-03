@@ -66,7 +66,10 @@ export default {
   head() {
     this.$store.commit("setCurrentPage", "")
     return {
-      title: `${this.page.display_name || this.page.name} - Settings`
+      title: `${this.page.display_name || this.page.name} - Settings`,
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex, imageindex'},
+      ]
     }
   },
   methods: {

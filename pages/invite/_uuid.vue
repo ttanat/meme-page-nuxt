@@ -30,6 +30,13 @@ export default {
     const { data } = await $axios.get(`/api/invite/${route.params.uuid}`)
     return data
   },
+  head() {
+    return {
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex'},
+      ]
+    }
+  },
   methods: {
     subscribe() {
       this.$axios.put(`/api/invite/${this.$route.params.uuid}`)

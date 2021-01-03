@@ -27,7 +27,10 @@ export default {
   head() {
     this.$store.commit("setCurrentPage", "Comments")
     return {
-      title: `${this.$auth.user.username} - Comments`
+      title: `${this.$auth.user.username} - Comments`,
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex, noimageindex'},
+      ]
     }
   }
 }

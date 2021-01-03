@@ -27,7 +27,10 @@ export default {
   head() {
     this.$store.commit("setCurrentPage", "Likes")
     return {
-      title: `${this.$auth.user.username} - Likes`
+      title: `${this.$auth.user.username} - Likes`,
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex, noimageindex'},
+      ]
     }
   }
 }

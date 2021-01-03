@@ -27,7 +27,10 @@ export default {
   head() {
     this.$store.commit("setCurrentPage", "")
     return {
-      title: "Notifications - Meme Page"
+      title: "Notifications - Meme Page",
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex'},
+      ]
     }
   },
   data() {

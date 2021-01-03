@@ -39,7 +39,10 @@ export default {
   },
   head() {
     return {
-      title: "Full resolution"
+      title: "Full resolution",
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex, noimageindex'},
+      ]
     }
   },
   computed: {

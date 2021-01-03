@@ -26,7 +26,10 @@ export default {
   head() {
     this.$store.commit("setCurrentPage", "Following")
     return {
-      title: `${this.$auth.user.username} - Following`
+      title: `${this.$auth.user.username} - Following`,
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex'},
+      ]
     }
   }
 }

@@ -39,7 +39,10 @@ export default {
   head() {
     this.$store.commit("setCurrentPage", "Settings")
     return {
-      title: "Settings - Meme Page"
+      title: "Settings - Meme Page",
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex, noimageindex'},
+      ]
     }
   },
   methods: {

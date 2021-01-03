@@ -14,7 +14,10 @@ export default {
   head() {
     this.$store.commit("setCurrentPage", "Feed")
     return {
-      title: "Feed - Meme Page"
+      title: "Feed - Meme Page",
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex'},
+      ]
     }
   }
 }

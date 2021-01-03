@@ -27,7 +27,10 @@ export default {
   head() {
     this.$store.commit("setCurrentPage", "Profile")
     return {
-      title: `${this.$auth.user.username} - Meme Page`
+      title: `${this.$auth.user.username} - Meme Page`,
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex, noimageindex'},
+      ]
     }
   }
 }

@@ -41,7 +41,10 @@ export default {
   head() {
     this.$store.commit("setCurrentPage", "")
     return {
-      title: `${this.$route.params.name} - Requests`
+      title: `${this.$route.params.name} - Requests`,
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex'},
+      ]
     }
   },
   data() {
