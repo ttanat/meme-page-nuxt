@@ -42,4 +42,7 @@ export default {
 .tag {
   color: whitesmoke;
 }
+.tag:hover {
+  background-color: #171717;
+}
 </style>
