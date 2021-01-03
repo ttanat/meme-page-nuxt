@@ -1,5 +1,7 @@
 <script>
 export default {
-  middleware: 'user-redirect'
+  middleware({ params, redirect }) {
+    return redirect(301, `/user/${params.username}`)
+  }
 }
 </script>

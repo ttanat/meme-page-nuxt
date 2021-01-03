@@ -1,5 +1,7 @@
 <script>
 export default {
-  middleware: 'page-redirect'
+  middleware({ params, redirect }) {
+    return redirect(`/p/${params.name}`)
+  }
 }
 </script>

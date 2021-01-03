@@ -28,7 +28,7 @@
 
     <div @contextmenu.prevent="openContextMenu" class="item-body" :class="{'item-body-loading': loading}" :style="{backgroundColor: isVideo ? '#111' : ''}">
       <template v-if="isVideo">
-        <nuxt-link @click.prevent="vidClick" :to="'/m/'+meme.uuid" target="_blank" class="item-body-link" draggable="false">
+        <nuxt-link @click.prevent="vidClick" :to="memeLink" target="_blank" class="item-body-link" draggable="false">
           <video ref="memeEl" draggable="false" class="content autoplay" controlsList="nodownload" :muted="muted" loop playsinline @loadeddata="memeLoaded" style="max-height: 70vh;">
             <source :data-src="meme.url">
           </video>
@@ -38,7 +38,7 @@
         </div>
         <font-awesome-icon v-if="!isGif" @click="$emit('toggle-sound-event')" :icon="['fas', muted ? 'volume-mute' : 'volume-up']" class="sound-toggle" />
       </template>
-      <nuxt-link v-else :to="'/m/'+meme.uuid" target="_blank" class="item-body-link" draggable="false">
+      <nuxt-link v-else :to="memeLink" target="_blank" class="item-body-link" draggable="false">
         <img
           ref="memeEl"
           @load="memeLoaded"
@@ -66,7 +66,7 @@
           </button>
         </td>
         <td>
-          <nuxt-link class="btn btn-sm lower-btn" :to="'/m/'+meme.uuid+'#comments'" target="_blank">
+          <nuxt-link class="btn btn-sm lower-btn" :to="memeLink+'#comments'" target="_blank">
             <font-awesome-icon :icon="['far', 'comment']" />&nbsp;{{ formatNumber(meme.num_comments) }}
           </nuxt-link>
         </td>
@@ -95,7 +95,7 @@
     </table>
     <vue-context ref="menu">
       <li>
-        <a :href="'/m/'+meme.uuid" target="_blank">
+        <a :href="memeLink" target="_blank">
           <font-awesome-icon :icon="['fas', 'external-link-alt']" />&ensp;Open in new tab
         </a>
       </li>
@@ -163,6 +163,9 @@ export default {
     this.$emit("new-meme-event", this.$refs.memeEl, this.isVideo)
   },
   computed: {
+    memeLink() {
+      return `/m/${this.meme.uuid}`
+    },
     isOwnMeme() {
       return this.$auth.loggedIn && this.meme.username === this.$auth.user.username
     },
@@ -178,13 +181,13 @@ export default {
   },
   methods: {
     memeLoaded() {this.loading = false},
-    vidClick() {this.paused ? this.togglePlayback() : window.open(`/m/${this.meme.uuid}`)},
+    vidClick() {this.paused ? this.togglePlayback() : window.open(this.memeLink)},
     togglePlayback(play=true) {
         this.paused = !play
         play ? this.$refs.memeEl.play() : this.$refs.memeEl.pause()
     },
     copyLink() {
-      copy(`${window.location.origin}/m/${this.meme.uuid}`)
+      copy(`${window.location.origin}${this.memeLink}`)
       this.successToast("Copied")
     },
     report() {

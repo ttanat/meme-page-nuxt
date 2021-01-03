@@ -133,11 +133,6 @@ export default {
     }
   },
   methods: {
-    goToRandom() {
-      this.$axios.get("/api/random")
-        .then(res => this.$router.push(`/m/${res.data.uuid}`))
-        .catch(console.log)
-    },
     setPoints(_, new_points_val) {
       this.$store.commit("meme/setPoints", new_points_val)
     },
