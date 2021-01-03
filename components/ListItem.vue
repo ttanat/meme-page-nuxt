@@ -33,7 +33,7 @@ export default {
       return this.$route.query.q[0] === '@'
     },
     getURL() {
-      return this.searchUser ? `/u/${this.result.username}` : `/p/${this.result.name}`
+      return this.searchUser ? `/user/${this.result.username}` : `/p/${this.result.name}`
     },
     hasBio() {
       return !!(this.searchUser ? this.result.bio : this.result.description)

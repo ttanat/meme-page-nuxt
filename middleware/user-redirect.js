@@ -1,3 +1,3 @@
 export default async function({ params, redirect }) {
-  redirect(`/u/${params.username}`)
+  redirect(301, `/user/${params.username}`)
 }

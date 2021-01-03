@@ -5,7 +5,7 @@
       <div class="reply-left-column">
         <!-- Replier image or icon -->
         <font-awesome-icon v-if="isDeleted||!reply.username" :icon="['fas', 'user-circle']" class="mt-2" style="color: grey;" />
-        <nuxt-link v-else :to="'/u/'+reply.username" no-prefetch>
+        <nuxt-link v-else :to="'/user/'+reply.username" no-prefetch>
           <img v-if="reply.dp_url" class="rounded-circle" :src="reply.dp_url" height="25" width="25">
           <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="color: lightgrey;" />
         </nuxt-link>
@@ -17,7 +17,7 @@
           <!-- Username and date -->
           <span>
             <span v-if="isDeleted||!reply.username" class="comment-username">[REDACTED]</span>
-            <nuxt-link v-else :to="'/u/'+reply.username" class="comment-username" no-prefetch>{{ reply.username }}</nuxt-link>&nbsp;
+            <nuxt-link v-else :to="'/user/'+reply.username" class="comment-username" no-prefetch>{{ reply.username }}</nuxt-link>&nbsp;
             <span v-if="reply.username===memeUsername" class="op-reply" title="Original Poster">
               <font-awesome-icon :icon="['fas', 'user-alt']" />&nbsp;
             </span>
@@ -51,7 +51,7 @@
         <!-- Reply content -->
         <span v-if="isDeleted" class="comment-deleted">Comment has been REDACTED</span>
         <span v-else v-show="!editing" :class="{'d-block': !editing}" class="comment-content reply-content">
-          <span v-if="rpattern"><nuxt-link :to="'/u/'+rpattern[1]">{{ rpattern[0] }}</nuxt-link>{{ replyAfterMention }}</span>
+          <span v-if="rpattern"><nuxt-link :to="'/user/'+rpattern[1]">{{ rpattern[0] }}</nuxt-link>{{ replyAfterMention }}</span>
           <template v-else>{{ reply.content }}</template>
         </span>
 

@@ -2,12 +2,12 @@
   <div class="col-md-6 col-lg-3 px-0">
     <div @click="toggleSelected" :class="divClass" class="media p-2 mb-4">
       <!-- User image or icon -->
-      <nuxt-link :to="'/u/'+username" class="user-icon" target="_blank" no-prefetch>
+      <nuxt-link :to="'/user/'+username" class="user-icon" target="_blank" no-prefetch>
         <font-awesome-icon :icon="['fas', 'user']" class="mr-2 pointer" />
       </nuxt-link>
       <!-- Username -->
       <div class="media-body">
-        <nuxt-link :to="'/u/'+username" target="_blank" no-prefetch>
+        <nuxt-link :to="'/user/'+username" target="_blank" no-prefetch>
           {{ username }}
         </nuxt-link>
       </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="top px-1 py-2">
-    <nuxt-link :to="'/u/'+user.username">
+    <nuxt-link :to="'/user/'+user.username">
       <span>
         <img v-if="user.image" :src="user.image" class="rounded-circle" height="20" width="20">
         <font-awesome-icon v-else :icon="['fas', 'user']" fixed-width />

@@ -11,7 +11,7 @@
       </div>
     </div>
     <div v-for="(notif, i) in notifications" :key="i" :class="{'not-seen': !notif.seen}" class="notif py-2 pl-2">
-      <nuxt-link :to="'/u/'+getUsername(notif.message)" no-prefetch>{{ getUsername(notif.message) }}</nuxt-link> {{ splitMessage(notif.message) }}
+      <nuxt-link :to="'/user/'+getUsername(notif.message)" no-prefetch>{{ getUsername(notif.message) }}</nuxt-link> {{ splitMessage(notif.message) }}
       &ensp;<small class="text-muted">{{ new Date(notif.timestamp).toUTCString() }}</small>
       &ensp;<nuxt-link :to="notif.link" class="ext-link" target="_blank" no-prefetch><font-awesome-icon :icon="['fas', 'external-link-alt']" /></nuxt-link>
     </div>

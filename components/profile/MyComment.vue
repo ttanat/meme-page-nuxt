@@ -3,7 +3,7 @@
     <div>
       <div v-if="comment.content || comment.rt" class="list-content">
         <span v-if="comment.rt && rpattern">
-          <nuxt-link :to="'/u/'+rpattern[1]" target="_blank">{{ rpattern[0] }}</nuxt-link>{{ contentAfterMention }}
+          <nuxt-link :to="'/user/'+rpattern[1]" target="_blank">{{ rpattern[0] }}</nuxt-link>{{ contentAfterMention }}
         </span>
         <template v-else>{{ comment.content }}</template>
         &nbsp;<small v-if="comment.rt" class="text-muted">replying to {{ replyingTo }}</small>

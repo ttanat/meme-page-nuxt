@@ -89,7 +89,7 @@
                 Moderators
               </nuxt-link>
               <nuxt-link
-                :to="'/u/'+page.admin"
+                :to="'/user/'+page.admin"
                 class="list-group-item list-group-item-action py-2 mod-list"
                 no-prefetch
               >
@@ -98,7 +98,7 @@
               <nuxt-link
                 v-for="mod in page.moderators"
                 :key="mod"
-                :to="'/u/'+mod"
+                :to="'/user/'+mod"
                 class="list-group-item list-group-item-action py-2 mod-list"
                 no-prefetch
               >
