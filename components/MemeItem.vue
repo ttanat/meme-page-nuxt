@@ -3,21 +3,22 @@
     <div class="item-header">
       <!-- Username -->
       <nuxt-link v-if="meme.username" :to="'/u/'+meme.username" class="header-username" no-prefetch>
-        <img v-if="meme.dp_url" class="rounded-circle" :src="meme.dp_url" height="18" width="18">
+        <img v-if="meme.dp_url" class="rounded-circle user-img" :src="meme.dp_url" height="18" width="18">
         <font-awesome-icon v-else :icon="['fas', 'user-circle']" style="font-size: 15px;" /><!-- Comment here to remove whitespace
      -->&nbsp;{{ meme.username }}
       </nuxt-link>
+      <!-- Username if user is deleted -->
       <span v-else class="header-username">
         <font-awesome-icon :icon="['fas', 'user-circle']" style="font-size: 15px;" />
         [REDACTED]
       </span>
       <!-- Page name and display name if applicable -->
-      <template v-if="meme.pname"><span class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<nuxt-link :to="'/p/'+meme.pname" class="header-page" no-prefetch>{{ meme.pdname || meme.pname }}</nuxt-link></span></template>
+      <span v-if="meme.pname" class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<nuxt-link :to="'/p/'+meme.pname" class="header-page" no-prefetch>{{ meme.pdname || meme.pname }}</nuxt-link></span>
       <!-- Caption -->
       <h6
         v-for="(captionFragment, i) in captionFragments"
         :key="i"
-        :class="{'mt-2': i === 0}"
+        :class="{'caption-first-line': i === 0}"
         class="caption"
         :style="{'margin-bottom': i === captionFragments.length - 1 ? '' : '4px'}"
       >
@@ -250,16 +251,18 @@ export default {
   padding-right: 10px;
   padding-top: 5px;
 }
-.header-username {
-  font-size: 14px;
-  color: #888;
-}
-.header-page {
+.header-username, .header-page {
   font-size: 13px;
   color: #888;
 }
+.user-img {
+  margin-bottom: .2rem;
+}
+.caption-first-line {
+  margin-top: .3rem;
+}
 .caption {
-  /* font-size: 1.1rem; */
+  font-size: 1.1rem;
   font-weight: 420;
   overflow-wrap: break-word; /* If word is too long, it will go on new line */
   color: gainsboro;
