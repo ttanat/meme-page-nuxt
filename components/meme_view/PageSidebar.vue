@@ -1,6 +1,6 @@
 <template>
   <div class="page-container mb-4 p-3">
-    <nuxt-link :to="page.name" no-prefetch>
+    <nuxt-link :to="'/p/'+page.name" no-prefetch>
       <span v-if="page.image"><img :src="page.image" class="rounded-circle" height="40" width="40">&nbsp;</span>
       <span style="color: lightgrey;">{{ page.dname || page.name }}</span>
     </nuxt-link>
