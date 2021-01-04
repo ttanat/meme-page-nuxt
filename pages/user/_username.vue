@@ -31,8 +31,13 @@ export default {
       title: this.$route.params.username
     }
   },
-  async asyncData({ $axios, route }) {
+  async asyncData({ $axios, route, redirect }) {
     const { data } = await $axios.get(`/api/user/${route.params.username}`)
+
+    if (data.redirect) {
+      return redirect(301, `/user/${data.username}`)
+    }
+
     return {
       sidebarData: data.banned || data.deleted ? {} : {
         bio: data.bio,

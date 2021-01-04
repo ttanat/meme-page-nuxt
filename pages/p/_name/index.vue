@@ -131,8 +131,13 @@ export default {
     BioDescription
   },
   mixins: [formatNumberMixin],
-  async asyncData({ $axios, $auth, params }) {
+  async asyncData({ $axios, $auth, params, redirect }) {
     const { data } = await $axios.get(`/api/page/${params.name}`)
+
+    if (data.redirect) {
+      return redirect(301, `/p/${data.name}`)
+    }
+
     return {
       page: data.page,
       is_subscribed: data.is_subscribed || false,
