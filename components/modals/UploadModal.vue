@@ -248,7 +248,7 @@ export default {
       $("#uploadModal").modal("hide")
       // Tell user that meme is uploading
       this.$toast.info("Uploading meme...", {
-        position: 'top-center',
+        position: 'top-right',
         duration: 1500
       })
       // Start uploading
@@ -274,7 +274,8 @@ export default {
         })
         .catch(err => {
           this.canSubmit = true
-          this.displayError(err)
+          console.log(err)
+          this.displayError(err.response && err.response.status === 500 ? "Unexpected error occurred" : err)
         })
         .finally(() => {
           this.$store.commit("setUploadingMeme", false)
