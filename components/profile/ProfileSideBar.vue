@@ -181,7 +181,7 @@ export default {
       this.$emit('following-changed-event', is_following)
     },
     copyLink() {
-      copy(`${window.location.origin}${this.isProfilePage ? `/user/${this.$auth.user.username}` : window.location.pathname}`)
+      copy(`${window.location.origin}/u/${this.isProfilePage ? this.$auth.user.username : this.$route.params.username}`)
       this.successToast("Copied")
     },
     report() {
