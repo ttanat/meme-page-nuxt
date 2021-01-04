@@ -1,5 +1,5 @@
-export default async function({ $auth, params, redirect }) {
+export default function({ $auth, params, redirect }) {
   if ($auth.loggedIn && $auth.user.username === params.username) {
-    redirect('/profile')
+    return redirect(301, '/profile')
   }
 }
