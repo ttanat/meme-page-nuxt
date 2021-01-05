@@ -51,9 +51,16 @@ export default {
   methods: {
     checkUsername(e) {
       if (e.key !== "Enter") {
-        const invalid = this.username && !this.username.match(/^[a-z0-9_]+$/i)
-        this.usernameRed = invalid
-        this.usernameError = invalid ? "Letters, numbers, and underscores only." : ""
+        if (this.username && !this.username.match(/^[a-z0-9_]+$/i)) {
+          this.usernameRed = true
+          this.usernameError = "Letters, numbers, and underscores only."
+        } else if (this.username && !this.username.match(/.*[a-z].*/i)) {
+          this.usernameRed = true
+          this.usernameError = "Must contain at least one letter."
+        } else {
+          this.usernameRed = false
+          this.usernameError = ""
+        }
       }
     },
     clearEmailField() {
@@ -78,6 +85,9 @@ export default {
       } else if (this.username.length > 32) {
         this.usernameRed = true
         this.usernameError = "Maximum 32 characters."
+      } else if (!this.username.match(/.*[a-z].*/i)) {
+        this.usernameRed = true
+        this.usernameError = "Must contain at least one letter."
       } else if (!this.username.match(/^[a-z0-9_]+$/i)) {
         this.usernameRed = true
         this.usernameError = "Letters, numbers, and underscores only."
