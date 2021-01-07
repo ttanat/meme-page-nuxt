@@ -79,7 +79,7 @@
             :style="{'cursor': uploading ? 'progress' : ''}"
             type="button"
             class="btn btn-primary modal-btn"
-            title="Upload"
+            :title="canSubmit ? 'Upload' : 'Choose a file to upload'"
           >
             <template v-if="uploading">Uploading <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></template>
             <template v-else>Upload</template>
