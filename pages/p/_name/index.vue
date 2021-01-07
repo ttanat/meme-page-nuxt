@@ -39,7 +39,7 @@
               <td class="page-stat" id="post-count">{{ formatNumber(page.num_posts) }}</td>
             </tr>
             <tr>
-              <td class="page-stat"><small>users</small></td>
+              <td class="page-stat"><small>members</small></td>
               <td class="page-stat"><small>posts</small></td>
             </tr>
           </table>
