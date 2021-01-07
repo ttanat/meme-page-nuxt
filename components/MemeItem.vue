@@ -13,7 +13,12 @@
         [REDACTED]
       </span>
       <!-- Page name and display name if applicable -->
-      <span v-if="meme.pname" class="header-page">&ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&ensp;<nuxt-link :to="'/p/'+meme.pname" class="header-page" no-prefetch>{{ meme.pdname || meme.pname }}</nuxt-link></span>
+      <span v-if="meme.pname" class="header-page">
+        &ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />&nbsp;
+        <nuxt-link :to="'/p/'+meme.pname" class="header-page" no-prefetch>
+          {{ meme.pname }}
+        </nuxt-link>
+      </span>
       <!-- Caption -->
       <h6
         v-for="(captionFragment, i) in captionFragments"
@@ -253,6 +258,7 @@ export default {
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 5px;
+  font-weight: 350;
 }
 .header-username, .header-page {
   font-size: 13px;
