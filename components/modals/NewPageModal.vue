@@ -57,6 +57,7 @@ export default {
     return {
       defaultText: "Letters, numbers, and underscores only.",
       nameTakenText: "Page name already taken.",
+      oneLetterText: "Name must have at least one letter.",
       pageName: "",
       turnRed: false,
       smallPageNameText: "Letters, numbers, and underscores only.",
@@ -79,8 +80,13 @@ export default {
       this.turnRed = false
       this.smallPageNameText = this.defaultText
       const check = !!this.pageName.match(/^[a-z0-9_]+$/i) // Check if all characters are valid
-      if (!check) this.invalidateForm()
-      return check
+      if (!check) {
+        this.invalidateForm()
+        return false
+      }
+      const check2 = !!this.pageName.match(/^.*[a-z].*$/i) // Check if name has at least one letter
+      if (!check2) this.invalidateForm(this.oneLetterText)
+      return check && check2
     },
     invalidateForm(message=null) {
       this.smallPageNameText = message ? message : this.defaultText
