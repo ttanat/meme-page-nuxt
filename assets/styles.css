@@ -80,7 +80,12 @@ a {
   /*max-height: calc(100vh - 5rem);*/
   /* Mozilla */
   scrollbar-width: none;
-  padding-left: unset;
+}
+
+@media (min-width: 1200px) {
+  #left {
+    padding-left: unset;
+  }
 }
 
 /* Chrome */

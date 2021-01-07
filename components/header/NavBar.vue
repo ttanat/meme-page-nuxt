@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark justify-content-between" :class="{'sticky-top': !$store.state.showOverlay}">
+  <nav class="navbar navbar-expand-md navbar-dark justify-content-between" :class="{'sticky-top': !$store.state.showOverlay}">
     <nuxt-link class="navbar-brand ml-xl-4" to="/" no-prefetch>Meme Page</nuxt-link>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -15,10 +15,10 @@
       <div class="navbar-nav ml-auto mr-lg-0 mr-xl-3">
         <template v-if="$auth.loggedIn">
           <nuxt-link class="nav-item nav-link text-light mr-3" to="/" title="Home" no-prefetch>
-            <font-awesome-icon :icon="['fas', 'home']" fixed-width /><span class="d-lg-none"> Home</span>
+            <font-awesome-icon :icon="['fas', 'home']" fixed-width /><span class="d-md-none"> Home</span>
           </nuxt-link>
           <a v-if="$route.path.startsWith('/profile')" class="nav-item nav-link text-light mr-3 pointer" data-toggle="modal" data-target="#newMemePage" title="New meme page">
-            <font-awesome-icon :icon="['fas', 'plus']" fixed-width /><span class="d-lg-none"> New meme page</span>
+            <font-awesome-icon :icon="['fas', 'plus']" fixed-width /><span class="d-md-none"> New meme page</span>
           </a>
           <a class="nav-item nav-link text-light mr-3 pointer" data-toggle="modal" data-target="#uploadModal" :title="uploadingMeme ? 'Uploading...' : 'Upload'">
             <font-awesome-icon
@@ -26,7 +26,7 @@
               :spin="uploadingMeme"
               fixed-width
             />
-            <span class="d-lg-none"> {{ uploadingMeme ? "Uploading..." : "Upload" }}</span>
+            <span class="d-md-none"> {{ uploadingMeme ? "Uploading..." : "Upload" }}</span>
           </a>
           <NotificationsDropdown />
           <UserDropdown />
@@ -65,10 +65,23 @@ export default {
 <style scoped>
 nav {
   background-color: #252525 !important;
+  height: 45px;
 }
-@media (min-width: 992px) {
+.navbar-toggler {
+  padding: 0.25rem;
+}
+.navbar-toggler-icon {
+  height: 20px;
+}
+@media (max-width: 767.98px) {
   nav {
-    height: 45px;
+    height: unset;
+  }
+  .navbar {
+    padding: 0.25rem 0.5rem;
+  }
+  .navbar-brand {
+    font-size: 1.1rem;
   }
 }
 @media (max-width: 1199.98px) {
