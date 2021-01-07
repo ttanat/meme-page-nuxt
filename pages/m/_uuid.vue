@@ -9,7 +9,7 @@
           </div>
         </div>
 
-        <div class="col-md-8 col-lg-6">
+        <div class="col-md-8 col-lg-6" id="mid-meme-view-col">
           <div class="item pt-0 w-100" :style="{paddingBottom: meme.tags.length ? '10px' : ''}">
             <MemeViewContainer />
           </div>
@@ -118,8 +118,20 @@ export default {
 <style scoped>
 .item {
   background-color: #171717;
-  border: 1px solid #444444;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #444;
   border-radius: 7px;
+}
+@media (max-width: 575.98px) {
+  #mid-meme-view-col {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .item {
+    border-width: 1px 0 1px 0;
+    border-radius: 0;
+  }
 }
 /* .right-fixed {
   text-align: center;

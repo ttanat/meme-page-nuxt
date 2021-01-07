@@ -27,6 +27,12 @@ export default {
 #comment-section {
   padding-bottom: 50px;
 }
+@media (max-width: 575.98px) {
+  #comment-section {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+}
 h6 {
   color: #ddd;
   border-bottom: 1px solid lightgrey;
