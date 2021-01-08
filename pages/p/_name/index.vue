@@ -85,32 +85,7 @@
               :ad-format="page.num_posts > 1 ? 'vertical' : 'rectangle'"
             />
             <!-- List of moderators -->
-            <div v-if="show" class="list-group mt-4 mb-5">
-              <nuxt-link
-                :to="'/p/'+page.name+'/moderators'"
-                class="list-group-item list-group-item-action py-2"
-                style="background: darkgreen;color: white;"
-                no-prefetch
-              >
-                Moderators
-              </nuxt-link>
-              <nuxt-link
-                :to="'/user/'+page.admin"
-                class="list-group-item list-group-item-action py-2 mod-list"
-                no-prefetch
-              >
-                {{ page.admin }} (admin)
-              </nuxt-link>
-              <nuxt-link
-                v-for="mod in page.moderators"
-                :key="mod"
-                :to="'/user/'+mod"
-                class="list-group-item list-group-item-action py-2 mod-list"
-                no-prefetch
-              >
-                {{ mod }}
-              </nuxt-link>
-            </div>
+            <ModsList v-if="show" :page="page" />
             <!-- More ads -->
             <div v-if="page.num_posts > 1 && show" class="right-fixed">
               <adsbygoogle ad-format="rectangle" />
@@ -129,13 +104,15 @@
 import MemeItems from '~/components/MemeItems'
 import SubscribeButton from '~/components/page/SubscribeButton'
 import BioDescription from '~/components/profile/BioDescription'
+import ModsList from '~/components/page/ModsList'
 import formatNumberMixin from '~/mixins/formatNumberMixin'
 
 export default {
   components: {
     MemeItems,
     SubscribeButton,
-    BioDescription
+    BioDescription,
+    ModsList
   },
   mixins: [formatNumberMixin],
   async asyncData({ $axios, $auth, params, redirect }) {
@@ -226,12 +203,6 @@ main {
 }
 .thumbs {
   margin-left: 5px;
-}
-/* .list-group-item {
-  width: 260px;
-} */
-.mod-list {
-  font-size: 14px;
 }
 @media (max-width: 575.98px) {
   #mid {
