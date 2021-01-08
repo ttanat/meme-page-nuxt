@@ -8,6 +8,7 @@
       <h6 class="mt-0 mb-1">
         <nuxt-link :to="getURL" no-prefetch>
           {{ searchUser ? result.username : result.display_name || result.name }}
+          <small v-if="!searchUser && result.display_name">&nbsp;({{ result.name }})</small>
         </nuxt-link>
       </h6>
       <div v-if="hasBio" class="bio" v-html="displayBio"></div>
@@ -66,7 +67,7 @@ h6 {
   font-size: 1.1rem;
 }
 .media-body a {
-  color: darkgrey;
+  color: #858585;
 }
 .bio {
   white-space: pre-wrap;
