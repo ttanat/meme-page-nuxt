@@ -13,8 +13,8 @@
           <div class="item pt-0 w-100" :style="{paddingBottom: meme.tags.length ? '10px' : ''}">
             <MemeViewContainer />
           </div>
-          <div v-if="meme.num_comments > 3" class="my-3" id="item-mid-ad">
-            <img src="~/assets/argos.jpg" style="height: 100px;width: 100%;border-radius: 5px;cursor: pointer;">
+          <div v-if="meme.num_comments > 3" class="my-3">
+            <adsbygoogle ad-format="horizontal" />
           </div>
           <CommentSection />
         </div>
@@ -23,16 +23,8 @@
           <div id="right-child">
             <PageSidebar v-if="meme.hasPage" :page="meme.page" />
             <div class="right-fixed">
-              <!-- <div class="ad pt-1 pb-2 px-2" style="border: 1px solid #444;background-color: #171717;margin-bottom: 15px;">
-                <span style="display: block;text-align: left;color: #bbb;font-size: 13px">&nbsp;Advertisement</span>
-              <img class="ad" src="~/assets/ad.png" style="display: block;margin-left: auto;margin-right: auto;margin-bottom: unset;" alt="Advertisement">
-              </div>
-              <div class="ad pt-1 pb-2 px-2" style="border: 1px solid #444;background-color: #171717;margin-bottom: 15px;">
-                <span style="display: block;text-align: left;color: #bbb;font-size: 13px">&nbsp;Advertisement</span>
-              <img class="ad" src="~/assets/ad_two.png" style="display: block;margin-left: auto;margin-right: auto;margin-bottom: unset;" alt="Advertisement">
-              </div> -->
-              <img class="ad" src="~/assets/ad.png" alt="Advertisement">
-              <img class="ad" src="~/assets/ad_two.png" alt="Advertisement">
+              <adsbygoogle ad-format="rectangle" style="margin-bottom: 20px;" />
+              <adsbygoogle v-if="meme.num_comments" ad-format="rectangle" />
             </div>
           </div>
         </div>

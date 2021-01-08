@@ -57,8 +57,15 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/auth',
-    '@nuxtjs/toast'
+    '@nuxtjs/toast',
+    ['@nuxtjs/google-adsense'],
   ],
+  /*
+  ** Adsense config
+  */
+  'google-adsense': {
+    test: true,
+  },
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options

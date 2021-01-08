@@ -68,6 +68,7 @@
         <!-- Right column -->
         <div class="col-md-4 col-lg-3 col-xl-3" id="right">
           <div v-if="show" id="right-child">
+            <!-- Page description -->
             <div v-if="is_page_admin || page.description" class="mb-4 p-2" id="page-description">
               <BioDescription
                 v-if="is_page_admin"
@@ -78,7 +79,12 @@
               />
               <span v-else id="description">{{ page.description }}</span>
             </div>
-            <img v-if="page.num_posts && show" class="ad" src="~/assets/ad.png" alt="Advertisement">
+            <!-- Ad -->
+            <adsbygoogle
+              v-if="page.num_posts && show"
+              :ad-format="page.num_posts > 1 ? 'vertical' : 'rectangle'"
+            />
+            <!-- List of moderators -->
             <div v-if="show" class="list-group mt-4 mb-5">
               <nuxt-link
                 :to="'/p/'+page.name+'/moderators'"
@@ -105,9 +111,10 @@
                 {{ mod }}
               </nuxt-link>
             </div>
-            <div class="right-fixed" v-if="page.num_posts > 1 && show">
-              <img class="ad" src="~/assets/got_ad.png" alt="Advertisement">
-              <img class="ad" src="~/assets/ad_two.png" alt="Advertisement">
+            <!-- More ads -->
+            <div v-if="page.num_posts > 1 && show" class="right-fixed">
+              <adsbygoogle ad-format="rectangle" />
+              <adsbygoogle ad-format="rectangle" />
             </div>
           </div>
         </div>

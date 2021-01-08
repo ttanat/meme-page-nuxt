@@ -1,17 +1,16 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-9 col-sm-12" id="left-col">
-        <nuxt-link :to="'/m/'+meme" id="back">Back to meme</nuxt-link><br>
-        <video v-if="isVideo" :src="url" controls id="meme"></video>
-        <img v-else :src="url" id="meme">
-        <img src="~/assets/got_ad.png" id="adm">
+      <div class="col-md-9 col-sm-12" id="img-left-col">
+        <nuxt-link :to="'/m/'+meme" id="img-back-btn">Back to meme</nuxt-link><br>
+        <video v-if="isVideo" :src="url" controls id="img-meme"></video>
+        <img v-else :src="url" id="img-meme">
       </div>
-      <div class="col-md-3" id="right-col">
-        <h3 class="m-3"><nuxt-link to="/">Meme Page</nuxt-link></h3>
+      <div class="col-md-3" id="img-right-col">
+        <h3 class="m-3"><nuxt-link to="/" id="img-brand">Meme Page</nuxt-link></h3>
         <div class="m-3">Drag and drop image to save</div>
         <a @click="copyLink" href="javascript:void(0);" class="m-3">Copy link</a>
-        <img src="~/assets/got_ad.png" id="ad">
+        <adsbygoogle id="ad" ad-format="rectangle" />
       </div>
     </div>
   </div>
@@ -56,26 +55,23 @@ export default {
   methods: {
     copyLink() {
       copy(`${window.location.origin}/m/${this.$route.query.m || this.$route.query.c}`)
-      this.$toast.success("Copied", {
-        position: 'bottom-center',
-        duration: 1000
-      })
+      this.successToast("Copied")
     }
   }
 }
 </script>
 
 <style>
-#back {
+#img-back-btn {
   text-decoration: none;
   color: unset;
   margin-left: 5px;
   font-size: 1.2rem;
 }
-h3 > a {
+#img-brand {
   color: lightgray !important;
 }
-#left-col {
+#img-left-col {
   left: 0;
   top: 0;
   bottom: 0;
@@ -84,7 +80,7 @@ h3 > a {
   background-color: #252525;
   min-height: 100%;
 }
-#meme {
+#img-meme {
   max-width: 500px;
   width: auto;
   height: auto;
@@ -93,7 +89,7 @@ h3 > a {
   right: 0;
   margin: auto;
 }
-#right-col {
+#img-right-col {
   right: 0;
   top: 0;
   position: fixed;
@@ -111,32 +107,19 @@ h3 > a {
   position: absolute;
   cursor: pointer;
 }
-#adm {
-  width: 75%;
-  margin-top: 5px;
-  border-radius: .2rem;
-}
-@media (min-width: 576px) {
-  #adm {
-    width: 60%;
-  }
-}
 @media (max-width: 767.98px) {
-  #right-col {
+  #img-right-col {
     display: none;
   }
-  #left-col, #meme {
+  #img-left-col, #img-meme {
     width: 100%;
     text-align: center;
   }
 }
 @media (min-width: 768px) {
-  #meme {
+  #img-meme {
     position: absolute;
     bottom: 0;
-  }
-  #adm {
-    display: none;
   }
 }
 </style>

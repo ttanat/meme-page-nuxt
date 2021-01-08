@@ -11,11 +11,11 @@
         </div>
         <div id="right" class="col-md-4 col-lg-3 col-xl-3">
           <div id="right-child">
-            <img class="ad" src="~/assets/got_ad.png" alt="Advertisement">
+            <adsbygoogle ad-format="rectangle" />
             <TrendingList />
             <div class="right-fixed">
-              <img class="ad" src="~/assets/ad_two.png" alt="Advertisement">
-              <img class="ad" src="~/assets/ad.png" alt="Advertisement">
+              <adsbygoogle ad-format="rectangle" />
+              <adsbygoogle ad-format="rectangle" />
             </div>
           </div>
         </div>
@@ -49,6 +49,9 @@ export default {
 </script>
 
 <style scoped>
+ins {
+  margin-bottom: 20px;
+}
 @media (max-width: 575.98px) {
   #mid {
     padding: 0 !important;
