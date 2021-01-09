@@ -125,7 +125,7 @@ export default {
     },
     getNewURL() {
       return this.pathname === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(this.$route.query.q.slice(0, 64))}`
-           : this.pathname.startsWith("/p/") && this.$auth.loggedIn && this.pageConfig.private && this.pageConfig.show ? `/api/memes/pv/?n=${encodeURIComponent(this.$route.params.name)}`
+           : this.pathname.startsWith("/p/") && this.$auth.loggedIn && this.pageConfig.private && this.pageConfig.show ? `/api/memes/private-page/?name=${encodeURIComponent(this.$route.params.name)}`
            : `/api/memes/?p=${encodeURIComponent(this.pathname.slice(1))}`
     },
     pauseAll() {
