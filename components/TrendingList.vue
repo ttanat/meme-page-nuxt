@@ -1,5 +1,5 @@
 <template>
-  <ul v-if="tags.length" class="list-group">
+  <ul v-if="Array.isArray(tags) && tags.length" class="list-group">
     <li class="list-group-item trending-bg"><h5>Trending</h5></li>
     <nuxt-link
       v-for="tag in tags"
@@ -15,18 +15,22 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'TrendingList',
-  data() {
-    return {
-      tags: []
-    }
+  computed: {
+    ...mapState({
+      tags: state => state.trendingTags
+    })
   },
   created() {
-    this.$axios.get("/api/trending")
-      .then(({ data }) => {
-        this.tags.push(...data)
-      })
+    if (this.tags === null) {
+      this.$axios.get("/api/trending")
+        .then(({ data }) => {
+          this.$store.commit("setTrendingTags", data)
+        })
+    }
   }
 }
 </script>
