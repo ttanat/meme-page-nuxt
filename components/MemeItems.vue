@@ -59,7 +59,11 @@ export default {
     }
   },
   watch: {
-    "$route.query.q": "$fetch"
+    "$route.query.q": "$fetch",
+    "memes.length": function(length) {
+      const numAdsToShow = length > 2 ? 3 : length > 1 ? 2 : length > 0 ? 1 : 0
+      this.$emit("change-num-ads", numAdsToShow)
+    }
   },
   async fetch() {
     if (!this.canLoadMore()) return false

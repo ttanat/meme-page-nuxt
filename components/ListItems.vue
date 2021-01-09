@@ -30,7 +30,12 @@ export default {
     }
   },
   watch: {
-    query: "$fetch"
+    query: "$fetch",
+    "results.length": function(length) {
+      const searchMemes = !"@^".includes(this.query.trim()[0])
+      const numAdsToShow = searchMemes ? (length > 2 ? 3 : length > 1 ? 2 : length > 0 ? 1 : 0) : (length > 4 ? 1 : 0)
+      this.$emit("change-num-ads", numAdsToShow)
+    }
   },
   async fetch() {
     this.noResults = false // Reset showing noResults message (for watch)
@@ -44,7 +49,7 @@ export default {
   },
   methods: {
     loadMore() {
-      if (this.next === null || !"@^".includes(this.query[0])) return false
+      if (this.next === null || !"@^".includes(this.query.trim()[0])) return false
       this.loading = true
 
       this.$axios.get(this.next)

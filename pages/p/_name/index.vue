@@ -61,7 +61,7 @@
 
         <!-- Middle column -->
         <div class="col-sm-12 col-md-8 col-lg-6 col-xl-6" id="mid">
-          <MemeItems v-if="show" :page-config="page_config" />
+          <MemeItems v-if="show" :page-config="page_config" @change-num-ads="changeNumAds" />
           <div v-else-if="page.private && !show" class="no-memes">This meme page is private.<br><br>Subscribe to view memes posted here.</div>
         </div>
 
@@ -79,17 +79,17 @@
               />
               <span v-else id="description">{{ page.description }}</span>
             </div>
-            <!-- Ad -->
+            <!-- Ad (show vertical if page has more than 4 posts) -->
             <adsbygoogle
-              v-if="page.num_posts && show"
-              :ad-format="page.num_posts > 1 ? 'vertical' : 'rectangle'"
+              v-if="show && page.num_posts && numAdsToShow > 0"
+              :ad-format="page.num_posts > 4 && numAdsToShow > 2 ? 'vertical' : 'rectangle'"
             />
             <!-- List of moderators -->
             <ModsList v-if="show" :page="page" />
             <!-- More ads -->
-            <div v-if="page.num_posts > 1 && show" class="right-fixed">
+            <div v-if="show && page.num_posts > 1 && numAdsToShow > 1" class="right-fixed">
               <adsbygoogle ad-format="rectangle" />
-              <adsbygoogle ad-format="rectangle" />
+              <adsbygoogle v-if="page.num_posts > 2 && numAdsToShow > 2" ad-format="rectangle" />
             </div>
           </div>
         </div>
@@ -131,13 +131,13 @@ export default {
                     && $auth.loggedIn
                     && data.page.moderators.includes($auth.user.username)),
       show: data.show,
-
       // Use in MemeItems
       page_config: {
         num_posts: data.page.num_posts,
         private: data.page.private,
         show: data.show
-      }
+      },
+      numAdsToShow: 0
     }
   },
   head() {
@@ -173,6 +173,9 @@ export default {
     },
     changeSubscribeRequest(r) {
       this.is_requested = r
+    },
+    changeNumAds(num) {
+      this.numAdsToShow = num
     }
   }
 }
