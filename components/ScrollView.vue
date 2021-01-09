@@ -58,7 +58,7 @@ export default {
     showFirstAd() {
       // Don't show first ad if third ad is showing and there is no trending data
       // Prevents showing three consequtive ads
-      if (this.numAdsToShow > 2 && (tags === null || !tags.length)) {
+      if (this.numAdsToShow > 2 && (!this.tags || !this.tags.length)) {
         return false
       }
       return this.numAdsToShow > 0
