@@ -4,7 +4,9 @@
       <div id="innerDiv">
         <template v-if="valid">
           <img v-if="image" :src="image" height="75" width="75" class="rounded-circle mb-4"><br>
-          <div class="mb-4">Do you want to subscribe to {{ dname || name }}?</div>
+          <div class="mb-4">
+            Do you want to subscribe to <span style="color: #ff1f1f;">{{ name }}</span>{{ dname ? ` (${dname})` : "" }}?
+          </div>
           <nuxt-link to="/" type="button" class="btn btn-sm btn-outline-success mr-3" style="width: 90px;" no-prefetch>Back</nuxt-link>
           <button @click="subscribe" type="button" class="btn btn-sm btn-success" style="width: 90px;">Subscribe</button>
         </template>
@@ -42,8 +44,11 @@ export default {
       this.$axios.put(`/api/invite/${this.$route.params.uuid}`)
         .then(res => {
           this.$router.push(`/p/${res.data.name}`)
-          this.successToast("You are now subscribed")
-          this.addNewPage()
+          // Show toast and add to $auth user subscriptions if not a moderator or admin
+          if (!this.$auth.user.moderating.find(page => page.name === res.data.name)) {
+            this.successToast("You are now subscribed")
+            this.addNewPage()
+          }
         })
         .catch(err => {
           this.errorToast(err.response.data || err.message)

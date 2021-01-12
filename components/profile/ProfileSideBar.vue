@@ -72,7 +72,8 @@
         <br>
         <h5>Meme Pages</h5>
         <nuxt-link v-for="p in getPages" :key="p.name" :to="'/p/'+p.name" no-prefetch>
-          <font-awesome-icon :icon="['fas', p.private ? 'lock' : 'star']" />&ensp;{{ p.dname || p.name }}
+          <!-- Show page display name only if in profile page -->
+          <font-awesome-icon :icon="['fas', p.private ? 'lock' : 'star']" />&ensp;{{ isProfilePage ? p.dname || p.name : p.name }}
         </nuxt-link>
       </template>
     </div>

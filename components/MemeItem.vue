@@ -209,7 +209,7 @@ export default {
       this.$refs.menu.open(e)
     },
     removeMeme() {
-      const pageName = this.meme.pdname || this.meme.pname || this.$route.params.name
+      const pageName = this.meme.pname || this.$route.params.name
       if (!pageName) return false
 
       if (confirm(`Are you sure you want to remove this meme from ${pageName}?`)) {
@@ -223,8 +223,8 @@ export default {
               // Remove meme if in page
               this.$emit("remove-meme-event", this.meme.uuid)
             } else {
-              // Remove page name and display name
-              this.meme.pname = this.meme.pdname = ""
+              // Remove page name
+              this.meme.pname = ""
             }
           })
           .catch(err => err.response ? this.errorToast(err.response.data) : console.log(err))

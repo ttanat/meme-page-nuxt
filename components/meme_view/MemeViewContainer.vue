@@ -14,7 +14,7 @@
       <!-- Page if applicable -->
       <span v-if="meme.hasPage" class="username-page-header">
         &ensp;<font-awesome-icon :icon="['fas', 'caret-right']" />
-        &nbsp;<nuxt-link style="color: inherit;" :to="'/p/'+meme.page.name" no-prefetch>{{ meme.page.dname || meme.page.name }}</nuxt-link>
+        &nbsp;<nuxt-link style="color: inherit;" :to="'/p/'+meme.page.name" no-prefetch>{{ meme.page.name }}</nuxt-link>
       </span>
       <!-- Dropdown -->
       <div class="dropdown float-right" style="margin-top: -4px">
