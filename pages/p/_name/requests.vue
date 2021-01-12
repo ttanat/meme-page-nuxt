@@ -41,7 +41,7 @@ export default {
   head() {
     this.$store.commit("setCurrentPage", "")
     return {
-      title: `${this.$route.params.name} - Requests`,
+      title: `${this.pageName} - Requests`,
       meta: [
         {hid: 'robots', name: 'robots', content: 'noindex'},
       ]
@@ -50,14 +50,19 @@ export default {
   data() {
     return {
       requests: [],
-      next: `${this.$axios.defaults.baseURL}/api/subscribe_request/${this.$route.params.name}`,
+      next: `${this.$axios.defaults.baseURL}/api/subscribe_request/${this.pageName}`,
       loading: false,
       noRequests: false,
       adminView: false
     }
   },
+  computed: {
+    pageName() {
+      return this.$route.params.name
+    }
+  },
   created() {
-    this.$store.commit("setCurrentPage", this.$route.params.name)
+    this.$store.commit("setCurrentPage", this.pageName)
     this.loadMore()
   },
   methods: {
@@ -89,7 +94,7 @@ export default {
     },
     async acceptRequest(id) {
       try {
-        const res = await this.$axios.put(`/api/subscribe_request/${this.$route.params.name}?id=${id}`)
+        const res = await this.$axios.put(`/api/subscribe_request/${this.pageName}?id=${id}`)
         if (res.status === 204) {
           this.spliceRequests(id)
         }
@@ -100,7 +105,7 @@ export default {
     async deleteRequest(id) {
       if (confirm("Are you sure you want to delete this request?")) {
         try {
-          const res = await this.$axios.delete(`/api/subscribe_request/${this.$route.params.name}?id=${id}`)
+          const res = await this.$axios.delete(`/api/subscribe_request/${this.pageName}?id=${id}`)
           if (res.status === 204) {
             this.spliceRequests(id)
           }

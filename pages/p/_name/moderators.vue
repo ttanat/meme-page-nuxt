@@ -7,8 +7,8 @@
           <h4>
             Moderators
             <nuxt-link
-              v-if="!isModerating && !$fetchState.pending"
-              :to="'/p/'+$route.params.name"
+              v-if="!$fetchState.pending"
+              :to="'/p/'+pageName"
               class="btn btn-sm btn-secondary float-right d-none d-lg-inline"
               no-prefetch
             >
@@ -83,9 +83,9 @@ export default {
     CurrentMods
   },
   head() {
-    this.$store.commit("setCurrentPage", "")
+    this.$store.commit("setCurrentPage", this.pageName)
     return {
-      title: `${this.$route.params.name} - Moderators`,
+      title: `${this.pageName} - Moderators`,
       meta: [
         {hid: 'robots', name: 'robots', content: 'noindex'},
       ]
@@ -101,15 +101,18 @@ export default {
     }
   },
   computed: {
+    pageName() {
+      return this.$route.params.name
+    },
     everyone() {
       return [...this.modsToAdd, ...this.pending, ...this.current]
     },
     isModerating() {
-      return this.$auth.loggedIn && !!this.$auth.user.moderating.find(p => p.name === this.$route.params.name)
+      return this.$auth.loggedIn && !!this.$auth.user.moderating.find(p => p.name === this.pageName)
     }
   },
   async fetch() {
-    const { data } = await this.$axios.get(`/api/mods/get_mods/${this.$route.params.name}`)
+    const { data } = await this.$axios.get(`/api/mods/get_mods/${this.pageName}`)
     if (this.$auth.loggedIn && data.admin) {
       this.pending.push(...data.pending)
       this.adminView = true
@@ -129,10 +132,10 @@ export default {
       this.pending.push(...mods)
     },
     stopModerating() {
-      if (confirm(`Are you sure you want to stop being a moderator of ${this.$route.params.name}?`)) {
-        this.$axios.delete(`/api/mods/leave/${this.$route.params.name}`)
+      if (confirm(`Are you sure you want to stop being a moderator of ${this.pageName}?`)) {
+        this.$axios.delete(`/api/mods/leave/${this.pageName}`)
           .then(() => {
-            this.$popUserFieldArray("moderating", this.$route.params.name)
+            this.$popUserFieldArray("moderating", this.pageName)
             this.current = this.current.filter(user => user !== this.$auth.user.username)
           })
           .catch(() => this.errorToast("Unexpected error occurred. Please try again later."))

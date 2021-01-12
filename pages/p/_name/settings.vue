@@ -5,7 +5,7 @@
 
         <div class="col-md-11 mb-2">
           <h4 class="mb-3">
-            Settings - <nuxt-link :to="'/p/'+page.name" style="color: inherit;">{{ page.display_name || page.name }}</nuxt-link>
+            Settings
             <nuxt-link class="btn btn-sm btn-secondary float-right d-none d-lg-inline" :to="'/p/'+page.name">Go back</nuxt-link>
           </h4>
         </div>
@@ -58,13 +58,8 @@ export default {
     const { data } = await $axios.get(`/api/page/${route.params.name}/settings`)
     return { page: data }
   },
-  mounted() {
-    // Delete this later
-    this.page.mods = ["max", "moseby", "jane", "kevin"]
-    this.page.pending = ["max", "moseby", "jane", "kevin"]
-  },
   head() {
-    this.$store.commit("setCurrentPage", "")
+    this.$store.commit("setCurrentPage", this.page.name)
     return {
       title: `${this.page.display_name || this.page.name} - Settings`,
       meta: [
