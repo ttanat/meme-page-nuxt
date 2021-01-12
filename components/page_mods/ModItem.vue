@@ -38,13 +38,14 @@ export default {
     divClass() {
       return {
         selected: this.selected && this.adminView,
-        pointer: this.adminView
+        pointer: this.adminView && this.username !== this.$auth.user.username
       }
     }
   },
   methods: {
     toggleSelected() {
       if (!this.adminView) return false
+      if (this.adminView && this.username === this.$auth.user.username) return false
       this.selected = !this.selected
       this.$emit(this.selected ? "mod-select-event" : "mod-unselect-event")
     }
