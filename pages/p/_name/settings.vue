@@ -19,14 +19,6 @@
           <br><br>
           <CoverForm :page-cover-url="page.cover" />
         </div>
-        <!-- <div class="col-md-3"> -->
-          <!-- <CurrentMods :mods="page.mods" @remove-mods-event="removeMods" /> -->
-          <!-- <label>Requests pending</label>
-          <ul class="list-group mb-4">
-            <button v-for="username in page.pending" :key="username" type="button" class="list-group-item list-group-item-action">{{ username }}</button>
-          </ul> -->
-          <!-- <AddMods /> -->
-        <!-- </div> -->
 
       </div>
     </div>
@@ -39,8 +31,6 @@ import SettingsSidebar from '~/components/page_settings/SettingsSidebar'
 import ImageForm from '~/components/page_settings/ImageForm'
 import CoverForm from '~/components/page_settings/CoverForm'
 import InfoForm from '~/components/page_settings/InfoForm'
-import CurrentMods from '~/components/page_settings/CurrentMods'
-import AddMods from '~/components/page_settings/AddMods'
 import DeletePageForm from '~/components/page_settings/DeletePageForm'
 
 export default {
@@ -50,8 +40,6 @@ export default {
     ImageForm,
     CoverForm,
     InfoForm,
-    CurrentMods,
-    AddMods,
     DeletePageForm
   },
   async asyncData({ $axios, route }) {
