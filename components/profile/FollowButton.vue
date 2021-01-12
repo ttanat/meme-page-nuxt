@@ -48,7 +48,7 @@ export default {
         if (this.$auth.user.stats.num_following >= 1000) {
           this.displayError("Cannot follow more than 1000 users")
         } else {
-          this.$axios.get(`/api/follow/${this.username || this.$route.params.username}`)
+          this.$axios.put(`/api/follow/${this.username || this.$route.params.username}`)
             .then(({ data }) => {
               this.$emit("following-changed-event", data.following)
               this.changeNumFollowing(data.following ? 1 : -1)
