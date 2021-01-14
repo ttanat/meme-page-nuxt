@@ -22,7 +22,13 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => {this.loading = false}, 2000)
+    this.$axios.get("/api/admin")
+      .then(({ data }) => {
+        // Fake function and route
+        this.$router.push(`/${data.route}?token=${data.token}`)
+      })
+      .catch(console.log)
+      .finally(() => this.loading = false)
   }
 }
 </script>
