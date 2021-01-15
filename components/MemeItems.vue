@@ -94,9 +94,16 @@ export default {
       // check_next_url is false when called from async fetch at the start
       // ensure that memes are loaded during async fetch even though this.next is null
       if (check_next_url && this.next === null) return false
-      if ((this.pathname.startsWith("/p/") && (!this.pageConfig.show || !this.pageConfig.num_posts))
-          || (!["/", "/all", "/feed", "/search"].includes(this.pathname) && !this.pathname.match(/^\/p\/[a-zA-Z0-9_]+$/)
-          && !this.pathname.match(/^\/browse\/[a-zA-Z0-9_]+$|^\/browse\/tv-shows$/))) return false
+      // Don't load memes in page where not allowed or page without posts
+      if (this.pathname.startsWith("/p/") && (!this.pageConfig.show || !this.pageConfig.num_posts)) {
+        return false
+      }
+      // Don't load if not in a valid route
+      if (!["/", "/all", "/feed", "/search"].includes(this.pathname)
+          && !this.pathname.match(/^\/p\/[a-zA-Z0-9_]{1,32}$/)
+          && !this.pathname.match(/^\/browse\/([a-zA-Z]+|tv-shows)$/)) {
+        return false
+      }
       return true
     },
     loadMore() {
@@ -124,9 +131,16 @@ export default {
         .finally(() => this.loading = false)
     },
     getNewURL() {
-      return this.pathname === "/search" ? `/api/memes/?p=search&q=${encodeURIComponent(this.$route.query.q.slice(0, 64))}`
-           : this.pathname.startsWith("/p/") && this.$auth.loggedIn && this.pageConfig.private && this.pageConfig.show ? `/api/memes/private-page/?name=${encodeURIComponent(this.$route.params.name)}`
-           : `/api/memes/?p=${encodeURIComponent(this.pathname.slice(1))}`
+      // URL for search
+      if (this.pathname === "/search") {
+        return `/api/memes/?p=search&q=${encodeURIComponent(this.$route.query.q.slice(0, 64))}`
+      }
+      // URL for private pages
+      if (this.pathname.startsWith("/p/") && this.$auth.loggedIn && this.pageConfig.private && this.pageConfig.show) {
+        return `/api/memes/private-page/?name=${encodeURIComponent(this.$route.params.name)}`
+      }
+      // URL for everything else
+      return `/api/memes/?p=${encodeURIComponent(this.pathname.slice(1))}`
     },
     pauseAll() {
       this.$children.forEach(c => {
