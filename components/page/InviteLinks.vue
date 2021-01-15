@@ -43,7 +43,7 @@ export default {
     }
   },
   async fetch() {
-    const { data } = await this.$axios.get(`/api/invite/admin/${this.$route.params.name}`)
+    const { data } = await this.$axios.get(`/api/invite/for-mods/${this.$route.params.name}`)
     this.links.push(...data)
   },
   methods: {
@@ -59,7 +59,7 @@ export default {
       this.generating = true
       const data = new FormData()
       data.set("uses", this.newLinkUses)
-      this.$axios.post(`/api/invite/admin/${this.$route.params.name}`, data)
+      this.$axios.post(`/api/invite/for-mods/${this.$route.params.name}`, data)
         .then(res => res.data)
         .then(data => {
           this.links.push(data)
@@ -70,7 +70,7 @@ export default {
     },
     async deleteLink(uuid) {
       if (confirm("Are you sure you want to delete this link?")) {
-        const res = await this.$axios.delete(`/api/invite/admin/${uuid}`)
+        const res = await this.$axios.delete(`/api/invite/for-mods/${uuid}`)
         if (res.status === 204) {
           const i = this.links.findIndex(link => link.uuid === uuid)
           this.links.splice(i, 1)
