@@ -135,9 +135,10 @@ export default {
       if (this.pathname === "/search") {
         return `/api/memes/?p=search&q=${encodeURIComponent(this.$route.query.q.slice(0, 64))}`
       }
-      // URL for private pages
-      if (this.pathname.startsWith("/p/") && this.$auth.loggedIn && this.pageConfig.private && this.pageConfig.show) {
-        return `/api/memes/private-page/?name=${encodeURIComponent(this.$route.params.name)}`
+      // URL for pages
+      if (this.pathname.startsWith("/p/")) {
+        const privatePage = this.$auth.loggedIn && this.pageConfig.private && this.pageConfig.show
+        return `/api/memes/${privatePage ? "private-" : ""}page/?name=${encodeURIComponent(this.$route.params.name)}`
       }
       // URL for everything else
       return `/api/memes/?p=${encodeURIComponent(this.pathname.slice(1))}`
