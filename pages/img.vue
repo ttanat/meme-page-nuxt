@@ -27,7 +27,7 @@ export default {
     const obj = "m" in route.query ? "m" : "c" in route.query ? "c" : null
     if (!obj) throw "Invalid URL"
     try {
-      const { data } = await $axios.get(`/api/full_res/${obj}/${route.query[obj]}`)
+      const { data } = await $axios.get(`/api/download/${obj}/${route.query[obj]}`)
       return {
         url: data.url,
         meme: data.meme_uuid || route.query.m
