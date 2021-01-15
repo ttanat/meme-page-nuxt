@@ -11,7 +11,7 @@
           <InviteLinks />
           <!-- Requests to subscribe to page -->
           <div>
-            <h5>Requests</h5>
+            <h5>Requests to subscribe</h5>
             <div v-for="req in requests" :key="req.id" :req="req" class="request py-2 pl-2">
               <nuxt-link :to="'/user/'+req.username" target="_blank" no-prefetch>{{ req.username }}</nuxt-link> wants to subscribe
               &ensp;<small class="text-muted mr-2">{{ new Date(req.timestamp).toUTCString() }}</small>
@@ -38,19 +38,10 @@ export default {
     SettingsSidebar,
     InviteLinks
   },
-  head() {
-    this.$store.commit("setCurrentPage", "")
-    return {
-      title: `${this.pageName} - Requests`,
-      meta: [
-        {hid: 'robots', name: 'robots', content: 'noindex'},
-      ]
-    }
-  },
   data() {
     return {
       requests: [],
-      next: `${this.$axios.defaults.baseURL}/api/subscribe_request/${this.pageName}`,
+      next: `${this.$axios.defaults.baseURL}/api/subscribe_request/${this.$route.params.name}`,
       loading: false,
       noRequests: false,
       adminView: false
@@ -64,6 +55,15 @@ export default {
   created() {
     this.$store.commit("setCurrentPage", this.pageName)
     this.loadMore()
+  },
+  head() {
+    this.$store.commit("setCurrentPage", "")
+    return {
+      title: `${this.pageName} - Requests`,
+      meta: [
+        {hid: 'robots', name: 'robots', content: 'noindex'},
+      ]
+    }
   },
   methods: {
     async loadMore() {
