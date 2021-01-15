@@ -18,7 +18,7 @@
                 <div class="form-row">
                   <div class="col-sm-6">
                     <label>Upload to</label>
-                    <select v-model="page" class="custom-select custom-select-sm mr-sm-2">
+                    <select v-model="page" :disabled="isPrivate" class="custom-select custom-select-sm mr-sm-2">
                       <option value="" selected>Your memes</option>
                       <option v-for="p in uploadToOptions" :key="p.name" :value="p.name">{{ p.dname || p.name }}</option>
                     </select>
@@ -59,7 +59,14 @@
                   <label for="uploadNsfw" class="custom-control-label" style="color: tomato;font-size: 15px;">NSFW</label>
                 </div> -->
                 <div class="custom-control custom-checkbox custom-checkbox-sm mb-3">
-                  <input v-model="isPrivate" type="checkbox" id="uploadPrivate" class="custom-control-input custom-control-input-sm" autocomplete="off">
+                  <input
+                    v-model="isPrivate"
+                    @change="page = isPrivate ? '' : page"
+                    type="checkbox"
+                    id="uploadPrivate"
+                    class="custom-control-input custom-control-input-sm"
+                    autocomplete="off"
+                  >
                   <label for="uploadPrivate" class="custom-control-label" style="color: tomato;font-size: 15px;">Private</label>
                 </div>
                 <textarea v-model="tags" class="form-control" rows="2" placeholder="#tags (optional)" autocomplete="off" style="resize: none;padding: .15em;padding-left: 4px;"></textarea>
@@ -126,7 +133,7 @@ export default {
     },
     showClearButton() {
       // return this.page || this.category || this.caption || this.nsfw || this.tags || this.canSubmit
-      return this.page || this.category || this.caption || this.private || this.tags || this.canSubmit
+      return this.page || this.category || this.caption || this.isPrivate || this.tags || this.canSubmit
     }
   },
   methods: {
@@ -218,6 +225,10 @@ export default {
     },
     setData() {
       const data = new FormData()
+      if (this.page && this.isPrivate) {
+        alert("Cannot upload private memes to a page")
+        return false
+      }
       if (this.page) data.set("page", this.page)
       if (this.category) data.set("category", this.category)
       data.set("caption", this.caption.trim().slice(0, 100).trim())
