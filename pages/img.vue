@@ -23,10 +23,13 @@ import urlFileExtMixin from '~/mixins/urlFileExtMixin'
 export default {
   layout: 'plain',
   mixins: [urlFileExtMixin],
-  async asyncData({ $axios, route }) {
-    const obj = "m" in route.query ? "m" : "c" in route.query ? "c" : null
-    if (!obj) throw "Invalid URL"
-    const { data } = await $axios.get(`/api/download/${obj}/${route.query[obj]}`)
+  async asyncData({ $axios, route, error }) {
+    const qs = Object.keys(route.query)
+    const uuid = route.query.m || route.query.c
+    if (!uuid || qs.length !== 1) {
+      return error({statusCode: 404, message: "Page not found"})
+    }
+    const { data } = await $axios.get(`/api/download/${qs[0]}/${uuid}`)
     return {
       url: data.url,
       meme: data.meme_uuid || route.query.m
