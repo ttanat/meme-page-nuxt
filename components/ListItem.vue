@@ -1,7 +1,7 @@
 <template>
   <li class="media mt-1 mb-4">
     <nuxt-link class="mr-3 media-img-link" :to="getURL" no-prefetch>
-      <img v-if="result.dp_url" class="media-img rounded-circle" :src="result.dp_url" height="45" width="45">
+      <img v-if="result.image" class="media-img rounded-circle" :src="result.image" height="45" width="45">
       <font-awesome-icon v-else :icon="['fas', searchUser ? 'user' : 'user-friends']" class="media-img" />
     </nuxt-link>
     <div class="media-body">
