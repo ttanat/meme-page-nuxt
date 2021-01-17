@@ -50,15 +50,16 @@
                 <textarea @keyup.enter="newLineCheck" v-model="caption" type="text" rows="3" class="input-form" maxlength="100" placeholder="Caption" autocomplete="off" style="outline: none;line-height: 1.8;"></textarea>
                 <br>
                 <small>{{ 100 - caption.length }} characters left</small>
-                <div class="custom-file my-3">
+                <div class="custom-file mt-3">
                   <input ref="inputFile" @change="validateForm" type="file" class="custom-file-input pointer" accept="image/jpeg, image/png, image/gif, video/mp4, video/quicktime" autocomplete="off" required>
                   <label class="custom-file-label pointer">{{ fname }}</label>
                 </div>
-                <!-- <div class="custom-control custom-checkbox custom-checkbox-sm mb-3">
+                <small v-if="inputFileIsVideo">Videos will take a few minutes to process after uploading</small>
+                <!-- <div class="custom-control custom-checkbox custom-checkbox-sm my-3">
                   <input v-model="nsfw" type="checkbox" id="uploadNsfw" class="custom-control-input custom-control-input-sm" autocomplete="off">
                   <label for="uploadNsfw" class="custom-control-label" style="color: tomato;font-size: 15px;">NSFW</label>
                 </div> -->
-                <div class="custom-control custom-checkbox custom-checkbox-sm mb-3">
+                <div class="custom-control custom-checkbox custom-checkbox-sm my-3">
                   <input
                     v-model="isPrivate"
                     @change="page = isPrivate ? '' : page"
@@ -126,6 +127,10 @@ export default {
           s.permissions && !this.$auth.user.moderating.find(m => m.name === s.name)
         )
       ]
+    },
+    inputFileIsVideo() {
+      const name = this.fname.toLowerCase()
+      return name.endsWith(".mp4") || name.endsWith(".mov")
     },
     displayTags() {
       const tags = this.getTags()
