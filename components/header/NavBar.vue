@@ -1,6 +1,8 @@
 <template>
   <nav class="navbar navbar-expand-md navbar-dark justify-content-between" :class="{'sticky-top': !$store.state.showOverlay}">
     <nuxt-link class="navbar-brand ml-xl-4" to="/" no-prefetch>Meme Page</nuxt-link>
+    <nuxt-link class="d-sm-none text-light" to="/" title="Home" no-prefetch><font-awesome-icon :icon="['fas', 'home']" /></nuxt-link>
+    <SearchBar class="d-md-none" />
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -14,7 +16,7 @@
 
       <div class="navbar-nav ml-auto mr-lg-0 mr-xl-3">
         <template v-if="$auth.loggedIn">
-          <nuxt-link class="nav-item nav-link text-light mr-3" to="/" title="Home" no-prefetch>
+          <nuxt-link id="home-btn-right" class="nav-item nav-link text-light mr-3" to="/" title="Home" no-prefetch>
             <font-awesome-icon :icon="['fas', 'home']" fixed-width /><span class="d-md-none"> Home</span>
           </nuxt-link>
           <a v-if="$route.path.startsWith('/profile')" class="nav-item nav-link text-light mr-3 pointer" data-toggle="modal" data-target="#newMemePage" title="New meme page">
@@ -73,6 +75,11 @@ nav {
 .navbar-toggler-icon {
   height: 20px;
 }
+@media (max-width: 575.98px) {
+  .navbar-brand {
+    display: none;
+  }
+}
 @media (max-width: 767.98px) {
   nav {
     height: unset;
@@ -82,6 +89,9 @@ nav {
   }
   .navbar-brand {
     font-size: 1.1rem;
+  }
+  #home-btn-right {
+    display: none;
   }
 }
 @media (max-width: 1199.98px) {

@@ -76,4 +76,19 @@ button {
   background-color: #222;
   color: grey;
 }
+@media (max-width: 767.98px) {
+  input {
+    width: 20rem !important;
+  }
+}
+@media (max-width: 575.98px) {
+  input {
+    width: unset !important;
+  }
+}
+@media (max-width: 374.98px) {
+  .input-group {
+    display: none;
+  }
+}
 </style>
