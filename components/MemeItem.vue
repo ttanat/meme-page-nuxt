@@ -241,19 +241,6 @@ export default {
   border: 1px solid #333;
   border-radius: 7px;
 }
-@media (max-width: 575.98px) {
-  .item {
-    border-left: none;
-    border-right: none;
-    border-radius: 0;
-  }
-  .content {
-    object-fit: unset;
-  }
-  .caption {
-    font-size: 1rem;
-  }
-}
 .item-header {
   padding-left: 10px;
   padding-right: 10px;
@@ -335,5 +322,21 @@ export default {
 .dropdown-item {
   cursor: pointer;
   font-size: 14px;
+}
+@media (max-width: 575.98px) {
+  .item {
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
+  /* .content {
+    object-fit: unset;
+  } */
+  .header-username, .header-page, .lower-btn, .points {
+    font-size: 12px;
+  }
+  .caption {
+    font-size: .9rem;
+  }
 }
 </style>
