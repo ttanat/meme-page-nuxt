@@ -76,14 +76,13 @@ export default function (context) {
 
 /* Functions to check types of errors */
 function userNotFound(err) {
-  return err.response && err.response.data && err.response.data.code === "user_not_found"
+  return err.response?.data?.code === "user_not_found"
 }
 
 function tokenInvalid(err) {
-  return err.response && err.response.data && err.response.data.code === "token_not_valid"
+  return err.response?.data?.code === "token_not_valid"
 }
 
 function accessTokenInvalid(err) {
-  return tokenInvalid(err) && err.response.data.messages && err.response.data.messages[0]
-          && err.response.data.messages[0].token_type === "access"
+  return tokenInvalid(err) && err.response.data.messages?.[0]?.token_type === "access"
 }
